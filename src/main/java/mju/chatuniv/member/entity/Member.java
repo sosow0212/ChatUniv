@@ -1,5 +1,8 @@
 package mju.chatuniv.member.entity;
 
+import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.MemberPasswordBlankException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,11 +39,11 @@ public class Member {
 
     public static Member from(final String email, final String password) {
         if (!validateEmailFormat(email)) {
-            throw new IllegalArgumentException("이메일 형식");
+            throw new MemberEmailFormatInvalidException(email);
         }
 
         if (password.isBlank()) {
-            throw new IllegalArgumentException("패스워드");
+            throw new MemberPasswordBlankException();
         }
 
         return new Member(email, password);

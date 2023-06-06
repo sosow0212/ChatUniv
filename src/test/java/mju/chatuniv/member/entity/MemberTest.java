@@ -1,5 +1,7 @@
 package mju.chatuniv.member.entity;
 
+import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.MemberPasswordBlankException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ class MemberTest {
     void throws_exception_when_email_invalid_format(final String email) {
         // when & then
         assertThatThrownBy(() -> Member.from(email, "1234"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MemberEmailFormatInvalidException.class);
     }
 
     @DisplayName("패스워드는 공백일 수 없다.")
@@ -32,6 +34,6 @@ class MemberTest {
     void throws_exception_when_password_blank(final String password) {
         // when & then
         assertThatThrownBy(() -> Member.from("a@a.com", password))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MemberPasswordBlankException.class);
     }
 }

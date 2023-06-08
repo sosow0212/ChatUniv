@@ -1,6 +1,6 @@
 package mju.chatuniv.member.application.dto;
 
-import mju.chatuniv.member.entity.Member;
+import mju.chatuniv.member.domain.Member;
 
 public class MemberResponse {
 

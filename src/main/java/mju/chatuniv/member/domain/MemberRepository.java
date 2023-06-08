@@ -1,4 +1,4 @@
-package mju.chatuniv.member.entity;
+package mju.chatuniv.member.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

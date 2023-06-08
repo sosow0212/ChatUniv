@@ -2,7 +2,7 @@ package mju.chatuniv.auth.support;
 
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.auth.exception.BearerTokenNotFoundException;
-import mju.chatuniv.member.entity.Member;
+import mju.chatuniv.member.domain.Member;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;

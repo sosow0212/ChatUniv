@@ -1,7 +1,6 @@
 package mju.chatuniv.auth.controller;
 
 import mju.chatuniv.auth.application.AuthService;
-import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.auth.application.dto.TokenResponse;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
@@ -21,7 +20,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    public AuthController(final JwtAuthService authService) {
+    public AuthController(final AuthService authService) {
         this.authService = authService;
     }
 

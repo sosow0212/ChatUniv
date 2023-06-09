@@ -26,12 +26,23 @@ public class Member {
     protected Member() {
     }
 
-    private Member(final String email, final String password) {
+    private Member(final Long id, final String email, final String password) {
+        this.id = id;
         this.email = email;
         this.password = password;
     }
 
     public static Member from(final String email, final String password) {
+        validateCreateMember(email, password);
+        return new Member(null, email, password);
+    }
+
+    public static Member from(final Long id, final String email, final String password) {
+        validateCreateMember(email, password);
+        return new Member(id, email, password);
+    }
+
+    private static void validateCreateMember(final String email, final String password) {
         if (!isEmailFormat(email)) {
             throw new MemberEmailFormatInvalidException(email);
         }
@@ -39,8 +50,6 @@ public class Member {
         if (isEmpty(password)) {
             throw new MemberPasswordBlankException();
         }
-
-        return new Member(email, password);
     }
 
     private static boolean isEmailFormat(final String email) {

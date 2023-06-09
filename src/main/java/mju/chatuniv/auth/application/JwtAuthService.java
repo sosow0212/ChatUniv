@@ -45,15 +45,15 @@ public class JwtAuthService implements AuthService {
         return new TokenResponse(accessToken);
     }
 
+    private boolean checkInvalidLogin(final Member member, final MemberLoginRequest memberLoginRequest) {
+        return !member.isEmailSameWith(memberLoginRequest.getEmail()) || !member.isPasswordSameWith(memberLoginRequest.getPassword());
+    }
+
     @Transactional(readOnly = true)
     public Member findMemberByJwtPayload(final String jwtPayload) {
         String jwtPayloadOfEmail = jwtTokenProvider.getPayload(jwtPayload);
 
         return memberRepository.findByEmail(jwtPayloadOfEmail)
                 .orElseThrow(MemberNotFoundException::new);
-    }
-
-    private boolean checkInvalidLogin(final Member member, final MemberLoginRequest memberLoginRequest) {
-        return !member.getEmail().equals(memberLoginRequest.getEmail()) || !member.getPassword().equals(memberLoginRequest.getPassword());
     }
 }

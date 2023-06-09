@@ -60,6 +60,14 @@ public class Member {
         return password == null || password.isBlank();
     }
 
+    public boolean isEmailSameWith(final String email) {
+        return this.email.equals(email);
+    }
+
+    public boolean isPasswordSameWith(final String password) {
+        return this.password.equals(password);
+    }
+
     public Long getId() {
         return id;
     }

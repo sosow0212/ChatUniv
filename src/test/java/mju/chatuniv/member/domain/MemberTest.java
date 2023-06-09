@@ -31,6 +31,7 @@ class MemberTest {
 
     @DisplayName("패스워드는 공백일 수 없다.")
     @NullAndEmptySource
+    @ParameterizedTest
     void throws_exception_when_password_blank(final String password) {
         // when & then
         assertThatThrownBy(() -> Member.from("a@a.com", password))

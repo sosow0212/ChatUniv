@@ -23,13 +23,7 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    public Member() {
-    }
-
-    private Member(final Long id, final String email, final String password) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
+    protected Member() {
     }
 
     private Member(final String email, final String password) {
@@ -38,19 +32,23 @@ public class Member {
     }
 
     public static Member from(final String email, final String password) {
-        if (!validateEmailFormat(email)) {
+        if (!isEmailFormat(email)) {
             throw new MemberEmailFormatInvalidException(email);
         }
 
-        if (password.isBlank()) {
+        if (isEmpty(password)) {
             throw new MemberPasswordBlankException();
         }
 
         return new Member(email, password);
     }
 
-    private static boolean validateEmailFormat(final String email) {
+    private static boolean isEmailFormat(final String email) {
         return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
+    }
+
+    private static boolean isEmpty(final String password) {
+        return password == null || password.isBlank();
     }
 
     public Long getId() {

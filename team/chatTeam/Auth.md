@@ -12,4 +12,5 @@
   - [x] API 인수 테스트
   - [x] Service 통합 테스트
   - [x] Service 단위 테스트 (예외 발생 검증)
-
+  - [x] ArgumentResolver 테스트
+- [x] Rest Docs 문서화

@@ -1,0 +1,32 @@
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+== Auth
+
+=== 회원 가입
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/register_member/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/register_member/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/register_member/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/register_member/response-fields.adoc[]
+
+=== 로그인
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/login/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/login/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/login/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/login/response-fields.adoc[]

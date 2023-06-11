@@ -1,4 +1,4 @@
-package mju.chatuniv.member.entity;
+package mju.chatuniv.member.domain;
 
 import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
 import mju.chatuniv.member.exception.MemberPasswordBlankException;
@@ -17,13 +17,13 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    public Member() {
+    protected Member() {
     }
 
     private Member(final Long id, final String email, final String password) {
@@ -32,25 +32,40 @@ public class Member {
         this.password = password;
     }
 
-    private Member(final String email, final String password) {
-        this.email = email;
-        this.password = password;
+    public static Member from(final String email, final String password) {
+        validateCreateMember(email, password);
+        return new Member(null, email, password);
     }
 
-    public static Member from(final String email, final String password) {
-        if (!validateEmailFormat(email)) {
+    public static Member from(final Long id, final String email, final String password) {
+        validateCreateMember(email, password);
+        return new Member(id, email, password);
+    }
+
+    private static void validateCreateMember(final String email, final String password) {
+        if (!isEmailFormat(email)) {
             throw new MemberEmailFormatInvalidException(email);
         }
 
-        if (password.isBlank()) {
+        if (isEmpty(password)) {
             throw new MemberPasswordBlankException();
         }
-
-        return new Member(email, password);
     }
 
-    private static boolean validateEmailFormat(final String email) {
+    private static boolean isEmailFormat(final String email) {
         return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
+    }
+
+    private static boolean isEmpty(final String password) {
+        return password == null || password.isBlank();
+    }
+
+    public boolean isEmailSameWith(final String email) {
+        return this.email.equals(email);
+    }
+
+    public boolean isPasswordSameWith(final String password) {
+        return this.password.equals(password);
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package mju.chatuniv.member.dto;
+package mju.chatuniv.member.application.dto;
 
 import javax.validation.constraints.NotBlank;
 

@@ -38,7 +38,7 @@ public class MemberServiceIntegrationTest {
     @DisplayName("회원 정보는 입력받은 회원으로 만든다.")
     @CsvSource({"1, a@a.com, true", "2, b@b.com, false"})
     @ParameterizedTest
-    public void get_member_id_and_email(final int id, final String email, final boolean expected) throws Exception {
+    public void get_log_in_members_id_and_email(final int id, final String email, final boolean expected) throws Exception {
         //given
         Member member = createMember();
 

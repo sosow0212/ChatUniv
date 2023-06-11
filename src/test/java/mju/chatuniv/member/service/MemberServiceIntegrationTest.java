@@ -11,13 +11,17 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static mju.chatuniv.fixture.member.MemberFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql(value = "/data.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MemberServiceIntegrationTest {
 
     @Autowired
@@ -34,14 +38,17 @@ public class MemberServiceIntegrationTest {
     @DisplayName("회원 정보는 입력받은 회원으로 만든다.")
     @CsvSource({"1, a@a.com, true", "2, b@b.com, false"})
     @ParameterizedTest
-    public void get_my_info(final int id, final String email, final boolean expected) throws Exception{
+    public void get_member_id_and_email(final int id, final String email, final boolean expected) throws Exception {
         //given
         Member member = createMember();
 
         //when
-        MemberResponse response = memberService.getMemberInfo(member);
+        MemberResponse response = memberService.getUsingMemberIdAndEmail(member);
+
         //then
-        assertThat(response.getMemberId() == id).isEqualTo(expected);
-        assertThat(response.getEmail().equals(email)).isEqualTo(expected);
+        assertAll(
+                () -> assertTrue(response.getMemberId() == id),
+                () -> assertTrue(response.getEmail().equals(email))
+        );
     }
 }

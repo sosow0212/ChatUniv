@@ -50,9 +50,9 @@ public class MemberControllerUnitTest {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    @Test
     @DisplayName("현재 로그인한 회원의 인조키와 이메일을 반환한다.")
-    public void get_using_member_id_and_email() throws Exception{
+    @Test
+    public void get_using_member_id_and_email() throws Exception {
         //given
         Member member = MemberFixture.createMember();
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest(member.getEmail(), member.getPassword());
@@ -77,6 +77,35 @@ public class MemberControllerUnitTest {
                         )
                 ))
                 .andReturn();
+    }
+
+    @DisplayName("유효하지 않은 토큰은 회원정보를 조회할 때 401에러를 반환한다.")
+    @Test
+    public void fail_to_get_using_member_id_and_email_Token_Not_Valid() throws Exception {
+        //given
+        Member member = MemberFixture.createMember();
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest(member.getEmail(), member.getPassword());
+        MemberResponse memberResponse = jwtAuthService.register(memberCreateRequest);
+
+        given(memberService.getUsingMemberIdAndEmail(member)).willReturn(memberResponse);
+
+        //expected
+        mockMvc.perform(get("/api/members")
+                .header(HttpHeaders.AUTHORIZATION, BEARER_+ createTokenByMember(member).substring(2)))
+                .andExpect(status().isUnauthorized())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+    }
+
+    @DisplayName("토큰이 없을 때 현재 회원정보를 조회하면 401에러와 토큰이 없음이 반환된다.")
+    @Test
+    public void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
+        //given
+
+        //expected
+        mockMvc.perform(get("/api/members"))
+                .andExpect(status().isUnauthorized())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     private String createTokenByMember(Member member) {

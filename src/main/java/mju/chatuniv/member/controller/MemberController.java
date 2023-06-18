@@ -20,7 +20,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<MemberResponse> getUsingMemberIdAndEmail(@JwtLogin final Member member) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(memberService.getUsingMemberIdAndEmail(member));

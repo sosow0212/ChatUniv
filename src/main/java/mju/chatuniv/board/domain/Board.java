@@ -53,11 +53,11 @@ public class Board {
 
     private static void validationCreateBoard(final String title, final String content) {
         if (isEmpty(title)) {
-            throw new BoardTitleBlankException();
+            throw new BoardTitleBlankException(title);
         }
 
         if (isEmpty(content)) {
-            throw new BoardContentBlankException();
+            throw new BoardContentBlankException(content);
         }
     }
 
@@ -71,9 +71,9 @@ public class Board {
         }
     }
 
-    public void update(final BoardRequest boardRequest) {
-        this.title = boardRequest.getTitle();
-        this.content = boardRequest.getContent();
+    public void update(final String title, final String content) {
+        this.title = title;
+        this.content = content;
     }
 
     public Long getId() {

@@ -14,7 +14,7 @@ public class BoardResponse {
         this.content = content;
     }
 
-    public static BoardResponse of(final Board board) {
+    public static BoardResponse from(final Board board) {
         return new BoardResponse(board.getId(), board.getTitle(), board.getContent());
     }
 

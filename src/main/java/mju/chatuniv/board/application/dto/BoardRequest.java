@@ -10,10 +10,10 @@ public class BoardRequest {
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    private BoardRequest(){
+    private BoardRequest() {
     }
 
-    public BoardRequest(String title, String content) {
+    public BoardRequest(final String title, final String content) {
         this.title = title;
         this.content = content;
     }

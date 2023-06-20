@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static org.springframework.http.ResponseEntity.status;
+
 @RequestMapping("/api/boards")
 @RestController
 public class BoardController {
@@ -34,28 +36,29 @@ public class BoardController {
     @PostMapping
     public ResponseEntity<BoardResponse> create(@JwtLogin final Member member,
                                                 @RequestBody @Valid final BoardRequest boardRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return status(HttpStatus.CREATED)
             .body(boardService.create(member, boardRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardResponse> find(@PathVariable("id") final Long id) {
-        return ResponseEntity.ok(boardService.find(id));
+    public ResponseEntity<BoardResponse> findBoard(@PathVariable("id") final Long boardId) {
+        return ResponseEntity.ok(boardService.findBoard(boardId));
     }
 
     @GetMapping
-    public ResponseEntity<BoardAllResponse> findALl(@PageableDefault final Pageable pageable) {
-        return ResponseEntity.ok(boardService.findAll(pageable));
+    public ResponseEntity<BoardAllResponse> findAllBoards(@PageableDefault final Pageable pageable) {
+        return ResponseEntity.ok(boardService.findAllBoards(pageable));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardResponse> update(@PathVariable("id") final Long id, @JwtLogin final Member member,
+    public ResponseEntity<BoardResponse> update(@PathVariable("id") final Long boardId, @JwtLogin final Member member,
                                                 @RequestBody @Valid final BoardRequest boardRequest) {
-        return ResponseEntity.ok(boardService.update(id, member, boardRequest));
+        return ResponseEntity.ok(boardService.update(boardId, member, boardRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") final Long id, @JwtLogin final Member member) {
-        return ResponseEntity.ok(boardService.delete(id, member));
+    public ResponseEntity<Void> delete(@PathVariable("id") final Long boardId, @JwtLogin final Member member) {
+        boardService.delete(boardId, member);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,38 +1,26 @@
 package mju.chatuniv.board.application.dto;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
 
 public class BoardAllResponse {
 
-    private final Page<BoardResponse> boards;
-    private final int totalPage;
-    private final int nowPage;
-    private final boolean isNext;
+    private final List<BoardResponse> boards;
+    private final BoardPageInfo boardPageInfo;
 
-    private BoardAllResponse(Page<BoardResponse> boards) {
+    private BoardAllResponse(final List<BoardResponse> boards, final BoardPageInfo boardPageInfo) {
         this.boards = boards;
-        this.totalPage = boards.getTotalPages();
-        this.nowPage = boards.getNumber();
-        this.isNext = boards.hasNext();
+        this.boardPageInfo = boardPageInfo;
     }
 
-    public static BoardAllResponse of(Page<BoardResponse> boards) {
-        return new BoardAllResponse(boards);
+    public static BoardAllResponse of(final List<BoardResponse> boards, final BoardPageInfo boardPageInfo) {
+        return new BoardAllResponse(boards, boardPageInfo);
     }
 
-    public Page<BoardResponse> getBoards() {
+    public List<BoardResponse> getBoards() {
         return boards;
     }
 
-    public int getTotalPage() {
-        return totalPage;
-    }
-
-    public int getNowPage() {
-        return nowPage;
-    }
-
-    public boolean isNext() {
-        return isNext;
+    public BoardPageInfo getBoardPageInfo() {
+        return boardPageInfo;
     }
 }

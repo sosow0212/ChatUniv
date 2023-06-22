@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
-public class MemberControllerUnitTest extends MockitoExtension{
+public class MemberControllerUnitTest {
 
     private static final String BEARER_ = "Bearer ";
 
@@ -63,27 +63,25 @@ public class MemberControllerUnitTest extends MockitoExtension{
         Member member = createMember();
 
         MemberResponse memberResponse = MemberResponse.from(member);
-        System.out.println(memberResponse.getMemberId());
-        System.out.println(memberResponse.getEmail());
 
-        given(memberService.getUsingMemberIdAndEmail(member)).willReturn(memberResponse);
+        given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(memberResponse);
 
         //expected
         mockMvc.perform(get("/api/members")
                 .header(HttpHeaders.AUTHORIZATION, BEARER_+ createTokenByMember(member)))
                 .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.memberId").value(member.getId()))
-//                .andExpect(jsonPath("$.email").value(member.getEmail()))
+                .andExpect(jsonPath("$.memberId").value(member.getId()))
+                .andExpect(jsonPath("$.email").value(member.getEmail()))
                 .andDo(MockMvcResultHandlers.print())
-//                .andDo(customDocument("member_id_and_email",
-//                        requestHeaders(
-//                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
-//                        ),
-//                        responseFields(
-//                                fieldWithPath(".memberId").description("로그인한 MEMBER의 ID"),
-//                                fieldWithPath(".email").description("로그인한 MEMBER의 EMAIL")
-//                        )
-//                ))
+                .andDo(customDocument("member_id_and_email",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        responseFields(
+                                fieldWithPath(".memberId").description("로그인한 MEMBER의 ID"),
+                                fieldWithPath(".email").description("로그인한 MEMBER의 EMAIL")
+                        )
+                ))
                 .andReturn();
     }
 

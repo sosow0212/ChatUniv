@@ -1,6 +1,5 @@
 package mju.chatuniv.board.domain;
 
-import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.exception.BoardContentBlankException;
 import mju.chatuniv.board.exception.BoardTitleBlankException;
 import mju.chatuniv.member.domain.Member;
@@ -40,18 +39,24 @@ public class Board {
     protected Board() {
     }
 
-    private Board(final String title, final String content, final Member member) {
+    private Board(Long id, String title, String content, Member member) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;
     }
 
     public static Board of(final String title, final String content, final Member member) {
-        validationCreateBoard(title, content);
-        return new Board(title, content, member);
+        validationBoard(title, content);
+        return new Board(null, title, content, member);
     }
 
-    private static void validationCreateBoard(final String title, final String content) {
+    public static Board of(final Long id, final String title, final String content, final Member member) {
+        validationBoard(title, content);
+        return new Board(id, title, content, member);
+    }
+
+    private static void validationBoard(final String title, final String content) {
         if (isEmpty(title)) {
             throw new BoardTitleBlankException(title);
         }
@@ -66,12 +71,13 @@ public class Board {
     }
 
     public void checkWriter(final Member member) {
-        if (this.member != member) {
+        if (!this.member.equals(member)) {
             throw new MemberNotEqualsException();
         }
     }
 
     public void update(final String title, final String content) {
+        validationBoard(title, content);
         this.title = title;
         this.content = content;
     }

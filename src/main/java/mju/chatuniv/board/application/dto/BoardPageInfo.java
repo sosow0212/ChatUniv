@@ -10,7 +10,7 @@ public class BoardPageInfo {
     private final int numberOfElements;
     private final boolean hasNextPage;
 
-    public BoardPageInfo(final int totalPage, final int nowPage,
+    private BoardPageInfo(final int totalPage, final int nowPage,
                          final int numberOfElements, final boolean hasNextPage) {
         this.totalPage = totalPage;
         this.nowPage = nowPage;

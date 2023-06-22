@@ -1,4 +1,4 @@
-package mju.chatuniv.board;
+package mju.chatuniv.board.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -151,6 +151,6 @@ public class BoardControllerIntegrationTest {
 
         //then
         response.then()
-            .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

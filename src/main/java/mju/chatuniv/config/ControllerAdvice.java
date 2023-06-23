@@ -1,10 +1,11 @@
 package mju.chatuniv.config;
 
+import mju.chatuniv.auth.exception.AuthorizationInvalidEmailException;
+import mju.chatuniv.auth.exception.AuthorizationInvalidPasswordException;
 import mju.chatuniv.auth.exception.BearerTokenNotFoundException;
 import mju.chatuniv.board.exception.BoardContentBlankException;
 import mju.chatuniv.board.exception.BoardNotFoundException;
 import mju.chatuniv.board.exception.BoardTitleBlankException;
-import mju.chatuniv.member.exception.AuthorizationInvalidException;
 import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
 import mju.chatuniv.member.exception.MemberNotEqualsException;
 import mju.chatuniv.member.exception.MemberNotFoundException;
@@ -20,8 +21,13 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(AuthorizationInvalidException.class)
-    public ResponseEntity<String> handlerAuthorizationInvalidException(final AuthorizationInvalidException exception) {
+    @ExceptionHandler(AuthorizationInvalidEmailException.class)
+    public ResponseEntity<String> handlerAuthorizationInvalidEmailException(final AuthorizationInvalidEmailException exception) {
+        return getForbiddenResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationInvalidPasswordException.class)
+    public ResponseEntity<String> handlerAuthorizationInvalidPasswordException(final AuthorizationInvalidPasswordException exception) {
         return getForbiddenResponse(exception.getMessage());
     }
 

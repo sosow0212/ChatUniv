@@ -19,7 +19,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
-    public String createToken(final String payload) {
+    public String createAccessToken(final String payload) {
         Claims claims = Jwts.claims()
                 .setSubject(payload);
 

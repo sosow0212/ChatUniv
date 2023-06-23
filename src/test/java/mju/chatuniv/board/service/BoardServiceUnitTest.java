@@ -39,7 +39,7 @@ public class BoardServiceUnitTest {
     @BeforeEach
     void init() {
         member = Member.from("123@naver.com", "12455");
-        board = Board.of("initTile", "initContent", member);
+        board = Board.from("initTile", "initContent", member);
     }
 
     @DisplayName("게시판 생성시 제목이 비어있다면 예외가 발생한다.")

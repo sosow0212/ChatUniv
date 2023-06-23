@@ -3,9 +3,7 @@ package mju.chatuniv.config;
 import mju.chatuniv.auth.exception.AuthorizationInvalidEmailException;
 import mju.chatuniv.auth.exception.AuthorizationInvalidPasswordException;
 import mju.chatuniv.auth.exception.BearerTokenNotFoundException;
-import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.MemberNotFoundException;
-import mju.chatuniv.member.exception.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,6 +48,16 @@ public class ControllerAdvice {
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<String> handlerMemberNotFoundException(final MemberNotFoundException exception) {
         return getNotFoundResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(NotCurrentPasswordException.class)
+    public ResponseEntity<String> notCurrentPasswordException(final NotCurrentPasswordException exception) {
+        return getBadRequestResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(NewPasswordsNotMatchingException.class)
+    public ResponseEntity<String> newPasswordsNotMatchingException(final NewPasswordsNotMatchingException exception) {
+        return getBadRequestResponse(exception.getMessage());
     }
 
     private ResponseEntity<String> getBadRequestResponse(final String message) {

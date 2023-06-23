@@ -34,14 +34,13 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardResponse> create(@JwtLogin final Member member,
-                                                @RequestBody @Valid final BoardRequest boardRequest) {
+    public ResponseEntity<BoardResponse> create(@JwtLogin final Member member, @RequestBody @Valid final BoardRequest boardRequest) {
         return status(HttpStatus.CREATED)
             .body(boardService.create(member, boardRequest));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BoardResponse> findBoard(@PathVariable("id") final Long boardId) {
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> findBoard(@PathVariable("boardId") final Long boardId) {
         return ResponseEntity.ok(boardService.findBoard(boardId));
     }
 
@@ -50,14 +49,13 @@ public class BoardController {
         return ResponseEntity.ok(boardService.findAllBoards(pageable));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<BoardResponse> update(@PathVariable("id") final Long boardId, @JwtLogin final Member member,
-                                                @RequestBody @Valid final BoardRequest boardRequest) {
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<BoardResponse> update(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody @Valid final BoardRequest boardRequest) {
         return ResponseEntity.ok(boardService.update(boardId, member, boardRequest));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") final Long boardId, @JwtLogin final Member member) {
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> delete(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member) {
         boardService.delete(boardId, member);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

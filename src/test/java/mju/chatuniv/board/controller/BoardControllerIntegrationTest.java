@@ -86,9 +86,9 @@ public class BoardControllerIntegrationTest {
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
-            .pathParam("id", boardId)
+            .pathParam("boardId", boardId)
             .when()
-            .get("/api/boards/{id}");
+            .get("/api/boards/{boardId}");
 
         //then
         response.then()
@@ -125,10 +125,10 @@ public class BoardControllerIntegrationTest {
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
-            .pathParam("id", boardId)
+            .pathParam("boardId", boardId)
             .body(boardRequest)
             .when()
-            .patch("/api/boards/{id}");
+            .patch("/api/boards/{boardId}");
 
         //then
         response.then()
@@ -145,9 +145,9 @@ public class BoardControllerIntegrationTest {
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
             .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
-            .pathParam("id", boardId)
+            .pathParam("boardId", boardId)
             .when()
-            .delete("/api/boards/{id}");
+            .delete("/api/boards/{boardId}");
 
         //then
         response.then()

@@ -112,7 +112,7 @@ public class BoardControllerUnitTest {
         given(boardService.findBoard(any())).willReturn(boardResponse);
 
         // when & then
-        mockMvc.perform(get("/api/boards/{id}", "1")
+        mockMvc.perform(get("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -144,7 +144,7 @@ public class BoardControllerUnitTest {
         list.add(BoardResponse.from(board));
         Page<Board> page = new PageImpl<>(boards);
         BoardPageInfo pageInfo = BoardPageInfo.from(page);
-        BoardAllResponse boardAllResponse = BoardAllResponse.of(list, pageInfo);
+        BoardAllResponse boardAllResponse = BoardAllResponse.from(list, pageInfo);
 
         given(boardService.findAllBoards(any())).willReturn(boardAllResponse);
 
@@ -188,7 +188,7 @@ public class BoardControllerUnitTest {
         given(boardService.update(any(), any(), any())).willReturn(boardResponse);
 
         //when & then
-        mockMvc.perform(patch("/api/boards/{id}", "1")
+        mockMvc.perform(patch("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardRequest))
@@ -219,7 +219,7 @@ public class BoardControllerUnitTest {
         Member member = MemberFixture.createMember();
 
         //when & then
-        mockMvc.perform(delete("/api/boards/{id}", "1")
+        mockMvc.perform(delete("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())

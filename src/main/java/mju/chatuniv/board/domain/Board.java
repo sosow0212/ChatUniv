@@ -46,12 +46,12 @@ public class Board {
         this.member = member;
     }
 
-    public static Board of(final String title, final String content, final Member member) {
+    public static Board from(final String title, final String content, final Member member) {
         validationBoard(title, content);
         return new Board(null, title, content, member);
     }
 
-    public static Board of(final Long id, final String title, final String content, final Member member) {
+    public static Board from(final Long id, final String title, final String content, final Member member) {
         validationBoard(title, content);
         return new Board(id, title, content, member);
     }

@@ -1,6 +1,7 @@
 package mju.chatuniv.member.service;
 
 import io.restassured.RestAssured;
+import mju.chatuniv.member.application.dto.ChangePasswordRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.application.service.MemberService;
 import mju.chatuniv.member.domain.Member;
@@ -48,5 +49,24 @@ public class MemberServiceIntegrationTest {
                 () -> assertEquals(expected, response.getMemberId() == id),
                 () -> assertEquals(expected, response.getEmail().equals(email))
         );
+    }
+
+    @DisplayName("로그인한 회원의 비밀번호를 수정한다. ")
+    @CsvSource({"1234, 5678, 5678"})
+    @ParameterizedTest
+    public void change_current_members_password(final String currentPassword,
+                                                final String newPassword,
+                                                final String newPasswordCheck)
+    {
+        //given
+        Member member = createMember();
+
+        //when
+        ChangePasswordRequest changePasswordRequest =
+                new ChangePasswordRequest(currentPassword, newPassword, newPasswordCheck);
+
+        //then
+        memberService.changeMembersPassword(member, changePasswordRequest);
+        assertEquals(newPassword, member.getPassword());
     }
 }

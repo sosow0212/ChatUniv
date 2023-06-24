@@ -53,18 +53,16 @@ public class MemberControllerIntegrationTest {
                 .when()
                 .get("/api/members");
 
-        String bodyAsString = response.body().asString();
-
         // then
         Assertions.assertAll(() -> {
             response.then()
                     .statusCode(HttpStatus.OK.value());
-            Assertions.assertTrue(bodyAsString.contains("memberId"));
-            Assertions.assertTrue(bodyAsString.contains("email"));
+            Assertions.assertEquals("1", response.body().jsonPath().get("memberId").toString());
+            Assertions.assertEquals("a@a.com", response.body().jsonPath().get("email").toString());
         });
     }
 
-    @DisplayName("토큰을 통해 현재 회원의 아이디와 이메일을 조회한다.")
+    @DisplayName("토큰과 현재 비밀번호, 새 비밀번호, 새 비밀번호 재입력을 입력해 회원의 비밀번호를 수정한다.")
     @Test
     void change_current_members_password() {
         // given
@@ -83,14 +81,12 @@ public class MemberControllerIntegrationTest {
                 .when()
                 .patch("/api/members");
 
-        String bodyAsString = response.body().asString();
-
         // then
         Assertions.assertAll(() -> {
             response.then()
                     .statusCode(HttpStatus.OK.value());
-            Assertions.assertTrue(bodyAsString.contains("memberId"));
-            Assertions.assertTrue(bodyAsString.contains("email"));
+            Assertions.assertEquals("1", response.body().jsonPath().get("memberId").toString());
+            Assertions.assertEquals("a@a.com", response.body().jsonPath().get("email").toString());
         });
     }
 

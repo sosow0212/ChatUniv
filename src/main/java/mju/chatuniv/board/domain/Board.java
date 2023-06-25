@@ -39,7 +39,7 @@ public class Board {
     protected Board() {
     }
 
-    private Board(Long id, String title, String content, Member member) {
+    private Board(final Long id, final String title, final String content, final Member member) {
         this.id = id;
         this.title = title;
         this.content = content;

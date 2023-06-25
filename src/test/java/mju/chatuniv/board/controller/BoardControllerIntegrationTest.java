@@ -20,15 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql("/data.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BoardControllerIntegrationTest {
-
-    private static final String BEARER_ = "Bearer ";
 
     private String token;
 
@@ -47,14 +44,12 @@ public class BoardControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = this.port;
-
-        MemberResponse register = authService.register(new MemberCreateRequest("a3@a.com", "1234"));
+        MemberResponse register = authService.register(new MemberCreateRequest("a@a.com", "1234"));
         Member member = memberRepository.findByEmail(register.getEmail()).get();
-
-        boardService.create(member, new BoardRequest("title", "content"));
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a3@a.com", "1234");
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "1234");
         TokenResponse tokenResponse = authService.login(memberLoginRequest);
         token = tokenResponse.getAccessToken();
+        boardService.create(member, new BoardRequest("initTitle", "initContent"));
     }
 
     @DisplayName("게시글을 작성한다.")
@@ -66,7 +61,7 @@ public class BoardControllerIntegrationTest {
         // when
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
+            .auth().preemptive().oauth2(token)
             .body(boardRequest)
             .when()
             .post("/api/boards");
@@ -85,7 +80,7 @@ public class BoardControllerIntegrationTest {
         //when
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
+            .auth().preemptive().oauth2(token)
             .pathParam("boardId", boardId)
             .when()
             .get("/api/boards/{boardId}");
@@ -99,12 +94,12 @@ public class BoardControllerIntegrationTest {
     @Test
     void findAll_board() {
         //given
-        Pageable pageable = PageRequest.of(10,10);
+        Pageable pageable = PageRequest.of(10, 10);
 
         //when
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
+            .auth().preemptive().oauth2(token)
             .body(pageable)
             .when()
             .get("/api/boards");
@@ -124,7 +119,7 @@ public class BoardControllerIntegrationTest {
         //when
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
+            .auth().preemptive().oauth2(token)
             .pathParam("boardId", boardId)
             .body(boardRequest)
             .when()
@@ -144,7 +139,7 @@ public class BoardControllerIntegrationTest {
         //when
         Response response = RestAssured.given()
             .contentType(ContentType.JSON)
-            .header(HttpHeaders.AUTHORIZATION, BEARER_ + token)
+            .auth().preemptive().oauth2(token)
             .pathParam("boardId", boardId)
             .when()
             .delete("/api/boards/{boardId}");

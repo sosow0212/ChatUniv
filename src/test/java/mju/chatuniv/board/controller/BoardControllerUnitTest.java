@@ -46,8 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 public class BoardControllerUnitTest {
 
-    private Member member;
-
     @MockBean
     private BoardService boardService;
 
@@ -137,15 +135,14 @@ public class BoardControllerUnitTest {
     void find_all_boards() throws Exception {
         //given
         Member member = MemberFixture.createMember();
+
         List<Board> boards = new ArrayList<>();
         Board board = BoardFixture.createBoard(member);
         boards.add(board);
-        List<BoardResponse> list = new ArrayList<>();
-        list.add(BoardResponse.from(board));
-        Page<Board> page = new PageImpl<>(boards);
-        BoardPageInfo pageInfo = BoardPageInfo.from(page);
-        BoardAllResponse boardAllResponse = BoardAllResponse.from(list, pageInfo);
 
+        List<BoardResponse> responses = List.of(BoardResponse.from(board));
+
+        BoardAllResponse boardAllResponse = getBoardResponse(boards, responses);
         given(boardService.findAllBoards(any())).willReturn(boardAllResponse);
 
         // when & then
@@ -229,7 +226,7 @@ public class BoardControllerUnitTest {
                 )));
     }
 
-    private String createTokenByMember(Member member) {
+    private String createTokenByMember(final Member member) {
         Claims claims = Jwts.claims()
             .setSubject(member.getEmail());
 
@@ -242,5 +239,11 @@ public class BoardControllerUnitTest {
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
+    }
+
+    private BoardAllResponse getBoardResponse(final List<Board> boards, final List<BoardResponse> responses) {
+        Page<Board> page = new PageImpl<>(boards);
+        BoardPageInfo pageInfo = BoardPageInfo.from(page);
+        return BoardAllResponse.from(responses, pageInfo);
     }
 }

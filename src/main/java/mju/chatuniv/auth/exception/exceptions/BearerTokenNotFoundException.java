@@ -1,4 +1,4 @@
-package mju.chatuniv.auth.exception;
+package mju.chatuniv.auth.exception.exceptions;
 
 public class BearerTokenNotFoundException extends RuntimeException {
 

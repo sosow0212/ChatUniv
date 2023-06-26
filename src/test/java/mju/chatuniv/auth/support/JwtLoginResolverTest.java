@@ -2,7 +2,7 @@ package mju.chatuniv.auth.support;
 
 import io.restassured.RestAssured;
 import mju.chatuniv.auth.application.JwtAuthService;
-import mju.chatuniv.auth.exception.BearerTokenNotFoundException;
+import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;

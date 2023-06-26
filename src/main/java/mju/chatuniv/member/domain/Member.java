@@ -1,7 +1,7 @@
 package mju.chatuniv.member.domain;
 
-import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

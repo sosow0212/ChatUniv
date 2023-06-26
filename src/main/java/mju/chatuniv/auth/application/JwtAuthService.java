@@ -7,9 +7,9 @@ import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.exception.AuthorizationInvalidEmailException;
-import mju.chatuniv.member.exception.AuthorizationInvalidPasswordException;
-import mju.chatuniv.member.exception.MemberNotFoundException;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
+import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

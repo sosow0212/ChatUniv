@@ -4,8 +4,8 @@ import mju.chatuniv.member.application.dto.ChangePasswordRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.exception.NewPasswordsNotMatchingException;
-import mju.chatuniv.member.exception.NotCurrentPasswordException;
+import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
+import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

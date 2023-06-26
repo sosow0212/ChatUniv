@@ -28,15 +28,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Date;
 
-import static mju.chatuniv.fixture.member.MemberFixture.*;
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
 public class MemberControllerUnitTest {

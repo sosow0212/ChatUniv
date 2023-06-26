@@ -68,7 +68,7 @@ public class MemberControllerUnitTest {
 
         given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(memberResponse);
 
-        //expected
+        // when & then
         createRequestWithToken(get("/api/members"), member, null)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
@@ -89,9 +89,8 @@ public class MemberControllerUnitTest {
     @DisplayName("토큰이 없을 때 현재 회원정보를 조회하면 401에러와 토큰이 없음이 반환된다.")
     @Test
     public void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
-        //given
 
-        //expected
+        // when & then
         mockMvc.perform(get("/api/members"))
                 .andExpect(status().isUnauthorized())
                 .andDo(MockMvcResultHandlers.print());
@@ -111,7 +110,7 @@ public class MemberControllerUnitTest {
         given(memberService.changeMembersPassword(any(Member.class), any(ChangePasswordRequest.class)))
                 .willReturn(memberResponse);
 
-        //expected
+        // when & then
         createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
@@ -140,7 +139,7 @@ public class MemberControllerUnitTest {
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");
 
-        //expected
+        // when & then
         createRequestWithoutToken(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isUnauthorized());
     }
@@ -159,7 +158,7 @@ public class MemberControllerUnitTest {
         given(memberService.changeMembersPassword(any(Member.class), any(ChangePasswordRequest.class)))
                 .willThrow(NotCurrentPasswordException.class);
 
-        //expected
+        // when & then
         createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
@@ -179,7 +178,7 @@ public class MemberControllerUnitTest {
         given(memberService.changeMembersPassword(any(Member.class), any(ChangePasswordRequest.class)))
                 .willThrow(NewPasswordsNotMatchingException.class);
 
-        //expected
+        // when & then
         createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());

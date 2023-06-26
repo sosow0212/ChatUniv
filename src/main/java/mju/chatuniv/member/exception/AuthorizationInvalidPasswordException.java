@@ -1,4 +1,4 @@
-package mju.chatuniv.auth.exception;
+package mju.chatuniv.member.exception;
 
 public class AuthorizationInvalidPasswordException extends RuntimeException {
 

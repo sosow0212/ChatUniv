@@ -10,6 +10,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Objects;
+
 public class JwtLoginResolver implements HandlerMethodArgumentResolver {
 
     private static final String TOKEN_SEPARATOR = " ";
@@ -32,7 +34,7 @@ public class JwtLoginResolver implements HandlerMethodArgumentResolver {
         String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         validateAuthorization(authorizationHeader);
 
-        return jwtAuthService.findMemberByJwtPayload(getJwtPayload(authorizationHeader));
+        return jwtAuthService.findMemberByJwtPayload(getJwtPayload(Objects.requireNonNull(authorizationHeader)));
     }
 
     private void validateAuthorization(final String authorizationHeader) {

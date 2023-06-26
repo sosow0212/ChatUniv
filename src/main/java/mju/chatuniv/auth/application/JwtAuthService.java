@@ -1,13 +1,14 @@
 package mju.chatuniv.auth.application;
 
 import mju.chatuniv.auth.application.dto.TokenResponse;
+import mju.chatuniv.auth.exception.AuthorizationInvalidEmailException;
+import mju.chatuniv.auth.exception.AuthorizationInvalidPasswordException;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.exception.AuthorizationInvalidException;
 import mju.chatuniv.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,22 +32,26 @@ public class JwtAuthService implements AuthService {
         return MemberResponse.from(member);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TokenResponse login(final MemberLoginRequest memberLoginRequest) {
         Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
-        if (checkInvalidLogin(member, memberLoginRequest)) {
-            throw new AuthorizationInvalidException(memberLoginRequest.getEmail());
-        }
+        validateLogin(member, memberLoginRequest);
 
-        String accessToken = jwtTokenProvider.createToken(memberLoginRequest.getEmail());
+        String accessToken = jwtTokenProvider.createAccessToken(memberLoginRequest.getEmail());
 
         return new TokenResponse(accessToken);
     }
 
-    private boolean checkInvalidLogin(final Member member, final MemberLoginRequest memberLoginRequest) {
-        return !member.isEmailSameWith(memberLoginRequest.getEmail()) || !member.isPasswordSameWith(memberLoginRequest.getPassword());
+    private void validateLogin(final Member member, final MemberLoginRequest memberLoginRequest) {
+        if (!member.isEmailSameWith(memberLoginRequest.getEmail())) {
+            throw new AuthorizationInvalidEmailException(memberLoginRequest.getEmail());
+        }
+
+        if (!member.isPasswordSameWith(memberLoginRequest.getPassword())) {
+            throw new AuthorizationInvalidPasswordException(memberLoginRequest.getPassword());
+        }
     }
 
     @Transactional(readOnly = true)

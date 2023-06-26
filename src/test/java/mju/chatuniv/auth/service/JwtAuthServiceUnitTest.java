@@ -1,12 +1,12 @@
 package mju.chatuniv.auth.service;
 
 import mju.chatuniv.auth.application.JwtAuthService;
-import mju.chatuniv.auth.exception.AuthorizationInvalidEmailException;
-import mju.chatuniv.auth.exception.AuthorizationInvalidPasswordException;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.exception.AuthorizationInvalidEmailException;
+import mju.chatuniv.member.exception.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.MemberNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

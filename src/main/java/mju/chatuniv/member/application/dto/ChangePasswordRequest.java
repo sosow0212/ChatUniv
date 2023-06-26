@@ -35,10 +35,4 @@ public class ChangePasswordRequest {
     public String getNewPasswordCheck() {
         return newPasswordCheck;
     }
-
-    public void validateNewPassword() {
-        if( !newPassword.equals(newPasswordCheck)) {
-            throw new NewPasswordsNotMatchingException();
-        }
-    }
 }

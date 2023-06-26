@@ -69,6 +69,10 @@ public class Member {
         return this.password.equals(password);
     }
 
+    public void changePassword(final String newPassword) {
+        this.password = newPassword;
+    }
+
     public Long getId() {
         return id;
     }

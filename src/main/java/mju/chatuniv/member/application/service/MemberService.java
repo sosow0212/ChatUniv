@@ -16,7 +16,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse getMemberInfo(final Member member){
+    public MemberResponse getUsingMemberIdAndEmail(final Member member){
         return MemberResponse.from(member);
     }
 }

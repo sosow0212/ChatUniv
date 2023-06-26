@@ -6,6 +6,6 @@ import mju.chatuniv.member.domain.Member;
 public class BoardFixture {
 
     public static Board createBoard(final Member member) {
-        return Board.of(1L, "title","content", member);
+        return Board.from(1L, "title","content", member);
     }
 }

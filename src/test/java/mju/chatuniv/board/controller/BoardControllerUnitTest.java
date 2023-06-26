@@ -37,16 +37,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
 @AutoConfigureRestDocs
 public class BoardControllerUnitTest {
-
-    private Member member;
 
     @MockBean
     private BoardService boardService;
@@ -112,7 +115,7 @@ public class BoardControllerUnitTest {
         given(boardService.findBoard(any())).willReturn(boardResponse);
 
         // when & then
-        mockMvc.perform(get("/api/boards/{id}", "1")
+        mockMvc.perform(get("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -137,15 +140,14 @@ public class BoardControllerUnitTest {
     void find_all_boards() throws Exception {
         //given
         Member member = MemberFixture.createMember();
+
         List<Board> boards = new ArrayList<>();
         Board board = BoardFixture.createBoard(member);
         boards.add(board);
-        List<BoardResponse> list = new ArrayList<>();
-        list.add(BoardResponse.from(board));
-        Page<Board> page = new PageImpl<>(boards);
-        BoardPageInfo pageInfo = BoardPageInfo.from(page);
-        BoardAllResponse boardAllResponse = BoardAllResponse.of(list, pageInfo);
 
+        List<BoardResponse> responses = List.of(BoardResponse.from(board));
+
+        BoardAllResponse boardAllResponse = getBoardResponse(boards, responses);
         given(boardService.findAllBoards(any())).willReturn(boardAllResponse);
 
         // when & then
@@ -188,7 +190,7 @@ public class BoardControllerUnitTest {
         given(boardService.update(any(), any(), any())).willReturn(boardResponse);
 
         //when & then
-        mockMvc.perform(patch("/api/boards/{id}", "1")
+        mockMvc.perform(patch("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardRequest))
@@ -219,7 +221,7 @@ public class BoardControllerUnitTest {
         Member member = MemberFixture.createMember();
 
         //when & then
-        mockMvc.perform(delete("/api/boards/{id}", "1")
+        mockMvc.perform(delete("/api/boards/{boardId}", "1")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
@@ -229,7 +231,7 @@ public class BoardControllerUnitTest {
                 )));
     }
 
-    private String createTokenByMember(Member member) {
+    private String createTokenByMember(final Member member) {
         Claims claims = Jwts.claims()
             .setSubject(member.getEmail());
 
@@ -242,5 +244,11 @@ public class BoardControllerUnitTest {
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
+    }
+
+    private BoardAllResponse getBoardResponse(final List<Board> boards, final List<BoardResponse> responses) {
+        Page<Board> page = new PageImpl<>(boards);
+        BoardPageInfo pageInfo = BoardPageInfo.from(page);
+        return BoardAllResponse.from(responses, pageInfo);
     }
 }

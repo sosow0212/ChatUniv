@@ -12,7 +12,7 @@ public class BoardAllResponse {
         this.boardPageInfo = boardPageInfo;
     }
 
-    public static BoardAllResponse of(final List<BoardResponse> boards, final BoardPageInfo boardPageInfo) {
+    public static BoardAllResponse from(final List<BoardResponse> boards, final BoardPageInfo boardPageInfo) {
         return new BoardAllResponse(boards, boardPageInfo);
     }
 

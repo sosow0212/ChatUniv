@@ -39,19 +39,19 @@ public class Board {
     protected Board() {
     }
 
-    private Board(Long id, String title, String content, Member member) {
+    private Board(final Long id, final String title, final String content, final Member member) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.member = member;
     }
 
-    public static Board of(final String title, final String content, final Member member) {
+    public static Board from(final String title, final String content, final Member member) {
         validationBoard(title, content);
         return new Board(null, title, content, member);
     }
 
-    public static Board of(final Long id, final String title, final String content, final Member member) {
+    public static Board from(final Long id, final String title, final String content, final Member member) {
         validationBoard(title, content);
         return new Board(id, title, content, member);
     }

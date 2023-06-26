@@ -15,8 +15,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class BoardService {
@@ -31,7 +34,7 @@ public class BoardService {
 
     @Transactional
     public BoardResponse create(final Member member, final BoardRequest boardRequest) {
-        Board board = Board.of(boardRequest.getTitle(), boardRequest.getContent(), member);
+        Board board = Board.from(boardRequest.getTitle(), boardRequest.getContent(), member);
         boardRepository.save(board);
 
         return BoardResponse.from(board);
@@ -53,9 +56,9 @@ public class BoardService {
 
         List<BoardResponse> boards = sortedBoards.stream()
             .map(BoardResponse::from)
-            .collect(Collectors.toList());
+            .collect(collectingAndThen(toList(), Collections::unmodifiableList));
 
-        return BoardAllResponse.of(boards, boardPageInfo);
+        return BoardAllResponse.from(boards, boardPageInfo);
     }
 
     @Transactional
@@ -79,7 +82,6 @@ public class BoardService {
     }
 
     private PageRequest sortByIdWithDesc(final Pageable pageable) {
-        return PageRequest.of(pageable.getPageNumber(),
-            pageable.getPageSize(), Sort.by(BOARD_ID).descending());
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(BOARD_ID).descending());
     }
 }

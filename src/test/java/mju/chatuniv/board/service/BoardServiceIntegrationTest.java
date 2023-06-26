@@ -22,10 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Sql(value = "/data.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -70,10 +70,10 @@ public class BoardServiceIntegrationTest {
 
         //then
         Board result = boardRepository.findById(board.getBoardId()).get();
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(result.getTitle()).isEqualTo(board.getTitle());
-            softAssertions.assertThat(result.getContent()).isEqualTo(board.getContent());
-        });
+        assertAll(
+            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+        );
     }
 
     @DisplayName("게시판을 단건 조회한다")
@@ -86,10 +86,10 @@ public class BoardServiceIntegrationTest {
         BoardResponse board = boardService.findBoard(boardId);
 
         //then
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(board.getTitle()).isEqualTo("initTitle");
-            softAssertions.assertThat(board.getContent()).isEqualTo("initContent");
-        });
+        assertAll(
+            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("initContent")
+        );
     }
 
     @DisplayName("게시판을 전체 조회한다")
@@ -102,10 +102,10 @@ public class BoardServiceIntegrationTest {
         BoardAllResponse boards = boardService.findAllBoards(pageable);
 
         //then
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(boards.getBoards().size()).isEqualTo(1);
-            softAssertions.assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0);
-        });
+        assertAll(
+            () -> assertThat(boards.getBoards().size()).isEqualTo(1),
+            () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
+        );
     }
 
     @DisplayName("게시판을 수정한다")
@@ -113,16 +113,16 @@ public class BoardServiceIntegrationTest {
     void update_board() {
         //given
         Long boardId = 1L;
-        BoardRequest boardRequest = new BoardRequest("updateTitle","updateContent");
+        BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
 
         //when
         BoardResponse board = boardService.update(boardId, member, boardRequest);
 
         //then
-        assertSoftly(softAssertions -> {
-            softAssertions.assertThat(board.getTitle()).isEqualTo("updateTitle");
-            softAssertions.assertThat(board.getContent()).isEqualTo("updateContent");
-        });
+        assertAll(
+            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("updateContent")
+        );
     }
 
     @DisplayName("게시판을 삭제한다")
@@ -130,12 +130,13 @@ public class BoardServiceIntegrationTest {
     void delete_board() {
         //given
         Long boardId = 1L;
+        List<Board> preBoards = boardRepository.findAll();
 
         //when
         boardService.delete(boardId, member);
 
         //then
-        Optional<Board> board = boardRepository.findById(boardId);
-        assertThat(board).isEmpty();
+        List<Board> afterBoards = boardRepository.findAll();
+        assertThat(preBoards.size() - 1).isEqualTo(afterBoards.size());
     }
 }

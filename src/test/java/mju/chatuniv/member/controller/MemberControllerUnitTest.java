@@ -197,7 +197,7 @@ public class MemberControllerUnitTest {
                 .content(makeJson(object)));
     }
 
-    private String makeJson(Object object) {
+    private String makeJson(final Object object) {
         if(object == null) {
             return null;
         }
@@ -209,7 +209,7 @@ public class MemberControllerUnitTest {
         }
     }
 
-    private String createTokenByMember(Member member) {
+    private String createTokenByMember(final Member member) {
         Claims claims = Jwts.claims()
                 .setSubject(member.getEmail());
 

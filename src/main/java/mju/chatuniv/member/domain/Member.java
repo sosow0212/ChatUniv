@@ -68,7 +68,7 @@ public class Member {
         return this.password.equals(password);
     }
 
-    public void changePassword(String newPassword) {
+    public void changePassword(final String newPassword) {
         this.password = newPassword;
     }
 

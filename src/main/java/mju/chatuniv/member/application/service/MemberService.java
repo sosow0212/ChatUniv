@@ -36,7 +36,7 @@ public class MemberService {
         return MemberResponse.from(member);
     }
 
-    public void validateNewPassword(ChangePasswordRequest changePasswordRequest) {
+    public void validateNewPassword(final ChangePasswordRequest changePasswordRequest) {
 
         String newPassword = changePasswordRequest.getNewPassword();
         String newPasswordCheck = changePasswordRequest.getNewPasswordCheck();

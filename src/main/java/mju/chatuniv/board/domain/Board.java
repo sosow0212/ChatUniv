@@ -1,7 +1,7 @@
 package mju.chatuniv.board.domain;
 
-import mju.chatuniv.board.exception.BoardContentBlankException;
-import mju.chatuniv.board.exception.BoardTitleBlankException;
+import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
+import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.MemberNotEqualsException;
 import org.hibernate.annotations.OnDelete;

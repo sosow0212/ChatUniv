@@ -1,32 +1,33 @@
 package mju.chatuniv.member.controller;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import mju.chatuniv.config.ArgumentResolverConfig;
+import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.application.dto.ChangePasswordRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.application.service.MemberService;
 import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.NewPasswordsNotMatchingException;
-import mju.chatuniv.member.exception.NotCurrentPasswordException;
+import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
+import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
 import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import java.util.Date;
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
@@ -43,11 +44,12 @@ public class MemberControllerUnitTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
+    private MockTestHelper mockTestHelper;
 
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    @BeforeEach
+    void init() {
+        mockTestHelper = new MockTestHelper(mockMvc);
+    }
 
     @DisplayName("현재 로그인한 회원의 인조키와 이메일을 반환한다.")
     @Test
@@ -60,7 +62,7 @@ public class MemberControllerUnitTest {
         given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(memberResponse);
 
         // when & then
-        createRequestWithToken(get("/api/members"), member, null)
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members"), member)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
                 .andExpect(jsonPath("$.email").value(member.getEmail()))
@@ -82,7 +84,7 @@ public class MemberControllerUnitTest {
     public void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
 
         // when & then
-        mockMvc.perform(get("/api/members"))
+        mockTestHelper.createMockRequestWithoutTokenAndContent(get("/api/members"))
                 .andExpect(status().isUnauthorized())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -102,7 +104,7 @@ public class MemberControllerUnitTest {
                 .willReturn(memberResponse);
 
         // when & then
-        createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
                 .andExpect(jsonPath("$.email").value(member.getEmail()))
@@ -131,7 +133,7 @@ public class MemberControllerUnitTest {
                 new ChangePasswordRequest("1234", "5678", "5678");
 
         // when & then
-        createRequestWithoutToken(patch("/api/members"), changePasswordRequest)
+        mockTestHelper.createMockRequestWithoutTokenAndWithContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isUnauthorized());
     }
 
@@ -141,8 +143,6 @@ public class MemberControllerUnitTest {
         //given
         Member member = createMember();
 
-        MemberResponse memberResponse = MemberResponse.from(member);
-
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("5678", "5678", "5678");
 
@@ -150,7 +150,7 @@ public class MemberControllerUnitTest {
                 .willThrow(NotCurrentPasswordException.class);
 
         // when & then
-        createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -161,8 +161,6 @@ public class MemberControllerUnitTest {
         //given
         Member member = createMember();
 
-        MemberResponse memberResponse = MemberResponse.from(member);
-
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "9012");
 
@@ -170,48 +168,8 @@ public class MemberControllerUnitTest {
                 .willThrow(NewPasswordsNotMatchingException.class);
 
         // when & then
-        createRequestWithToken(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
-    }
-
-    private ResultActions createRequestWithToken(final MockHttpServletRequestBuilder builder, final Member member, final Object object) throws Exception {
-        return mockMvc.perform(builder
-                .header(HttpHeaders.AUTHORIZATION, BEARER_+ createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJson(object)));
-    }
-
-    private ResultActions createRequestWithoutToken(final MockHttpServletRequestBuilder builder, final Object object) throws Exception {
-        return mockMvc.perform(builder
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJson(object)));
-    }
-
-    private String makeJson(final Object object) {
-        if(object == null) {
-            return null;
-        }
-
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String createTokenByMember(final Member member) {
-        Claims claims = Jwts.claims()
-                .setSubject(member.getEmail());
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
     }
 }

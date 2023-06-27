@@ -56,7 +56,7 @@ public class MemberExceptionHandler {
 
     @ExceptionHandler(NewPasswordsNotMatchingException.class)
     public ResponseEntity<String> handlerNewPasswordsNotMatchingException(final NewPasswordsNotMatchingException exception) {
-        return getNotFoundResponse(exception.getMessage());
+        return getBadRequestResponse(exception.getMessage());
     }
 
     @ExceptionHandler(NotCurrentPasswordException.class)

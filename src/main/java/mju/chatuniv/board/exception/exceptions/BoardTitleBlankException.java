@@ -1,4 +1,4 @@
-package mju.chatuniv.board.exception;
+package mju.chatuniv.board.exception.exceptions;
 
 public class BoardTitleBlankException extends RuntimeException {
 

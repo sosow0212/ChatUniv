@@ -6,7 +6,7 @@ import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
-import mju.chatuniv.board.exception.BoardNotFoundException;
+import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +36,6 @@ public class BoardService {
     public BoardResponse create(final Member member, final BoardRequest boardRequest) {
         Board board = Board.from(boardRequest.getTitle(), boardRequest.getContent(), member);
         boardRepository.save(board);
-
         return BoardResponse.from(board);
     }
 

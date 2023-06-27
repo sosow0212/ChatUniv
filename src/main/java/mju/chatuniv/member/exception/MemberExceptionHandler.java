@@ -1,6 +1,13 @@
 package mju.chatuniv.member.exception;
 
-import mju.chatuniv.member.exception.exceptions.*;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
+import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
+import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
+import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
+import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +18,7 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class MemberExceptionHandler {
+
     @ExceptionHandler(AuthorizationInvalidEmailException.class)
     public ResponseEntity<String> handlerAuthorizationInvalidEmailException(final AuthorizationInvalidEmailException exception) {
         return getForbiddenResponse(exception.getMessage());

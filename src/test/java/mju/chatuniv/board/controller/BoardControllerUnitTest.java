@@ -37,13 +37,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -147,12 +142,18 @@ public class BoardControllerUnitTest {
 
         List<BoardResponse> responses = List.of(BoardResponse.from(board));
 
-        BoardAllResponse boardAllResponse = getBoardResponse(boards, responses);
+        Page<Board> page = new PageImpl<>(boards);
+        BoardPageInfo pageInfo = BoardPageInfo.from(page);
+
+        BoardAllResponse boardAllResponse = BoardAllResponse.from(responses, pageInfo);
+
         given(boardService.findAllBoards(any())).willReturn(boardAllResponse);
 
         // when & then
         mockMvc.perform(get("/api/boards")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
+                .param("page", String.valueOf(page.getNumber()))
+                .param("size", String.valueOf(page.getSize()))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.boards[0].boardId").value(board.getId()))
@@ -225,7 +226,7 @@ public class BoardControllerUnitTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
-            .andDo(customDocument("update_board",
+            .andDo(customDocument("delete_board",
                 requestHeaders(
                     headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                 )));
@@ -244,11 +245,5 @@ public class BoardControllerUnitTest {
             .setExpiration(validity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
-    }
-
-    private BoardAllResponse getBoardResponse(final List<Board> boards, final List<BoardResponse> responses) {
-        Page<Board> page = new PageImpl<>(boards);
-        BoardPageInfo pageInfo = BoardPageInfo.from(page);
-        return BoardAllResponse.from(responses, pageInfo);
     }
 }

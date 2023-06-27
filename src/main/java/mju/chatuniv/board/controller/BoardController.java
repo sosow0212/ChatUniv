@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-
 @RequestMapping("/api/boards")
 @RestController
 public class BoardController {
@@ -40,24 +39,27 @@ public class BoardController {
 
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardResponse> findBoard(@PathVariable("boardId") final Long boardId) {
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.ok()
             .body(boardService.findBoard(boardId));
     }
 
     @GetMapping
     public ResponseEntity<BoardAllResponse> findAllBoards(@PageableDefault final Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.ok()
             .body(boardService.findAllBoards(pageable));
     }
 
     @PatchMapping("/{boardId}")
-    public ResponseEntity<BoardResponse> update(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody @Valid final BoardRequest boardRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
+    public ResponseEntity<BoardResponse> update(@PathVariable("boardId") final Long boardId,
+                                                @JwtLogin final Member member,
+                                                @RequestBody @Valid final BoardRequest boardRequest) {
+        return ResponseEntity.ok()
             .body(boardService.update(boardId, member, boardRequest));
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> delete(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member) {
+    public ResponseEntity<Void> delete(@PathVariable("boardId") final Long boardId,
+                                       @JwtLogin final Member member) {
         boardService.delete(boardId, member);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .build();

@@ -1,7 +1,5 @@
 package mju.chatuniv.member.application.dto;
 
-import mju.chatuniv.member.exception.NewPasswordsNotMatchingException;
-
 import javax.validation.constraints.NotBlank;
 
 public class ChangePasswordRequest {

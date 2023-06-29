@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 public class MockTestHelper {
 
@@ -33,8 +32,7 @@ public class MockTestHelper {
     @BeforeEach
     void init() throws Exception {
         Member member = createMember();
-        given(jwtLoginResolver.supportsParameter(any())).willReturn(true);
-        doReturn(member).when(jwtLoginResolver.resolveArgument(any(), any(), any(), any()));
+        when(jwtLoginResolver.resolveArgument(any(), any(), any(), any())).thenReturn(member);
     }
 
     public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder, final Member member) throws Exception {

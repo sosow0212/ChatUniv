@@ -65,7 +65,7 @@ public class MemberControllerUnitTest {
         given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(memberResponse);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members"), member)
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
                 .andExpect(jsonPath("$.email").value(member.getEmail()))
@@ -107,7 +107,7 @@ public class MemberControllerUnitTest {
                 .willReturn(memberResponse);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(member.getId()))
                 .andExpect(jsonPath("$.email").value(member.getEmail()))
@@ -144,8 +144,6 @@ public class MemberControllerUnitTest {
     @Test
     public void fail_to_change_password_Not_Current_Password() throws Exception {
         //given
-        Member member = createMember();
-
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("5678", "5678", "5678");
 
@@ -153,7 +151,7 @@ public class MemberControllerUnitTest {
                 .willThrow(NotCurrentPasswordException.class);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
@@ -162,8 +160,6 @@ public class MemberControllerUnitTest {
     @Test
     public void fail_to_change_password_New_Password_Unmatched() throws Exception {
         //given
-        Member member = createMember();
-
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "9012");
 
@@ -171,7 +167,7 @@ public class MemberControllerUnitTest {
                 .willThrow(NewPasswordsNotMatchingException.class);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), member, changePasswordRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }

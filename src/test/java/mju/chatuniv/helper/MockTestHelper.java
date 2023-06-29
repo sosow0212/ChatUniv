@@ -3,18 +3,12 @@ package mju.chatuniv.helper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mju.chatuniv.auth.support.JwtLoginResolver;
-import mju.chatuniv.member.domain.Member;
 import org.apache.http.HttpHeaders;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 public class MockTestHelper {
 
@@ -29,21 +23,15 @@ public class MockTestHelper {
         this.mockMvc = mockMvc;
     }
 
-    @BeforeEach
-    void init() throws Exception {
-        Member member = createMember();
-        when(jwtLoginResolver.resolveArgument(any(), any(), any(), any())).thenReturn(member);
-    }
-
-    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder, final Member member) throws Exception {
+    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder) throws Exception {
         return mockMvc.perform(uriBuilder
-                .header(HttpHeaders.AUTHORIZATION, BEARER_ + createTestToken())
+                .header(HttpHeaders.AUTHORIZATION, createTestToken())
                 .contentType(MediaType.APPLICATION_JSON));
     }
 
-    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder, final Member member, final Object object) throws Exception {
+    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder, final Object object) throws Exception {
         return mockMvc.perform(uriBuilder
-                .header(HttpHeaders.AUTHORIZATION, BEARER_ + createTestToken())
+                .header(HttpHeaders.AUTHORIZATION, createTestToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(makeJson(object)));
     }

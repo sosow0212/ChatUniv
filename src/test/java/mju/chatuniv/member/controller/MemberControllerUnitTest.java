@@ -1,4 +1,5 @@
 package mju.chatuniv.member.controller;
+
 import mju.chatuniv.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.application.dto.ChangePasswordRequest;
@@ -35,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
 public class MemberControllerUnitTest {
-
-    private static final String BEARER_ = "Bearer ";
 
     @MockBean
     private MemberService memberService;
@@ -85,6 +84,7 @@ public class MemberControllerUnitTest {
     @DisplayName("토큰이 없을 때 현재 회원정보를 조회하면 401에러와 토큰이 없음이 반환된다.")
     @Test
     public void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
+        // given
 
         // when & then
         mockTestHelper.createMockRequestWithoutTokenAndContent(get("/api/members"))

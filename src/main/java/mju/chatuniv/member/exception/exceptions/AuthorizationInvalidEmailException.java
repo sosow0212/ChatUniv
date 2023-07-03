@@ -1,4 +1,4 @@
-package mju.chatuniv.auth.exception;
+package mju.chatuniv.member.exception.exceptions;
 
 public class AuthorizationInvalidEmailException extends RuntimeException {
 

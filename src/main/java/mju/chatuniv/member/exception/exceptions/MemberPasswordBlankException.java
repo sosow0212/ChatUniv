@@ -1,4 +1,4 @@
-package mju.chatuniv.member.exception;
+package mju.chatuniv.member.exception.exceptions;
 
 public class MemberPasswordBlankException extends RuntimeException {
 

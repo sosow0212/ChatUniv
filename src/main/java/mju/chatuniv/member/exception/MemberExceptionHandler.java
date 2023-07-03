@@ -1,11 +1,13 @@
-package mju.chatuniv.config;
+package mju.chatuniv.member.exception;
 
-import mju.chatuniv.auth.exception.AuthorizationInvalidEmailException;
-import mju.chatuniv.auth.exception.AuthorizationInvalidPasswordException;
-import mju.chatuniv.auth.exception.BearerTokenNotFoundException;
-import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.MemberNotFoundException;
-import mju.chatuniv.member.exception.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
+import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
+import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
+import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
+import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Objects;
 
 @RestControllerAdvice
-public class ControllerAdvice {
+public class MemberExceptionHandler {
 
     @ExceptionHandler(AuthorizationInvalidEmailException.class)
     public ResponseEntity<String> handlerAuthorizationInvalidEmailException(final AuthorizationInvalidEmailException exception) {
@@ -42,14 +44,24 @@ public class ControllerAdvice {
         return getBadRequestResponse(exception.getMessage());
     }
 
-    @ExceptionHandler(BearerTokenNotFoundException.class)
-    public ResponseEntity<String> handleBearerTokenNotFoundException(final BearerTokenNotFoundException exception) {
-        return getNotFoundResponse(exception.getMessage());
-    }
-
     @ExceptionHandler(MemberNotFoundException.class)
     public ResponseEntity<String> handlerMemberNotFoundException(final MemberNotFoundException exception) {
         return getNotFoundResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(MemberNotEqualsException.class)
+    public ResponseEntity<String> handlerMemberNotEqualsException(final MemberNotEqualsException exception) {
+        return getBadRequestResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(NewPasswordsNotMatchingException.class)
+    public ResponseEntity<String> handlerNewPasswordsNotMatchingException(final NewPasswordsNotMatchingException exception) {
+        return getNotFoundResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(NotCurrentPasswordException.class)
+    public ResponseEntity<String> handlerNotCurrentPasswordException(final NotCurrentPasswordException exception) {
+        return getBadRequestResponse(exception.getMessage());
     }
 
     private ResponseEntity<String> getBadRequestResponse(final String message) {

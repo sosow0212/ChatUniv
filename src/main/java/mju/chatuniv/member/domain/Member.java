@@ -1,13 +1,14 @@
 package mju.chatuniv.member.domain;
 
-import mju.chatuniv.member.exception.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
+import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Entity
@@ -68,6 +69,10 @@ public class Member {
         return this.password.equals(password);
     }
 
+    public void changePassword(final String newPassword) {
+        this.password = newPassword;
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,5 +83,22 @@ public class Member {
 
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return Objects.equals(getId(), member.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

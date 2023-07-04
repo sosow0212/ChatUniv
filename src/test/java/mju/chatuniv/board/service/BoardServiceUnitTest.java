@@ -8,7 +8,7 @@ import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
 import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.MemberNotEqualsException;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

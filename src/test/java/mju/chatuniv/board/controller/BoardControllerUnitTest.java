@@ -1,9 +1,6 @@
 package mju.chatuniv.board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardAllResponse;
@@ -13,23 +10,22 @@ import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.member.MemberFixture;
+import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
@@ -37,14 +33,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
 @AutoConfigureRestDocs
 public class BoardControllerUnitTest {
+
+    private MockTestHelper mockTestHelper;
 
     @MockBean
     private BoardService boardService;
@@ -58,11 +61,10 @@ public class BoardControllerUnitTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    @BeforeEach
+    void init() {
+        mockTestHelper = new MockTestHelper(mockMvc);
+    }
 
     @DisplayName("게시글 생성을 진행한다.")
     @Test
@@ -75,10 +77,7 @@ public class BoardControllerUnitTest {
         given(boardService.create(any(), any())).willReturn(boardResponse);
 
         // when & then
-        mockMvc.perform(post("/api/boards")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardRequest)))
+        mockTestHelper.createMockRequestWithTokenAndContent(post(("/api/boards")), boardRequest)
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.boardId").value(board.getId()))
             .andExpect(jsonPath("$.title").value(board.getTitle()))
@@ -110,9 +109,7 @@ public class BoardControllerUnitTest {
         given(boardService.findBoard(any())).willReturn(boardResponse);
 
         // when & then
-        mockMvc.perform(get("/api/boards/{boardId}", "1")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/{boardId}", "1"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.boardId").value(board.getId()))
             .andExpect(jsonPath("$.title").value(board.getTitle()))
@@ -150,11 +147,7 @@ public class BoardControllerUnitTest {
         given(boardService.findAllBoards(any())).willReturn(boardAllResponse);
 
         // when & then
-        mockMvc.perform(get("/api/boards")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
-                .param("page", String.valueOf(page.getNumber()))
-                .param("size", String.valueOf(page.getSize()))
-                .contentType(MediaType.APPLICATION_JSON))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards?page=0?size=10"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.boards[0].boardId").value(board.getId()))
             .andExpect(jsonPath("$.boards[0].title").value(board.getTitle()))
@@ -191,11 +184,8 @@ public class BoardControllerUnitTest {
         given(boardService.update(any(), any(), any())).willReturn(boardResponse);
 
         //when & then
-        mockMvc.perform(patch("/api/boards/{boardId}", "1")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardRequest))
-            ).andExpect(status().isOk())
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/boards/{boardId}", "1"), boardRequest)
+            .andExpect(status().isOk())
             .andExpect(jsonPath("$.boardId").value(1))
             .andExpect(jsonPath("$.title").value("title"))
             .andExpect(jsonPath("$.content").value("content"))
@@ -218,32 +208,12 @@ public class BoardControllerUnitTest {
     @DisplayName("게시글 삭제")
     @Test
     void delete_board() throws Exception {
-        //given
-        Member member = MemberFixture.createMember();
-
         //when & then
-        mockMvc.perform(delete("/api/boards/{boardId}", "1")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(delete("/api/boards/{boardId}", "1"))
             .andExpect(status().isNoContent())
             .andDo(customDocument("delete_board",
                 requestHeaders(
                     headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                 )));
-    }
-
-    private String createTokenByMember(final Member member) {
-        Claims claims = Jwts.claims()
-            .setSubject(member.getEmail());
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-
-        return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
-            .compact();
     }
 }

@@ -1,20 +1,14 @@
 package mju.chatuniv.helper;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.auth.support.JwtLoginResolver;
 import org.apache.http.HttpHeaders;
-import org.springframework.beans.factory.annotation.Value;
+import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import java.util.Date;
 
 public class MockTestHelper {
 
@@ -22,42 +16,38 @@ public class MockTestHelper {
 
     private final MockMvc mockMvc;
 
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    @Mock
+    private JwtLoginResolver jwtLoginResolver;
 
     public MockTestHelper(final MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 
-    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder, final Member member) throws Exception {
+    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder) throws Exception {
         return mockMvc.perform(uriBuilder
-                .header(HttpHeaders.AUTHORIZATION, BEARER_ + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON));
+                        .header(HttpHeaders.AUTHORIZATION, createTestToken())
+                        .contentType(MediaType.APPLICATION_JSON));
     }
 
-    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder, final Member member, final Object object) throws Exception {
+    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder, final Object object) throws Exception {
         return mockMvc.perform(uriBuilder
-                .header(HttpHeaders.AUTHORIZATION, BEARER_ + createTokenByMember(member))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJson(object)));
+                        .header(HttpHeaders.AUTHORIZATION, createTestToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(makeJson(object)));
     }
 
-    private String createTokenByMember(final Member member) {
-        Claims claims = Jwts.claims()
-                .setSubject(member.getEmail());
+    public ResultActions createMockRequestWithoutTokenAndWithContent(final MockHttpServletRequestBuilder uriBuilder, final Object object) throws Exception {
+        return mockMvc.perform(uriBuilder
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(makeJson(object)));
+    }
 
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+    public ResultActions createMockRequestWithoutTokenAndContent(final MockHttpServletRequestBuilder uriBuilder) throws Exception {
+        return mockMvc.perform(uriBuilder);
+    }
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+    private String createTestToken() {
+        return BEARER_ + "test";
     }
 
     private String makeJson(final Object object) {

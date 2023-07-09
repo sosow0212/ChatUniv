@@ -30,18 +30,6 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/boards/{boardId}/comments")
-    public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody final CommentCreateRequest commentCreateRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(commentService.createBoardComment(boardId, member, commentCreateRequest, Board.class));
-    }
-
-    @GetMapping("/boards/{boardId}/comments")
-    public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId, @PageableDefault final Pageable pageable) {
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(commentService.findCommentsByBoard(boardId, pageable));
-    }
-
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") final Long commentId, @JwtLogin final Member member, @RequestBody final CommentCreateRequest commentCreateRequest) {
         return ResponseEntity.status(HttpStatus.OK)

@@ -21,8 +21,8 @@ public class BoardComment extends Comment {
     protected BoardComment() {
     }
 
-    public BoardComment(final String content, final Member member, final Board board, final CommentType commentType) {
-        super(content, member, commentType);
+    public BoardComment(final String content, final Member member, final Board board) {
+        super(content, member);
         this.board = board;
     }
 }

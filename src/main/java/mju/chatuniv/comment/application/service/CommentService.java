@@ -7,6 +7,7 @@ import mju.chatuniv.comment.application.dto.CommentCreateRequest;
 import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.dto.PageInfo;
 import mju.chatuniv.comment.domain.BoardComment;
+import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.domain.Page;
@@ -24,40 +25,15 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class CommentService {
 
-    private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
-    public CommentService(final BoardRepository boardRepository, final CommentRepository commentRepository) {
-        this.boardRepository = boardRepository;
+    public CommentService(final CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
 
     @Transactional
-    public CommentResponse createBoardComment(final Long boardId, final Member member, final CommentCreateRequest commentCreateRequest, final Class<?> clazz) {
-        Board board = boardRepository.findById(boardId).get();
-        BoardComment boardComment = new BoardComment(commentCreateRequest.getContent(), member, board);
-        commentRepository.save(boardComment);
-
-        return CommentResponse.from(boardComment);
-    }
-
-    @Transactional(readOnly = true)
-    public CommentAllResponse findCommentsByBoard(final Long boardId, final Pageable pageable) {
-        Board board = boardRepository.findById(boardId).get();
-
-        Page<BoardComment> commentPageInfo = commentRepository.findAllByBoard(pageable, board);
-        PageInfo pageInfo = PageInfo.from(commentPageInfo);
-
-        List<CommentResponse> comments = commentPageInfo.stream()
-            .map(CommentResponse::from)
-            .collect(collectingAndThen(toList(), Collections::unmodifiableList));
-
-        return CommentAllResponse.from(comments, pageInfo);
-    }
-
-    @Transactional
     public CommentResponse updateComment(final Long commentId, final Member member, final CommentCreateRequest commentCreateRequest) {
-        BoardComment comment = commentRepository.findById(commentId).get();
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
 
         comment.isWriter(member);
         comment.update(commentCreateRequest.getContent());
@@ -67,7 +43,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(final Long commentId, final Member member) {
-        BoardComment comment = commentRepository.findById(commentId).get();
+        Comment comment = commentRepository.findById(commentId).get();
 
         comment.isWriter(member);
 

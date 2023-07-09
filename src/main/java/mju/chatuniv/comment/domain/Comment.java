@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 public abstract class Comment {
 
@@ -33,12 +35,17 @@ public abstract class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private CommentType commentType;
+
     protected Comment(){
     }
 
-    protected Comment(String content, Member member) {
+    protected Comment(final String content, final Member member, final CommentType commentType) {
         this.content = content;
         this.member = member;
+        this.commentType = commentType;
     }
 
     public Long getId() {
@@ -51,6 +58,10 @@ public abstract class Comment {
 
     public Member getMember() {
         return member;
+    }
+
+    public CommentType getCommentType() {
+        return commentType;
     }
 
     public void isWriter(Member member) {

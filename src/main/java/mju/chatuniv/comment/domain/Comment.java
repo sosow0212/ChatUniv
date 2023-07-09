@@ -35,17 +35,12 @@ public abstract class Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private CommentType commentType;
-
     protected Comment(){
     }
 
-    protected Comment(final String content, final Member member, final CommentType commentType) {
+    protected Comment(final String content, final Member member) {
         this.content = content;
         this.member = member;
-        this.commentType = commentType;
     }
 
     public Long getId() {
@@ -58,10 +53,6 @@ public abstract class Comment {
 
     public Member getMember() {
         return member;
-    }
-
-    public CommentType getCommentType() {
-        return commentType;
     }
 
     public void isWriter(Member member) {

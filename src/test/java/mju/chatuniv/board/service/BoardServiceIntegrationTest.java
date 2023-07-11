@@ -1,6 +1,5 @@
 package mju.chatuniv.board.service;
 
-import io.restassured.RestAssured;
 import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardAllResponse;
@@ -8,6 +7,7 @@ import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
+import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
@@ -16,20 +16,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Sql(value = "/data.sql")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BoardServiceIntegrationTest {
+public class BoardServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
 
@@ -45,13 +40,8 @@ public class BoardServiceIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     void init() {
-        RestAssured.port = this.port;
-
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
         MemberResponse register = authService.register(memberCreateRequest);
         member = memberRepository.findByEmail(register.getEmail()).get();
@@ -71,8 +61,8 @@ public class BoardServiceIntegrationTest {
         //then
         Board result = boardRepository.findById(board.getBoardId()).get();
         assertAll(
-            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
-            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+                () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+                () -> assertThat(result.getContent()).isEqualTo(board.getContent())
         );
     }
 
@@ -87,8 +77,8 @@ public class BoardServiceIntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("initContent")
+                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -103,8 +93,8 @@ public class BoardServiceIntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(boards.getBoards().size()).isEqualTo(1),
-            () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
+                () -> assertThat(boards.getBoards().size()).isEqualTo(1),
+                () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
         );
     }
 
@@ -120,8 +110,8 @@ public class BoardServiceIntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("updateContent")
+                () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("updateContent")
         );
     }
 

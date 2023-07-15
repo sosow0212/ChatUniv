@@ -2,9 +2,9 @@ package mju.chatuniv.comment.service;
 
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
-import mju.chatuniv.comment.application.dto.CommentCreateRequest;
+import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.service.BoardCommentService;
-import mju.chatuniv.comment.application.service.CommentService;
+import mju.chatuniv.comment.application.service.CommonCommentService;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.member.domain.Member;
@@ -19,14 +19,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static mju.chatuniv.fixture.comment.BoardCommentFixture.createBoardComment;
+import static mju.chatuniv.fixture.comment.CommentFixture.createBoardComment;
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class CommentServiceUnitTest {
+public class CommonCommentServiceUnitTest {
 
     private Member member;
     private Board board;
@@ -36,7 +36,7 @@ public class CommentServiceUnitTest {
     private BoardCommentService boardCommentService;
 
     @InjectMocks
-    private CommentService commentService;
+    private CommonCommentService commonCommentService;
 
     @Mock
     private CommentRepository commentRepository;
@@ -60,7 +60,7 @@ public class CommentServiceUnitTest {
         given(boardRepository.findById(wrongBoardId)).willThrow(IllegalStateException.class);
 
         //when & then
-        assertThatThrownBy(() -> boardCommentService.createBoardComment(wrongBoardId, member, new CommentCreateRequest("content")))
+        assertThatThrownBy(() -> boardCommentService.create(wrongBoardId, member, new CommentRequest("content")))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -73,7 +73,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(wrongBoardId)).willThrow(IllegalStateException.class);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.updateComment(wrongBoardId, member, new CommentCreateRequest("content")))
+        Assertions.assertThatThrownBy(() -> commonCommentService.update(wrongBoardId, member, new CommentRequest("content")))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 
@@ -86,7 +86,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(wrongBoardId)).willThrow(IllegalStateException.class);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.deleteComment(wrongBoardId, member))
+        Assertions.assertThatThrownBy(() -> commonCommentService.delete(wrongBoardId, member))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 
@@ -98,7 +98,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(anyLong())).willReturn(Optional.ofNullable(comment));
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.updateComment(anyLong(), others, new CommentCreateRequest("content")))
+        Assertions.assertThatThrownBy(() -> commonCommentService.update(anyLong(), others, new CommentRequest("content")))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 
@@ -110,7 +110,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(anyLong())).willReturn(Optional.ofNullable(comment));
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.deleteComment(anyLong(), others))
+        Assertions.assertThatThrownBy(() -> commonCommentService.delete(anyLong(), others))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 
@@ -121,7 +121,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(anyLong())).willThrow(IllegalStateException.class);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.updateComment(anyLong(), member, new CommentCreateRequest("content")))
+        Assertions.assertThatThrownBy(() -> commonCommentService.update(anyLong(), member, new CommentRequest("content")))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 
@@ -132,7 +132,7 @@ public class CommentServiceUnitTest {
         given(commentRepository.findById(anyLong())).willThrow(IllegalStateException.class);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> commentService.deleteComment(anyLong(), member))
+        Assertions.assertThatThrownBy(() -> commonCommentService.delete(anyLong(), member))
             .isInstanceOf(IllegalStateException.class); //예외 바꿔야함 실제 로직에서 바꿔야함
     }
 }

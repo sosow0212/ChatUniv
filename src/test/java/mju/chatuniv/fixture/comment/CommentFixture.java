@@ -7,6 +7,6 @@ import mju.chatuniv.member.domain.Member;
 public class CommentFixture {
 
     public static BoardComment createBoardComment(final Member member, final Board board) {
-        return BoardComment.of("content", member, board);
+        return BoardComment.of(1L, "content", member, board);
     }
 }

@@ -1,9 +1,8 @@
 package mju.chatuniv.comment.controller;
 
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.comment.application.dto.CommentAllResponse;
-import mju.chatuniv.comment.application.dto.CommentCreateRequest;
+import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.BoardCommentService;
 import mju.chatuniv.member.domain.Member;
@@ -29,14 +28,14 @@ public class BoardCommentController {
     }
 
     @PostMapping("/boards/{boardId}/comments")
-    public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody final CommentCreateRequest commentCreateRequest) {
+    public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody final CommentRequest commentRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(boardCommentService.createBoardComment(boardId, member, commentCreateRequest));
+                .body(boardCommentService.create(boardId, member, commentRequest));
     }
 
     @GetMapping("/boards/{boardId}/comments")
     public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId, @PageableDefault final Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(boardCommentService.findCommentsByBoard(boardId, pageable));
+                .body(boardCommentService.findComments(boardId, pageable));
     }
 }

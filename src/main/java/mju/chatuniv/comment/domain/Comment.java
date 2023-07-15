@@ -38,7 +38,8 @@ public abstract class Comment {
     protected Comment(){
     }
 
-    protected Comment(final String content, final Member member) {
+    protected Comment(final Long id, final String content, final Member member) {
+        this.id = id;
         this.content = content;
         this.member = member;
     }

@@ -4,13 +4,12 @@ import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
+import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
-@Transactional
 public class CommonCommentService {
 
     private final CommentRepository commentRepository;
@@ -19,8 +18,10 @@ public class CommonCommentService {
         this.commentRepository = commentRepository;
     }
 
+    @Transactional
     public CommentResponse update(final Long commentId, final Member member, final CommentRequest commentRequest) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         comment.isWriter(member);
         comment.update(commentRequest.getContent());
@@ -28,8 +29,10 @@ public class CommonCommentService {
         return CommentResponse.from(comment);
     }
 
+    @Transactional
     public void delete(final Long commentId, final Member member) {
-        Comment comment = commentRepository.findById(commentId).get();
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
 
         comment.isWriter(member);
 

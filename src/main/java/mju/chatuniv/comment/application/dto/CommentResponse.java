@@ -4,15 +4,15 @@ import mju.chatuniv.comment.domain.Comment;
 
 public class CommentResponse {
 
-    private Long commentId;
-    private String content;
+    private final Long commentId;
+    private final String content;
 
-    public CommentResponse(Long commentId, String content) {
+    public CommentResponse(final Long commentId, final String content) {
         this.commentId = commentId;
         this.content = content;
     }
 
-    public static CommentResponse from(Comment comment) {
+    public static CommentResponse from(final Comment comment) {
         return new CommentResponse(comment.getId(), comment.getContent());
     }
 

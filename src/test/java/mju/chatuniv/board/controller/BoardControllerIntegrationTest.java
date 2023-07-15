@@ -7,6 +7,7 @@ import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.auth.application.dto.TokenResponse;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardRequest;
+import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
@@ -16,16 +17,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.jdbc.Sql;
 
-@Sql("/data.sql")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BoardControllerIntegrationTest {
+public class BoardControllerIntegrationTest extends IntegrationTest {
 
     private String token;
 
@@ -38,12 +34,8 @@ public class BoardControllerIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @LocalServerPort
-    private int port;
-
     @BeforeEach
     void setUp() {
-        RestAssured.port = this.port;
         MemberResponse register = authService.register(new MemberCreateRequest("a@a.com", "1234"));
         Member member = memberRepository.findByEmail(register.getEmail()).get();
         MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "1234");
@@ -60,15 +52,15 @@ public class BoardControllerIntegrationTest {
 
         // when
         Response response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .auth().preemptive().oauth2(token)
-            .body(boardRequest)
-            .when()
-            .post("/api/boards");
+                .contentType(ContentType.JSON)
+                .auth().preemptive().oauth2(token)
+                .body(boardRequest)
+                .when()
+                .post("/api/boards");
 
         // then
         response.then()
-            .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @DisplayName("게시글을 단건 조회한다.")
@@ -79,15 +71,15 @@ public class BoardControllerIntegrationTest {
 
         //when
         Response response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .auth().preemptive().oauth2(token)
-            .pathParam("boardId", boardId)
-            .when()
-            .get("/api/boards/{boardId}");
+                .contentType(ContentType.JSON)
+                .auth().preemptive().oauth2(token)
+                .pathParam("boardId", boardId)
+                .when()
+                .get("/api/boards/{boardId}");
 
         //then
         response.then()
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 전부 조회한다.")
@@ -98,15 +90,15 @@ public class BoardControllerIntegrationTest {
 
         //when
         Response response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .auth().preemptive().oauth2(token)
-            .body(pageable)
-            .when()
-            .get("/api/boards");
+                .contentType(ContentType.JSON)
+                .auth().preemptive().oauth2(token)
+                .body(pageable)
+                .when()
+                .get("/api/boards");
 
         //then
         response.then()
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 수정합니다.")
@@ -118,16 +110,16 @@ public class BoardControllerIntegrationTest {
 
         //when
         Response response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .auth().preemptive().oauth2(token)
-            .pathParam("boardId", boardId)
-            .body(boardRequest)
-            .when()
-            .patch("/api/boards/{boardId}");
+                .contentType(ContentType.JSON)
+                .auth().preemptive().oauth2(token)
+                .pathParam("boardId", boardId)
+                .body(boardRequest)
+                .when()
+                .patch("/api/boards/{boardId}");
 
         //then
         response.then()
-            .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 삭제합니다.")
@@ -138,14 +130,14 @@ public class BoardControllerIntegrationTest {
 
         //when
         Response response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .auth().preemptive().oauth2(token)
-            .pathParam("boardId", boardId)
-            .when()
-            .delete("/api/boards/{boardId}");
+                .contentType(ContentType.JSON)
+                .auth().preemptive().oauth2(token)
+                .pathParam("boardId", boardId)
+                .when()
+                .delete("/api/boards/{boardId}");
 
         //then
         response.then()
-            .statusCode(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

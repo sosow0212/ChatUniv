@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.controller.integration;
+package mju.chatuniv.comment.controller.intergration;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

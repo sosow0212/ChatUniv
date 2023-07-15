@@ -5,22 +5,22 @@ import java.util.List;
 public class CommentAllResponse {
 
     private final List<CommentResponse> comments;
-    private final PageInfo pageInfo;
+    private final CommentPageInfo commentPageInfo;
 
-    private CommentAllResponse(final List<CommentResponse> comments, final PageInfo pageInfo) {
+    private CommentAllResponse(final List<CommentResponse> comments, final CommentPageInfo commentPageInfo) {
         this.comments = comments;
-        this.pageInfo = pageInfo;
+        this.commentPageInfo = commentPageInfo;
     }
 
-    public static CommentAllResponse from(final List<CommentResponse> comments, final PageInfo pageInfo) {
-        return new CommentAllResponse(comments, pageInfo);
+    public static CommentAllResponse from(final List<CommentResponse> comments, final CommentPageInfo commentPageInfo) {
+        return new CommentAllResponse(comments, commentPageInfo);
     }
 
     public List<CommentResponse> getComments() {
         return comments;
     }
 
-    public PageInfo getPageInfo() {
-        return pageInfo;
+    public CommentPageInfo getCommetPageInfo() {
+        return commentPageInfo;
     }
 }

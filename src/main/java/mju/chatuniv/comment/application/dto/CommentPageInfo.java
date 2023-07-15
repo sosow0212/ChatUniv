@@ -2,23 +2,23 @@ package mju.chatuniv.comment.application.dto;
 
 import org.springframework.data.domain.Page;
 
-public class PageInfo {
+public class CommentPageInfo {
 
     private final int totalPage;
     private final int nowPage;
     private final int numberOfElements;
     private final boolean hasNextPage;
 
-    private PageInfo(final int totalPage, final int nowPage,
-                          final int numberOfElements, final boolean hasNextPage) {
+    private CommentPageInfo(final int totalPage, final int nowPage,
+                            final int numberOfElements, final boolean hasNextPage) {
         this.totalPage = totalPage;
         this.nowPage = nowPage;
         this.numberOfElements = numberOfElements;
         this.hasNextPage = hasNextPage;
     }
 
-    public static PageInfo from(final Page<?> pageInfo) {
-        return new PageInfo(pageInfo.getTotalPages(), pageInfo.getNumber(),
+    public static CommentPageInfo from(final Page<?> pageInfo) {
+        return new CommentPageInfo(pageInfo.getTotalPages(), pageInfo.getNumber(),
             pageInfo.getNumberOfElements(), pageInfo.hasNext());
     }
 

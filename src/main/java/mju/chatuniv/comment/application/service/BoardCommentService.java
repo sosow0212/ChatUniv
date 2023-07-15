@@ -3,9 +3,9 @@ package mju.chatuniv.comment.application.service;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.comment.application.dto.CommentAllResponse;
-import mju.chatuniv.comment.application.dto.CommentCreateRequest;
+import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.dto.CommentResponse;
-import mju.chatuniv.comment.application.dto.PageInfo;
+import mju.chatuniv.comment.application.dto.CommentPageInfo;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.member.domain.Member;
@@ -21,7 +21,8 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @Service
-public class BoardCommentService  {
+@Transactional
+public class BoardCommentService  implements EachCommentService{
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
@@ -31,21 +32,22 @@ public class BoardCommentService  {
         this.commentRepository = commentRepository;
     }
 
-    @Transactional
-    public CommentResponse createBoardComment(final Long boardId, final Member member, final CommentCreateRequest commentCreateRequest) {
+    @Override
+    public CommentResponse create(Long boardId, Member member, CommentRequest commentRequest) {
         Board board = boardRepository.findById(boardId).orElseThrow();
-        BoardComment boardComment = new BoardComment(commentCreateRequest.getContent(), member, board);
+        BoardComment boardComment = BoardComment.of(commentRequest.getContent(), member, board);
         commentRepository.save(boardComment);
 
         return CommentResponse.from(boardComment);
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public CommentAllResponse findCommentsByBoard(final Long boardId, final Pageable pageable) {
+    public CommentAllResponse findComments(Long boardId, Pageable pageable) {
         Board board = boardRepository.findById(boardId).orElseThrow();
 
         Page<BoardComment> commentPageInfo = commentRepository.findAllByBoard(pageable, board, boardId);
-        PageInfo pageInfo = PageInfo.from(commentPageInfo);
+        CommentPageInfo pageInfo = CommentPageInfo.from(commentPageInfo);
 
         List<CommentResponse> comments = commentPageInfo.stream()
                 .map(CommentResponse::from)
@@ -53,5 +55,6 @@ public class BoardCommentService  {
 
         return CommentAllResponse.from(comments, pageInfo);
     }
+
 }
 

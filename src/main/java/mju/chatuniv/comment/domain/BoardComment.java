@@ -18,11 +18,20 @@ public class BoardComment extends Comment {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Board board;
 
-    protected BoardComment() {
+    private BoardComment(final Long id, final String content, final Member member, final Board board) {
+        super(id, content, member);
+        this.board = board;
     }
 
-    public BoardComment(final String content, final Member member, final Board board) {
-        super(content, member);
-        this.board = board;
+    protected BoardComment() {
+
+    }
+
+    public static BoardComment of(final String content, final Member member, final Board board) {
+        return new BoardComment(null, content, member, board);
+    }
+
+    public static BoardComment of(final Long id, final String content, final Member member, final Board board) {
+        return new BoardComment(id, content, member, board);
     }
 }

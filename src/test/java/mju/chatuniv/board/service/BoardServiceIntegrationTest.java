@@ -18,12 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Transactional
 public class BoardServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
@@ -41,7 +43,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    void init() {
+    void setUp() {
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
         MemberResponse register = authService.register(memberCreateRequest);
         member = memberRepository.findByEmail(register.getEmail()).get();
@@ -61,8 +63,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         //then
         Board result = boardRepository.findById(board.getBoardId()).get();
         assertAll(
-                () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
-                () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
         );
     }
 
@@ -77,8 +79,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-                () -> assertThat(board.getContent()).isEqualTo("initContent")
+            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -93,8 +95,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(boards.getBoards().size()).isEqualTo(1),
-                () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
+            () -> assertThat(boards.getBoards().size()).isEqualTo(1),
+            () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
         );
     }
 
@@ -110,8 +112,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
-                () -> assertThat(board.getContent()).isEqualTo("updateContent")
+            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("updateContent")
         );
     }
 

@@ -25,15 +25,18 @@ public class CommentController {
     }
 
     @PatchMapping("/comments/{commentId}")
-    public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") final Long commentId, @JwtLogin final Member member, @RequestBody final CommentRequest commentRequest) {
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") final Long commentId,
+                                                         @JwtLogin final Member member,
+                                                         @RequestBody final CommentRequest commentRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(commonCommentService.update(commentId, member, commentRequest));
+                .body(commonCommentService.update(commentId, member, commentRequest));
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") final Long commentId, @JwtLogin final Member member) {
+    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") final Long commentId,
+                                              @JwtLogin final Member member) {
         commonCommentService.delete(commentId, member);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .build();
+                .build();
     }
 }

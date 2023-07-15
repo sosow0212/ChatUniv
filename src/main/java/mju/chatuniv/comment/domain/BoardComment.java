@@ -24,7 +24,6 @@ public class BoardComment extends Comment {
     }
 
     protected BoardComment() {
-
     }
 
     public static BoardComment of(final String content, final Member member, final Board board) {

@@ -28,13 +28,16 @@ public class BoardCommentController {
     }
 
     @PostMapping("/boards/{boardId}/comments")
-    public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId, @JwtLogin final Member member, @RequestBody final CommentRequest commentRequest) {
+    public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId,
+                                                              @JwtLogin final Member member,
+                                                              @RequestBody final CommentRequest commentRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(boardCommentService.create(boardId, member, commentRequest));
     }
 
     @GetMapping("/boards/{boardId}/comments")
-    public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId, @PageableDefault final Pageable pageable) {
+    public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId,
+                                                                  @PageableDefault final Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(boardCommentService.findComments(boardId, pageable));
     }

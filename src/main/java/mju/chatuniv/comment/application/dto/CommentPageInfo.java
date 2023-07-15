@@ -1,25 +1,25 @@
 package mju.chatuniv.comment.application.dto;
 
+import mju.chatuniv.comment.domain.Comment;
 import org.springframework.data.domain.Page;
 
 public class CommentPageInfo {
 
     private final int totalPage;
     private final int nowPage;
-    private final int numberOfElements;
+    private final long totalElements;
     private final boolean hasNextPage;
 
-    private CommentPageInfo(final int totalPage, final int nowPage,
-                            final int numberOfElements, final boolean hasNextPage) {
+    private CommentPageInfo(final int totalPage, final int nowPage, final long totalElements, final boolean hasNextPage) {
         this.totalPage = totalPage;
         this.nowPage = nowPage;
-        this.numberOfElements = numberOfElements;
+        this.totalElements = totalElements;
         this.hasNextPage = hasNextPage;
     }
 
-    public static CommentPageInfo from(final Page<?> pageInfo) {
+    public static CommentPageInfo from(final Page<Comment> pageInfo) {
         return new CommentPageInfo(pageInfo.getTotalPages(), pageInfo.getNumber(),
-            pageInfo.getNumberOfElements(), pageInfo.hasNext());
+            pageInfo.getTotalElements(), pageInfo.hasNext());
     }
 
     public int getTotalPage() {
@@ -30,8 +30,8 @@ public class CommentPageInfo {
         return nowPage;
     }
 
-    public int getNumberOfElements() {
-        return numberOfElements;
+    public long getTotalElements() {
+        return totalElements;
     }
 
     public boolean isHasNextPage() {

@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CommentRequest {
 
-    @NotBlank
+    @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
     private CommentRequest() {

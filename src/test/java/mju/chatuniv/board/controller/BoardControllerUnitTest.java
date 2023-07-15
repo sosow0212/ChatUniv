@@ -8,12 +8,11 @@ import mju.chatuniv.board.application.dto.BoardPageInfo;
 import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
 import mju.chatuniv.config.ArgumentResolverConfig;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.helper.RestDocsHelper;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +30,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
@@ -224,74 +222,117 @@ public class BoardControllerUnitTest {
                 )));
     }
 
-    @DisplayName("게시글을 작성할때 제목이 빈칸이면 예외가 발생한다.")
-    @Test
-    public void fail_to_create_board_with_blank_title() throws Exception {
+    @DisplayName("게시글을 작성할때 제목이 빈칸이면 예외가 발생한다")
+    @ParameterizedTest(name = "{index} : {0}")
+    @MethodSource("boardRequestProviderWithNoTitle")
+    public void fail_to_create_board_with_blank_title(String text, BoardRequest boardRequest) throws Exception {
         // given
-        given(boardService.create(any(Member.class), any(BoardRequest.class)))
-            .willThrow(BoardTitleBlankException.class);
+        Member member = createMember();
+        Board board = BoardFixture.createBoard(member);
+        BoardResponse boardResponse = BoardResponse.from(board);
+
+        given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(boardResponse);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(post("/api/boards"))
+        mockTestHelper.createMockRequestWithTokenAndContent(post(("/api/boards")), boardRequest)
             .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print());
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(RestDocsHelper.customDocument("fail_to_create_board_with_blank_title",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("title").description("게시판의 제목"),
+                    fieldWithPath("content").description("게시판의 내용")
+                )
+            )).andReturn();
     }
 
-    @DisplayName("게시글을 작성할때 내용이 빈칸이면 예외가 발생한다.")
-    @Test
-    public void fail_to_create_board_with_blank_content() throws Exception {
+    @DisplayName("게시글을 작성할때 내용이 빈칸이면 예외가 발생한다")
+    @ParameterizedTest(name = "{index} : {0}")
+    @MethodSource("boardRequestProviderWithNoContent")
+    public void fail_to_create_board_with_blank_content(String text, BoardRequest boardRequest) throws Exception {
         // given
-        given(boardService.create(any(Member.class), any(BoardRequest.class)))
-            .willThrow(BoardContentBlankException.class);
+        Member member = createMember();
+        Board board = BoardFixture.createBoard(member);
+        BoardResponse boardResponse = BoardResponse.from(board);
+
+        given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(boardResponse);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(post("/api/boards"))
+        mockTestHelper.createMockRequestWithTokenAndContent(post(("/api/boards")), boardRequest)
             .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print());
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(RestDocsHelper.customDocument("fail_to_create_board_with_blank_content",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                ),
+                requestFields(
+                    fieldWithPath("title").description("게시판의 제목"),
+                    fieldWithPath("content").description("게시판의 내용")
+                )
+            )).andReturn();
     }
 
-    @DisplayName("게시글을 다른 사람이 수정하려고 하면 예외가 발생한다.")
+    @DisplayName("게시글을 다른 사람이 수정하면 예외가 발생한다.")
     @Test
     public void fail_to_update_board_with_different_member() throws Exception {
         // given
-        given(boardService.update(any(Long.class), any(Member.class), any(BoardRequest.class)))
-            .willThrow(MemberNotEqualsException.class);
+        Member member = createMember();
+        BoardRequest boardRequest = new BoardRequest("title", "content");
+        BoardFixture.createBoard(member);
+
+        given(boardService.update(any(Long.class), any(Member.class), any(BoardRequest.class))).willThrow(new MemberNotEqualsException());
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(patch("/api/boards/{boardId}", "1"))
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/boards/{boardId}", "1"), boardRequest)
             .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print());
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(RestDocsHelper.customDocument("fail_to_update_board_with_different_member",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                ),
+                requestFields(
+                    fieldWithPath(".title").description("게시판의 제목"),
+                    fieldWithPath(".content").description("게시판의 내용")
+                )
+            )).andReturn();
     }
 
     @DisplayName("게시판을 단건조회할때 게시판 아이디가 올바르지 않으면 예외가 발생한다.")
     @Test
     public void fail_to_find_board_with_wrong_board_id() throws Exception {
         // given
-        given(boardService.findBoard(any(Long.class)))
-            .willThrow(BoardNotFoundException.class);
+        Member member = createMember();
+        Board board = BoardFixture.createBoard(member);
+
+        given(boardService.findBoard(any(Long.class))).willThrow(new BoardNotFoundException(board.getId()));
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(patch("/api/boards/{boardId}", "1"))
-            .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print());
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/{boardId}", "1"))
+            .andExpect(status().isNotFound())
+            .andDo(MockMvcResultHandlers.print())
+            .andDo(customDocument("fail_to_find_board_with_wrong_board_id",
+                requestHeaders(
+                    headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                )
+            )).andReturn();
     }
 
-    @DisplayName("토큰이 없을 때")
-    @ParameterizedTest(name = "{index}: {1}")
-    @MethodSource("urlProvider")
-    void not_authorized(MockHttpServletRequestBuilder mockHttpServletRequestBuilder, String message) throws Exception {
-        // when & then
-        mockTestHelper.createMockRequestWithoutTokenAndContent(mockHttpServletRequestBuilder)
-            .andExpect(status().isUnauthorized())
-            .andDo(MockMvcResultHandlers.print());
+    private static Stream<Arguments> boardRequestProviderWithNoTitle() {
+        return Stream.of(
+            Arguments.of("제목이 null인 경우", new BoardRequest(null, "content")),
+            Arguments.of("제목이 공백인 경우", new BoardRequest("", "content")),
+            Arguments.of("제목이 빈 칸인 경우", new BoardRequest(" ", "content"))
+        );
     }
 
-    private static Stream<Arguments> urlProvider() {
-        return Stream.of(Arguments.of(post("/api/boards"), "게시판 생성의 경우"),
-            Arguments.of(get("/api/boards/1"), "게시판 단건 조회의 경우"),
-            Arguments.of(get("/api/boars"), "게시판 전체 조회의 경우"),
-            Arguments.of(patch("/api/boards/1"), "게시판 수정의 경우"),
-            Arguments.of(delete("/api/boards/1"), "게시판 삭제의 경우"));
+    private static Stream<Arguments> boardRequestProviderWithNoContent() {
+        return Stream.of(
+            Arguments.of("내용이 null인 경우", new BoardRequest("title", null)),
+            Arguments.of("내용이 공백인 경우", new BoardRequest("title", "")),
+            Arguments.of("내용이 빈 칸인 경우", new BoardRequest("title", " "))
+        );
     }
 
     private BoardAllResponse getBoardAllResponse(final Board board) {

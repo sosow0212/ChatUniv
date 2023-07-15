@@ -52,15 +52,15 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
         // when
         Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .auth().preemptive().oauth2(token)
-                .body(boardRequest)
-                .when()
-                .post("/api/boards");
+            .contentType(ContentType.JSON)
+            .auth().preemptive().oauth2(token)
+            .body(boardRequest)
+            .when()
+            .post("/api/boards");
 
         // then
         response.then()
-                .statusCode(HttpStatus.CREATED.value());
+            .statusCode(HttpStatus.CREATED.value());
     }
 
     @DisplayName("게시글을 단건 조회한다.")
@@ -71,15 +71,15 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
         //when
         Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .auth().preemptive().oauth2(token)
-                .pathParam("boardId", boardId)
-                .when()
-                .get("/api/boards/{boardId}");
+            .contentType(ContentType.JSON)
+            .auth().preemptive().oauth2(token)
+            .pathParam("boardId", boardId)
+            .when()
+            .get("/api/boards/{boardId}");
 
         //then
         response.then()
-                .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 전부 조회한다.")
@@ -90,15 +90,15 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
         //when
         Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .auth().preemptive().oauth2(token)
-                .body(pageable)
-                .when()
-                .get("/api/boards");
+            .contentType(ContentType.JSON)
+            .auth().preemptive().oauth2(token)
+            .body(pageable)
+            .when()
+            .get("/api/boards");
 
         //then
         response.then()
-                .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 수정합니다.")
@@ -110,16 +110,16 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
         //when
         Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .auth().preemptive().oauth2(token)
-                .pathParam("boardId", boardId)
-                .body(boardRequest)
-                .when()
-                .patch("/api/boards/{boardId}");
+            .contentType(ContentType.JSON)
+            .auth().preemptive().oauth2(token)
+            .pathParam("boardId", boardId)
+            .body(boardRequest)
+            .when()
+            .patch("/api/boards/{boardId}");
 
         //then
         response.then()
-                .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("게시글을 삭제합니다.")
@@ -130,14 +130,14 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
         //when
         Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .auth().preemptive().oauth2(token)
-                .pathParam("boardId", boardId)
-                .when()
-                .delete("/api/boards/{boardId}");
+            .contentType(ContentType.JSON)
+            .auth().preemptive().oauth2(token)
+            .pathParam("boardId", boardId)
+            .when()
+            .delete("/api/boards/{boardId}");
 
         //then
         response.then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

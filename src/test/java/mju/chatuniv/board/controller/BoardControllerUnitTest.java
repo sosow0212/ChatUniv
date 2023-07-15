@@ -16,6 +16,7 @@ import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -72,7 +73,7 @@ public class BoardControllerUnitTest {
         BoardRequest boardRequest = new BoardRequest("title", "content");
         Board board = BoardFixture.createBoard(member);
         BoardResponse boardResponse = BoardResponse.from(board);
-        given(boardService.create(any(), any())).willReturn(boardResponse);
+        given(boardService.create(Mockito.any(Member.class), Mockito.any(BoardRequest.class))).willReturn(boardResponse);
 
         // when & then
         mockMvc.perform(post("/api/boards")

@@ -9,6 +9,8 @@ import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.BoardCommentService;
 import mju.chatuniv.comment.controller.BoardCommentController;
 import mju.chatuniv.comment.domain.BoardComment;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.config.ArgumentResolverConfig;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
 import mju.chatuniv.fixture.member.MemberFixture;
@@ -34,10 +36,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static mju.chatuniv.helper.RestDocsHelper.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -57,6 +57,9 @@ public class BoardCommentControllerUnitTest {
     private JwtAuthService jwtAuthService;
 
     @MockBean
+    private ArgumentResolverConfig argumentResolverConfig;
+
+    @MockBean
     private BoardCommentService boardCommentService;
 
     @Autowired
@@ -73,18 +76,18 @@ public class BoardCommentControllerUnitTest {
         // given
         Member member = MemberFixture.createMember();
         Board board = BoardFixture.createBoard(member);
-        CommentRequest commentRequest = new CommentRequest("comment");
+        CommentRequest commentRequest = new CommentRequest("content");
         BoardComment boardComment = CommentFixture.createBoardComment(member, board);
         CommentResponse commentResponse = CommentResponse.from(boardComment);
-        given(jwtAuthService.findMemberByJwtPayload(anyString())).willReturn(member);
-        given(boardCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class)))
+
+        given(boardCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class)))
                 .willReturn(commentResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(post("/api/boards/1/comments"), commentRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.commentId").value(1L))
-                .andExpect(jsonPath("$.content").value("comment"))
+                .andExpect(jsonPath("$.content").value("content"))
                 .andDo(print())
                 .andDo(customDocument("create_board",
                         requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
@@ -98,16 +101,17 @@ public class BoardCommentControllerUnitTest {
 
     @DisplayName("게시글의 id로 페이징 처리된 댓글을 조회한다.")
     @Test
-    void find_comments_by_board_id() throws Exception{
+    void find_comments_by_board_id() throws Exception {
         // given
         Member member = MemberFixture.createMember();
         Board board = BoardFixture.createBoard(member);
-        List<BoardComment> boardComments = makeBoardComments(member, board);
-        CommentAllResponse commentAllResponse = makeCommentAllResponse(boardComments);
-        given(boardCommentService.findComments(any(Long.class), any(Pageable.class))).willReturn(commentAllResponse);
+        List<Comment> comments = makeBoardComments(member, board);
+        CommentAllResponse commentAllResponse = makeCommentAllResponse(comments);
 
+        given(boardCommentService.findComments(anyLong(), any(Pageable.class))).willReturn(commentAllResponse);
 
         // when & then
+        // nowPage = 0, totalPage = 3, totalElements = 10, hasNextPage = true
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/1/comments?page=0&size=4"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.commentPageInfo.totalPage").value(3))
@@ -131,24 +135,25 @@ public class BoardCommentControllerUnitTest {
                 )).andReturn();
     }
 
-    private List<BoardComment> makeBoardComments(final Member member, final Board board) {
-        List<BoardComment> boardComments = new ArrayList<>();
-        IntStream.range(1,16)
+    private List<Comment> makeBoardComments(final Member member, final Board board) {
+        List<Comment> comments = new ArrayList<>();
+        IntStream.range(1, 16)
                 .forEach(i -> {
-                    boardComments.add(BoardComment.of((long) i, "BoardTest" + i, member, board));
+                    comments.add(BoardComment.of((long) i, "BoardTest" + i, member, board));
                 });
-        return boardComments;
+        return comments;
     }
 
-    private CommentAllResponse makeCommentAllResponse(final List<BoardComment> boardComments) {
+    private CommentAllResponse makeCommentAllResponse(final List<Comment> comments) {
         Pageable pageable = PageRequest.of(0, 4);
-        Page<BoardComment> pagedBoardComments = new PageImpl<>(boardComments, pageable, 10);
+        Page<Comment> pagedBoardComments = new PageImpl<>(comments, pageable, 10);
         CommentPageInfo commentPageInfo = CommentPageInfo.from(pagedBoardComments);
+
         List<CommentResponse> commentResponses = pagedBoardComments.stream()
                 .limit(pagedBoardComments.getSize())
                 .map(CommentResponse::from)
                 .collect(Collectors.toList());
+
         return CommentAllResponse.from(commentResponses, commentPageInfo);
     }
 }
-

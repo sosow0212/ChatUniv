@@ -17,7 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new AuthorizationFilter());
         filterRegistrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/*");
+        filterRegistrationBean.addUrlPatterns("/api/*");
         filterRegistrationBean.addInitParameter("exclusions", "/api/auth/*");
         return filterRegistrationBean;
     }

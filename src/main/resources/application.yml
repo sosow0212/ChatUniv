@@ -2,8 +2,11 @@ server:
   port: 8080
 
 spring:
-  profiles:
-    active: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/chatUniv?useSSL=false&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -21,3 +24,10 @@ spring:
 
   servlet.multipart.max-file-size: 5MB
   servlet.multipart.max-request-size: 5MB
+
+
+security:
+  jwt:
+    token:
+      secret-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno
+      expire-length: 3600000

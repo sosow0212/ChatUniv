@@ -1,16 +1,16 @@
-package mju.chatuniv.chat.application.dto;
+package mju.chatuniv.chat.application.dto.gpt;
 
 public class Message {
 
     private String role;
     private String content;
 
+    private Message() {
+    }
+
     public Message(final String role, final String content) {
         this.role = role;
         this.content = content;
-    }
-
-    private Message() {
     }
 
     public String getRole() {

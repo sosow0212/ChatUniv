@@ -1,9 +1,14 @@
-package mju.chatuniv.chat.application.dto;
+package mju.chatuniv.chat.application.dto.gpt;
 
 public class Choice {
 
     private int index;
     private Message message;
+
+    public Choice(final int index, final Message message) {
+        this.index = index;
+        this.message = message;
+    }
 
     public int getIndex() {
         return index;

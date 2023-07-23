@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.application.dto;
+package mju.chatuniv.chat.application.dto.gpt;
 
 import java.util.List;
 

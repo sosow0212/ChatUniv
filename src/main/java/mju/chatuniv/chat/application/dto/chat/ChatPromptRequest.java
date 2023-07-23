@@ -1,10 +1,10 @@
-package mju.chatuniv.chat.application.dto;
+package mju.chatuniv.chat.application.dto.chat;
 
 public class ChatPromptRequest {
 
     private String prompt;
 
-    public ChatPromptRequest() {
+    private ChatPromptRequest() {
     }
 
     public ChatPromptRequest(final String prompt) {

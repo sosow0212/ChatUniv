@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.domain;
+package mju.chatuniv.chat.domain.chat;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -11,13 +11,9 @@ class WordTest {
     @Test
     void clean_up_word() {
         // given
-        Word word = Word.from("단어!@?");
-
-        // when
-        word.makePureWord();
+        Word word = Word.createDefaultPureWord("단어!@?");
 
         // then
         assertThat(word.getWord()).isEqualTo("단어");
     }
-
 }

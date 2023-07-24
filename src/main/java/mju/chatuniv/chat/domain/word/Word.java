@@ -7,12 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "WORD")
 public class Word {
 
-    private static final int DEFAULT_FREQUENCY = 0;
+    private static final int DEFAULT_FREQUENCY = 1;
     private static final List<String> exclusiveWords = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$", "%", "^", "*", "(", ")", "-", "_", "+", "=");
 
     @Id
@@ -55,6 +56,10 @@ public class Word {
         return result;
     }
 
+    public void updateFrequency() {
+        this.frequency++;
+    }
+
     public Long getId() {
         return id;
     }
@@ -63,7 +68,20 @@ public class Word {
         return word;
     }
 
-    public int getCount() {
+    public int getFrequency() {
         return frequency;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Word)) return false;
+        Word word1 = (Word) o;
+        return Objects.equals(word, word1.word);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(word);
     }
 }

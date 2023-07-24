@@ -17,9 +17,13 @@ public class Words {
         this.words = words;
     }
 
-    public static Words from(final String prompt) {
+    public static Words fromRawPrompt(final String prompt) {
         List<String> rawWords = separateFromSentenceToWords(prompt);
         return new Words(makeNotDuplicatedCleanWords(rawWords));
+    }
+
+    public static Words ofPureWords(final List<Word> pureWords) {
+        return new Words(pureWords);
     }
 
     private static List<String> separateFromSentenceToWords(final String prompt) {
@@ -35,7 +39,23 @@ public class Words {
                 .values());
     }
 
+    public void updateFrequencyCount() {
+        this.words.forEach(Word::updateFrequency);
+    }
+
+    public List<Word> findNotContainsWordsFromOthers(final List<Word> words) {
+        return words.stream()
+                .filter(word -> !this.words.contains(word))
+                .collect(Collectors.toList());
+    }
+
     public List<Word> getWords() {
         return words;
+    }
+
+    public List<String> getWordsToString() {
+        return words.stream()
+                .map(Word::getWord)
+                .collect(Collectors.toList());
     }
 }

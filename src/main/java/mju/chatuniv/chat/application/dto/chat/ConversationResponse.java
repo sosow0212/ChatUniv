@@ -7,21 +7,25 @@ import java.time.LocalDateTime;
 public class ConversationResponse {
 
     private final Long conversationId;
-    private final String content;
+    private final String ask;
+    private final String answer;
     private final LocalDateTime createdAt;
 
     private ConversationResponse(final Long conversationId,
-                                 final String content,
+                                 final String ask,
+                                 final String answer,
                                  final LocalDateTime createdAt) {
         this.conversationId = conversationId;
-        this.content = content;
+        this.ask = ask;
+        this.answer = answer;
         this.createdAt = createdAt;
     }
 
     public static ConversationResponse from(final Conversation conversation) {
         return new ConversationResponse(
                 conversation.getId(),
-                conversation.getContent(),
+                conversation.getAsk(),
+                conversation.getAnswer(),
                 conversation.getCreatedAt()
         );
     }
@@ -31,7 +35,11 @@ public class ConversationResponse {
     }
 
     public String getContent() {
-        return content;
+        return ask;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     public LocalDateTime getCreatedAt() {

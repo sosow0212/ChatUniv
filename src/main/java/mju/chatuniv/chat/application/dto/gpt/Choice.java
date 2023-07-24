@@ -5,6 +5,9 @@ public class Choice {
     private int index;
     private Message message;
 
+    private Choice() {
+    }
+
     public Choice(final int index, final Message message) {
         this.index = index;
         this.message = message;

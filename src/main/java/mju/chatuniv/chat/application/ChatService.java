@@ -1,6 +1,7 @@
 package mju.chatuniv.chat.application;
 
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
+import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
 import mju.chatuniv.chat.application.dto.gpt.ChatRequest;
 import mju.chatuniv.chat.application.dto.gpt.ChatResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
@@ -8,6 +9,7 @@ import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.chat.domain.word.Word;
+import mju.chatuniv.chat.domain.word.WordRepository;
 import mju.chatuniv.chat.domain.word.Words;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,15 +28,18 @@ public class ChatService {
 
     @Qualifier("openaiRestTemplate")
     private final RestTemplate restTemplate;
-    private final ChatRepository chatRepository;
+    private final WordRepository wordRepository;
     private final ConversationRepository conversationRepository;
+    private final ChatRepository chatRepository;
 
-    public ChatService(final ChatRepository chatRepository,
-                       final RestTemplate restTemplate,
-                       final ConversationRepository conversationRepository) {
-        this.chatRepository = chatRepository;
+    public ChatService(final RestTemplate restTemplate,
+                       final WordRepository wordRepository,
+                       final ConversationRepository conversationRepository,
+                       final ChatRepository chatRepository) {
         this.restTemplate = restTemplate;
+        this.wordRepository = wordRepository;
         this.conversationRepository = conversationRepository;
+        this.chatRepository = chatRepository;
     }
 
     @Transactional
@@ -44,22 +49,27 @@ public class ChatService {
     }
 
     @Transactional
-    public String useChatBot(final String prompt, final String chatId) {
+    public ConversationResponse useChatBot(final String prompt, final Long chatId) {
+        // TODO: 개선 필요
+
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 번호의 채팅방이 없습니다."));
+
         // 1. 퓨어한 단어로 만든다.
+        Words inputWords = Words.fromRawPrompt(prompt);
+
         // 2. DB에서 이미 있는 단어라면 update(모든 채팅에서 몇 번 나왔는지에 대한 count += 1)
+        Words wordsInDb = Words.ofPureWords(wordRepository.findAllByWords(inputWords.getWordsToString()));
+        wordsInDb.updateFrequencyCount();
+
         // 3. 새로운 단어라면 insert (+ 1)
-        // 4. Conversation 저장해주기
-        // 5. 답변 받아서 사용자한테 주기 (이 때, gpt 요청 DTO에 이전 질문들 넣어주기)
+        List<Word> wordsNotInDb = wordsInDb.findNotContainsWordsFromOthers(inputWords.getWords());
+        wordRepository.saveAll(wordsNotInDb);
 
-        // 1. JPQL N+1
-        // 2. 멀티 스레드 병렬화해서 로직 속도 증가시키기
-        // 3. 질문 내용을 split해서 두 번에 걸쳐서 보내주는 방법 or 질문을 영어로 바꾸고 전송해주기
-
-        Words words = Words.from(prompt);
-        List<Word> pureWords = words.getWords();
-
-
-        return getChatBotAnswer(prompt);
+        // 4. Conversation 저장 및 답변 받기
+        String chatBotAnswer = getChatBotAnswer(prompt);
+        Conversation conversation = conversationRepository.save(Conversation.from(prompt, chatBotAnswer, chat));
+        return ConversationResponse.from(conversation);
     }
 
     private String getChatBotAnswer(final String prompt) {
@@ -83,7 +93,6 @@ public class ChatService {
     }
 
     public ChattingHistoryResponse joinChattingRoom(final Long chatId) {
-        //
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(IllegalArgumentException::new);
 

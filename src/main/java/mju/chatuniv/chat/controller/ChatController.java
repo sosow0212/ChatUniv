@@ -4,6 +4,7 @@ import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.chat.application.ChatService;
 import mju.chatuniv.chat.application.dto.chat.ChatPromptRequest;
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
+import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,14 +36,12 @@ public class ChatController {
 
     @GetMapping("/{chatId}")
     public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@PathVariable final Long chatId) {
-        // 채팅방 입장
         return ResponseEntity.ok(chatService.joinChattingRoom(chatId));
     }
 
     @PostMapping("/{chatId}")
-    public String useChatBot(@RequestBody ChatPromptRequest prompt,
-                             @PathVariable final String chatId) {
-        // 챗봇 사용 (질문 -> 답변주는 것)
-        return chatService.useChatBot(prompt.getPrompt(), chatId);
+    public ResponseEntity<ConversationResponse> useChatBot(@RequestBody final ChatPromptRequest prompt,
+                                                           @PathVariable final Long chatId) {
+        return ResponseEntity.ok(chatService.useChatBot(prompt.getPrompt(), chatId));
     }
 }

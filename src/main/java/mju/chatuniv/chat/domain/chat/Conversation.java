@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,9 +24,12 @@ public class Conversation extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    @Lob
+    private String ask;
 
-    // 답변 보류
+    @Column(nullable = false)
+    @Lob
+    private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -34,22 +38,32 @@ public class Conversation extends BaseEntity {
     protected Conversation() {
     }
 
-    private Conversation(final Long id, final String content, final Chat chat) {
+    private Conversation(final Long id,
+                         final String ask,
+                         final String answer,
+                         final Chat chat) {
         this.id = id;
-        this.content = content;
+        this.ask = ask;
+        this.answer = answer;
         this.chat = chat;
     }
 
-    public static Conversation from(final String content, final Chat chat) {
-        return new Conversation(null, content, chat);
+    public static Conversation from(final String ask,
+                                    final String answer,
+                                    final Chat chat) {
+        return new Conversation(null, ask, answer, chat);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getContent() {
-        return content;
+    public String getAsk() {
+        return ask;
+    }
+
+    public String getAnswer() {
+        return answer;
     }
 
     public Chat getChat() {

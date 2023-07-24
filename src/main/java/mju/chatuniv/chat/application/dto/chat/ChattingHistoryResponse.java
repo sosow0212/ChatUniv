@@ -11,14 +11,14 @@ public class ChattingHistoryResponse {
 
     private final Long chatId;
     private final List<ConversationResponse> conversations;
-    private final LocalDateTime createAt;
+    private final LocalDateTime createdAt;
 
     private ChattingHistoryResponse(final Long chatId,
                                     final List<ConversationResponse> conversations,
-                                    final LocalDateTime createAt) {
+                                    final LocalDateTime createdAt) {
         this.chatId = chatId;
         this.conversations = conversations;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
     }
 
     public static ChattingHistoryResponse from(final Chat chat, final List<Conversation> conversations) {
@@ -43,7 +43,7 @@ public class ChattingHistoryResponse {
         return conversations;
     }
 
-    public LocalDateTime getCreateAt() {
-        return createAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

@@ -68,7 +68,7 @@ class ChatControllerUnitTest {
     void make_new_chatting_room() throws Exception {
         // given
         Member member = createMember();
-        when(chatService.makeChattingRoom(member)).thenReturn(1L);
+        when(chatService.createNewChattingRoom(member)).thenReturn(1L);
 
         // when & then
         mockMvc.perform(post("/chats")

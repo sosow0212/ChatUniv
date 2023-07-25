@@ -45,59 +45,52 @@ public class ChatService {
     }
 
     @Transactional
-    public Long makeChattingRoom(final Member member) {
+    public Long createNewChattingRoom(final Member member) {
         Chat chat = chatRepository.save(Chat.createDefault(member));
         return chat.getId();
     }
 
     @Transactional
     public ConversationResponse useChatBot(final String prompt, final Long chatId) {
-        // TODO: 개선 필요
+        // TODO: 성능 개선 (batch, 도메인)
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
 
-        // 1. 퓨어한 단어로 만든다.
-        Words inputWords = Words.fromRawPrompt(prompt);
+        Words pureWordsFromPrompt = Words.fromRawPrompt(prompt);
+        Words aleadyBeingWords = Words.ofPureWords(wordRepository.findAllByWords(pureWordsFromPrompt.getWordsToString()));
+        aleadyBeingWords.updateFrequencyCount();
 
-        // 2. DB에서 이미 있는 단어라면 update(모든 채팅에서 몇 번 나왔는지에 대한 count += 1)
-        Words wordsInDb = Words.ofPureWords(wordRepository.findAllByWords(inputWords.getWordsToString()));
-        wordsInDb.updateFrequencyCount();
+        List<Word> newWords = aleadyBeingWords.findNotContainsWordsFromOthers(pureWordsFromPrompt.getWords());
+        wordRepository.saveAll(newWords);
 
-        // 3. 새로운 단어라면 insert (+ 1)
-        List<Word> wordsNotInDb = wordsInDb.findNotContainsWordsFromOthers(inputWords.getWords());
-        wordRepository.saveAll(wordsNotInDb);
-
-        // 4. Conversation 저장 및 답변 받기
-        String chatBotAnswer = getChatBotAnswer(prompt);
-        Conversation conversation = conversationRepository.save(Conversation.from(prompt, chatBotAnswer, chat));
+        Conversation conversation = conversationRepository.save(Conversation.from(prompt, getChatBotAnswer(prompt), chat));
         return ConversationResponse.from(conversation);
     }
 
     private String getChatBotAnswer(final String prompt) {
-        ChatRequest request = new ChatRequest(MODEL, prompt);
-        ChatResponse response = restTemplate.postForObject(ENDPOINT, request, ChatResponse.class);
+        ChatRequest promptRequest = new ChatRequest(MODEL, prompt);
+        ChatResponse chatBotAnswer = restTemplate.postForObject(ENDPOINT, promptRequest, ChatResponse.class);
 
-        if (isFailureResponse(response)) {
+        if (isFailureResponse(chatBotAnswer)) {
             throw new OpenAIErrorException();
         }
 
-        return response.getChoices()
+        return chatBotAnswer.getChoices()
                 .get(CHOICE_INDEX)
                 .getMessage()
                 .getContent();
     }
 
-    private boolean isFailureResponse(final ChatResponse response) {
-        return response == null
-                || response.getChoices() == null
-                || response.getChoices().isEmpty();
+    private boolean isFailureResponse(final ChatResponse chatBotAnswer) {
+        return chatBotAnswer == null || chatBotAnswer.getChoices() == null || chatBotAnswer.getChoices().isEmpty();
     }
 
+    @Transactional(readOnly = true)
     public ChattingHistoryResponse joinChattingRoom(final Long chatId) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
 
-        List<Conversation> conversations = conversationRepository.findAllByChat(chat);
-        return ChattingHistoryResponse.from(chat, conversations);
+        List<Conversation> conversationsHistory = conversationRepository.findAllByChat(chat);
+        return ChattingHistoryResponse.from(chat, conversationsHistory);
     }
 }

@@ -40,7 +40,7 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
         Member member = memberRepository.save(createMember());
 
         // when
-        Long id = chatService.makeChattingRoom(member);
+        Long id = chatService.createNewChattingRoom(member);
 
         // then
         assertThat(id).isEqualTo(1L);

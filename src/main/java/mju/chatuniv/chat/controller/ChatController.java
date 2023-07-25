@@ -29,7 +29,7 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<Void> makeChattingRoom(@JwtLogin final Member member) {
         // 채팅방 생성
-        Long chatId = chatService.makeChattingRoom(member);
+        Long chatId = chatService.createNewChattingRoom(member);
         return ResponseEntity.created(URI.create("/chats/" + chatId))
                 .build();
     }

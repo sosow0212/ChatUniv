@@ -11,6 +11,8 @@ import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.chat.domain.word.WordRepository;
 import mju.chatuniv.chat.domain.word.Words;
+import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -51,9 +53,8 @@ public class ChatService {
     @Transactional
     public ConversationResponse useChatBot(final String prompt, final Long chatId) {
         // TODO: 개선 필요
-
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 번호의 채팅방이 없습니다."));
+                .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
 
         // 1. 퓨어한 단어로 만든다.
         Words inputWords = Words.fromRawPrompt(prompt);
@@ -77,7 +78,7 @@ public class ChatService {
         ChatResponse response = restTemplate.postForObject(ENDPOINT, request, ChatResponse.class);
 
         if (isFailureResponse(response)) {
-            return "OpenAI의 API의 문제로 진행할 수 없습니다.";
+            throw new OpenAIErrorException();
         }
 
         return response.getChoices()
@@ -94,7 +95,7 @@ public class ChatService {
 
     public ChattingHistoryResponse joinChattingRoom(final Long chatId) {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
 
         List<Conversation> conversations = conversationRepository.findAllByChat(chat);
         return ChattingHistoryResponse.from(chat, conversations);

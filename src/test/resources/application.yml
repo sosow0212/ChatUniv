@@ -7,9 +7,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
-initialize-charge:
-  enabled: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
 
 security:
   jwt:

@@ -1,7 +1,7 @@
 package mju.chatuniv.helper.integration;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -19,8 +19,8 @@ public class IntegrationTest extends AbstractTestExecutionListener {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @AfterEach
-    void init() {
+    @BeforeEach
+    public void initRandomPort() {
         RestAssured.port = this.port;
         validateH2Database();
         List<String> truncateAllTablesQuery = jdbcTemplate.queryForList("SELECT CONCAT('TRUNCATE TABLE ', TABLE_NAME, ';') AS q FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC'", String.class);

@@ -4,6 +4,7 @@ import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
 import mju.chatuniv.chat.application.dto.gpt.ChatRequest;
 import mju.chatuniv.chat.application.dto.gpt.ChatResponse;
+import mju.chatuniv.chat.application.dto.gpt.Message;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -15,14 +16,22 @@ import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
 import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ChatService {
+
+    @Value("${api.gpt_prefix_helper}")
+    private String PREFIX_HELPER;
+
+    @Value("${api.gpt_prefix_starter}")
+    private String PREFIX_STARTER;
 
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
     private static final String MODEL = "gpt-3.5-turbo";
@@ -63,12 +72,12 @@ public class ChatService {
         List<Word> newWords = aleadyBeingWords.findNotContainsWordsFromOthers(pureWordsFromPrompt.getWords());
         wordRepository.saveAll(newWords);
 
-        Conversation conversation = conversationRepository.save(Conversation.from(prompt, getChatBotAnswer(prompt), chat));
+        Conversation conversation = conversationRepository.save(Conversation.from(prompt, getChatBotRawAnswer(prompt), chat));
         return ConversationResponse.from(conversation);
     }
 
-    private String getChatBotAnswer(final String prompt) {
-        ChatRequest promptRequest = new ChatRequest(MODEL, prompt);
+    private String getChatBotRawAnswer(final String prompt) {
+        ChatRequest promptRequest = getRawAnswer(prompt);
         ChatResponse chatBotAnswer = restTemplate.postForObject(ENDPOINT, promptRequest, ChatResponse.class);
 
         if (isFailureResponse(chatBotAnswer)) {
@@ -79,6 +88,16 @@ public class ChatService {
                 .get(CHOICE_INDEX)
                 .getMessage()
                 .getContent();
+    }
+
+    private ChatRequest getRawAnswer(final String prompt) {
+        // TODO: 추후 리팩토링 + 순한맛 답변도 추가하기
+        List<Message> messages = new ArrayList<>();
+        messages.add(new Message("system", PREFIX_HELPER));
+        messages.add(new Message("system", PREFIX_STARTER));
+        messages.add(new Message("user", prompt));
+
+        return new ChatRequest(MODEL, messages);
     }
 
     private boolean isFailureResponse(final ChatResponse chatBotAnswer) {

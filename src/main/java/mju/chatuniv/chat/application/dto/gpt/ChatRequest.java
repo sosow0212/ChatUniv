@@ -1,6 +1,5 @@
 package mju.chatuniv.chat.application.dto.gpt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRequest {
@@ -8,11 +7,9 @@ public class ChatRequest {
     private String model;
     private List<Message> messages;
 
-    public ChatRequest(final String model, final String prompt) {
+    public ChatRequest(final String model, final List<Message> messages) {
         this.model = model;
-        this.messages = new ArrayList<>();
-        this.messages.add(new Message("system", "You are a helpful assistant. about 명지대학교 in korea"));
-        this.messages.add(new Message("user", prompt));
+        this.messages = messages;
     }
 
     public String getModel() {

@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
 public class Word {
 
     private static final int DEFAULT_FREQUENCY = 1;
-    private static final List<String> exclusiveWords = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$", "%", "^", "*", "(", ")", "-", "_", "+", "=");
+    private static final List<String> specialLetters = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$", "%", "^", "*", "(", ")", "-", "_", "+", "=");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,7 @@ public class Word {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Lob
     private String word;
 
     private int frequency;
@@ -41,16 +43,15 @@ public class Word {
 
     private static String makePureWord(final String word) {
         // TODO : 단어 파싱 로직 더 추가하기
-        String wordOfExclusiveSpecialLetters = exclusiveSpecialLetters(word);
-
-        return wordOfExclusiveSpecialLetters;
+        String wordWithoutSpecialLetters = removeSpecialLetters(word);
+        return wordWithoutSpecialLetters;
     }
 
-    private static String exclusiveSpecialLetters(final String word) {
+    private static String removeSpecialLetters(final String word) {
         String result = word;
 
-        for (String exclusiveWord : exclusiveWords) {
-            result = result.replace(exclusiveWord, "");
+        for (String specialLetter : specialLetters) {
+            result = result.replace(specialLetter, "");
         }
 
         return result;

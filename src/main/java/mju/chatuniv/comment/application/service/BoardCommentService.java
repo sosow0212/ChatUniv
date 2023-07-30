@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @Service
-public class BoardCommentService implements EachCommentService {
+public class BoardCommentService implements CommentService {
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
@@ -48,9 +48,10 @@ public class BoardCommentService implements EachCommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentAllResponse findComments(final Long boardId, final Pageable pageable) {
-        Board board = boardRepository.findById(boardId).orElseThrow();
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(boardId));
 
-        Page<Comment> commentPageInfo = commentRepository.findAllByBoard(pageable, board, boardId);
+        Page<Comment> commentPageInfo = commentRepository.findAllByBoardId(pageable, boardId);
         CommentPageInfo pageInfo = CommentPageInfo.from(commentPageInfo);
 
         List<CommentResponse> comments = commentPageInfo.stream()

@@ -6,7 +6,7 @@ import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.domain.Pageable;
 
-public interface EachCommentService {
+public interface CommentService {
 
     CommentResponse create(Long boardId, Member member, CommentRequest commentRequest);
 

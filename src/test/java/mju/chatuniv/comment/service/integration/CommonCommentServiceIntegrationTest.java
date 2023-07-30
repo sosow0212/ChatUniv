@@ -8,7 +8,7 @@ import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.BoardCommentService;
 import mju.chatuniv.comment.application.service.CommonCommentService;
-import mju.chatuniv.comment.application.service.EachCommentService;
+import mju.chatuniv.comment.application.service.CommentService;
 import mju.chatuniv.comment.controller.intergration.BeanUtils;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
@@ -64,17 +64,17 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @DisplayName("댓글을 작성한다.")
     @TestFactory
     List<DynamicTest> create_comment() {
-        List<EachCommentService> eachCommentServices = BeanUtils.getBeansOfType();
+        List<CommentService> commentServices = BeanUtils.getBeansOfCommentServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, eachCommentServices.size()).forEach(index -> {
-            EachCommentService eachCommentService = eachCommentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(eachCommentService), () -> {
+        IntStream.range(0, commentServices.size()).forEach(index -> {
+            CommentService commentService = commentServices.get(index);
+            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
                 Long id = 1L;
                 CommentRequest commentRequest = new CommentRequest("initContent");
 
                 //when
-                CommentResponse commentResponse = eachCommentService.create(id, member, commentRequest);
+                CommentResponse commentResponse = commentService.create(id, member, commentRequest);
 
                 //then
                 assertAll(
@@ -89,17 +89,17 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @DisplayName("댓글을 조회한다")
     @TestFactory
     List<DynamicTest> find_board() {
-        List<EachCommentService> eachCommentServices = BeanUtils.getBeansOfType();
+        List<CommentService> commentServices = BeanUtils.getBeansOfCommentServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, eachCommentServices.size()).forEach(index -> {
-            EachCommentService eachCommentService = eachCommentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(eachCommentService), () -> {
+        IntStream.range(0, commentServices.size()).forEach(index -> {
+            CommentService commentService = commentServices.get(index);
+            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
                 Long id = 1L;
-                Pageable pageable = getPageable(eachCommentService, id);
+                Pageable pageable = getPageable(commentService, id);
 
                 //when
-                CommentAllResponse comments = eachCommentService.findComments(id, pageable);
+                CommentAllResponse comments = commentService.findComments(id, pageable);
 
                 //then
                 assertAll(
@@ -117,16 +117,16 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @DisplayName("댓글을 수정한다.")
     @TestFactory
     List<DynamicTest> update_comment() {
-        List<EachCommentService> eachCommentServices = BeanUtils.getBeansOfType();
+        List<CommentService> commentServices = BeanUtils.getBeansOfCommentServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, eachCommentServices.size()).forEach(index -> {
-            EachCommentService eachCommentService = eachCommentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(eachCommentService), () -> {
+        IntStream.range(0, commentServices.size()).forEach(index -> {
+            CommentService commentService = commentServices.get(index);
+            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
                 Long id = 1L;
                 Long commentId = 1L;
                 CommentRequest commentRequest = new CommentRequest("initContent");
-                eachCommentService.create(id, member, commentRequest);
+                commentService.create(id, member, commentRequest);
                 CommentRequest commentUpdateRequest = new CommentRequest("updateContent");
 
                 //when
@@ -142,17 +142,17 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @DisplayName("댓글을 삭제한다.")
     @TestFactory
     List<DynamicTest> delete_comment() {
-        List<EachCommentService> eachCommentServices = BeanUtils.getBeansOfType();
+        List<CommentService> commentServices = BeanUtils.getBeansOfCommentServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, eachCommentServices.size()).forEach(index -> {
-            EachCommentService eachCommentService = eachCommentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(eachCommentService), () -> {
+        IntStream.range(0, commentServices.size()).forEach(index -> {
+            CommentService commentService = commentServices.get(index);
+            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
                 Long id = 1L;
                 Long commentId = 1L;
                 CommentRequest commentRequest = new CommentRequest("initContent");
                 boardCommentService.create(id, member, commentRequest);
-                CommentAllResponse beforeDeleteComments = eachCommentService.findComments(id, PageRequest.of(0, 10));
+                CommentAllResponse beforeDeleteComments = commentService.findComments(id, PageRequest.of(0, 10));
 
                 //when
                 commonCommentService.delete(commentId, member);
@@ -170,13 +170,13 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
         boardService.create(member, boardRequest);
     }
 
-    private String getClassName(final EachCommentService eachCommentService) {
-        return eachCommentService.getClass().getSimpleName().split("\\$\\$")[0];
+    private String getClassName(final CommentService commentService) {
+        return commentService.getClass().getSimpleName().split("\\$\\$")[0];
     }
 
-    private Pageable getPageable(final EachCommentService eachCommentService, final Long id) {
+    private Pageable getPageable(final CommentService commentService, final Long id) {
         LongStream.range(1, 16).forEach(index -> {
-            eachCommentService.create(id, member, new CommentRequest("content" + index));
+            commentService.create(id, member, new CommentRequest("content" + index));
         });
         return PageRequest.of(0, 4);
     }

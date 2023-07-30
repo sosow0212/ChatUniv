@@ -19,7 +19,7 @@ public class CommentPageInfo {
 
     public static CommentPageInfo from(final Page<Comment> pageInfo) {
         return new CommentPageInfo(pageInfo.getTotalPages(), pageInfo.getNumber(),
-            pageInfo.getTotalElements(), pageInfo.hasNext());
+                pageInfo.getTotalElements(), pageInfo.hasNext());
     }
 
     public int getTotalPage() {

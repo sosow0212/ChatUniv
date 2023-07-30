@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import javax.validation.Valid;
+
 @RequestMapping("/api")
+@RestController
 public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
@@ -30,7 +32,7 @@ public class BoardCommentController {
     @PostMapping("/boards/{boardId}/comments")
     public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId,
                                                               @JwtLogin final Member member,
-                                                              @RequestBody final CommentRequest commentRequest) {
+                                                              @RequestBody @Valid final CommentRequest commentRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(boardCommentService.create(boardId, member, commentRequest));
     }

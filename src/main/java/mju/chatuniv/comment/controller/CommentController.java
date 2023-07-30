@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class CommentController {
@@ -27,7 +29,7 @@ public class CommentController {
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") final Long commentId,
                                                          @JwtLogin final Member member,
-                                                         @RequestBody final CommentRequest commentRequest) {
+                                                         @RequestBody @Valid final CommentRequest commentRequest) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(commonCommentService.update(commentId, member, commentRequest));
     }

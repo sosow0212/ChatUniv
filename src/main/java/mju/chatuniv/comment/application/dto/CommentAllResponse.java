@@ -1,5 +1,6 @@
 package mju.chatuniv.comment.application.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CommentAllResponse {
@@ -8,7 +9,7 @@ public class CommentAllResponse {
     private final CommentPageInfo commentPageInfo;
 
     private CommentAllResponse(final List<CommentResponse> comments, final CommentPageInfo commentPageInfo) {
-        this.comments = comments;
+        this.comments = Collections.unmodifiableList(comments);
         this.commentPageInfo = commentPageInfo;
     }
 

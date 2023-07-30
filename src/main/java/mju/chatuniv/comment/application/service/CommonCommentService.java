@@ -20,8 +20,7 @@ public class CommonCommentService {
 
     @Transactional
     public CommentResponse update(final Long commentId, final Member member, final CommentRequest commentRequest) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(commentId));
+        Comment comment = findComment(commentId);
 
         comment.isWriter(member);
         comment.update(commentRequest.getContent());
@@ -31,11 +30,15 @@ public class CommonCommentService {
 
     @Transactional
     public void delete(final Long commentId, final Member member) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(commentId));
+        Comment comment = findComment(commentId);
 
         comment.isWriter(member);
 
         commentRepository.delete(comment);
+    }
+
+    private Comment findComment(final Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(commentId));
     }
 }

@@ -36,8 +36,7 @@ public class BoardCommentService implements CommentService {
     @Override
     @Transactional
     public CommentResponse create(final Long boardId, final Member member, final CommentRequest commentRequest) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException(boardId));
+        Board board = findBoard(boardId);
 
         BoardComment boardComment = BoardComment.of(commentRequest.getContent(), member, board);
         commentRepository.save(boardComment);
@@ -48,8 +47,7 @@ public class BoardCommentService implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentAllResponse findComments(final Long boardId, final Pageable pageable) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardNotFoundException(boardId));
+        findBoard(boardId);
 
         Page<Comment> commentPageInfo = commentRepository.findAllByBoardId(pageable, boardId);
         CommentPageInfo pageInfo = CommentPageInfo.from(commentPageInfo);
@@ -59,6 +57,11 @@ public class BoardCommentService implements CommentService {
                 .collect(collectingAndThen(toList(), Collections::unmodifiableList));
 
         return CommentAllResponse.from(comments, pageInfo);
+    }
+
+    private Board findBoard(final Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(boardId));
     }
 }
 

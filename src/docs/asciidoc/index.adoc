@@ -156,4 +156,51 @@ include::{snippets}/chat-controller-unit-test/use_chat_bot/http-request.adoc[]
 
 include::{snippets}/chat-controller-unit-test/use_chat_bot/http-response.adoc[]
 include::{snippets}/chat-controller-unit-test/use_chat_bot/response-fields.adoc[]
+=======
+=== 게시판의 제목이 비었을때 예외
 
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/http-response.adoc[]
+
+
+=== 게시판의 내용이 비었을때 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/http-response.adoc[]
+
+
+=== 게시판을 다른 사람이 수정하면 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/http-response.adoc[]
+
+
+
+=== 게시판이 존재하지 않으면 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-response.adoc[]

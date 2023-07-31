@@ -17,15 +17,15 @@ public class Choice {
         return index;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public Message getMessage() {
         return message;
     }
 
-    public void setMessage(Message message) {
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
+    public void setMessage(final Message message) {
         this.message = message;
     }
 }

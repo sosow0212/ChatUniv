@@ -1,5 +1,6 @@
 package mju.chatuniv.chat.application.dto.gpt;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ChatResponse {
@@ -7,10 +8,10 @@ public class ChatResponse {
     private List<Choice> choices;
 
     public List<Choice> getChoices() {
-        return choices;
+        return Collections.unmodifiableList(choices);
     }
 
-    public void setChoices(List<Choice> choices) {
+    public void setChoices(final List<Choice> choices) {
         this.choices = choices;
     }
 }

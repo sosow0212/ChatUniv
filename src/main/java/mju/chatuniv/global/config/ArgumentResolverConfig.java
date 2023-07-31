@@ -1,4 +1,4 @@
-package mju.chatuniv.config;
+package mju.chatuniv.global.config;
 
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.auth.support.JwtLoginResolver;

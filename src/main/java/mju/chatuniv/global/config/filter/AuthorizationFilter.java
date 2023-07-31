@@ -1,4 +1,4 @@
-package mju.chatuniv.config.filter;
+package mju.chatuniv.global.config.filter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

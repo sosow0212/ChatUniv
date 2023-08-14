@@ -47,8 +47,7 @@ public class BoardCommentService implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public CommentAllResponse findComments(final Long boardId, final Pageable pageable) {
-        findBoard(boardId);
-
+        validateExistenceOfBoard(boardId);
         Page<Comment> commentPageInfo = commentRepository.findAllByBoardId(pageable, boardId);
         CommentPageInfo pageInfo = CommentPageInfo.from(commentPageInfo);
 
@@ -57,6 +56,12 @@ public class BoardCommentService implements CommentService {
                 .collect(collectingAndThen(toList(), Collections::unmodifiableList));
 
         return CommentAllResponse.from(comments, pageInfo);
+    }
+
+    private void validateExistenceOfBoard(final Long boardId) {
+        if (!boardRepository.existsBoardById(boardId)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private Board findBoard(final Long boardId) {

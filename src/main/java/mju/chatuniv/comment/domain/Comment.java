@@ -48,18 +48,6 @@ public abstract class Comment {
         this.member = member;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
     private void validation(final String content) {
         if (isEmpty(content)) {
             throw new CommentContentBlankException(content);
@@ -70,7 +58,7 @@ public abstract class Comment {
         return content == null || content.isBlank();
     }
 
-    public void isWriter(final Member member) {
+    public void validateCorrectWriter(final Member member) {
         if (!this.member.equals(member)) {
             throw new MemberNotEqualsException();
         }
@@ -79,5 +67,17 @@ public abstract class Comment {
     public void update(final String content) {
         validation(content);
         this.content = content;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Member getMember() {
+        return member;
     }
 }

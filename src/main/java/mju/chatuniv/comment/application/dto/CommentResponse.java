@@ -7,7 +7,7 @@ public class CommentResponse {
     private final Long commentId;
     private final String content;
 
-    public CommentResponse(final Long commentId, final String content) {
+    private CommentResponse(final Long commentId, final String content) {
         this.commentId = commentId;
         this.content = content;
     }

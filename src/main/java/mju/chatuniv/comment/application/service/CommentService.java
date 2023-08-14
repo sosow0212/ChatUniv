@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
-    CommentResponse create(Long boardId, Member member, CommentRequest commentRequest);
+    CommentResponse create(Long id, Member member, CommentRequest commentRequest);
 
-    CommentAllResponse findComments(Long boardId, Pageable pageable);
+    CommentAllResponse findComments(Long id, Pageable pageable);
 }

@@ -22,7 +22,7 @@ public class CommonCommentService {
     public CommentResponse update(final Long commentId, final Member member, final CommentRequest commentRequest) {
         Comment comment = findComment(commentId);
 
-        comment.isWriter(member);
+        comment.validateCorrectWriter(member);
         comment.update(commentRequest.getContent());
 
         return CommentResponse.from(comment);
@@ -32,7 +32,7 @@ public class CommonCommentService {
     public void delete(final Long commentId, final Member member) {
         Comment comment = findComment(commentId);
 
-        comment.isWriter(member);
+        comment.validateCorrectWriter(member);
 
         commentRepository.delete(comment);
     }

@@ -58,7 +58,6 @@ include::{snippets}/member-controller-unit-test/change_member_password/request-f
 include::{snippets}/member-controller-unit-test/change_member_password/http-response.adoc[]
 include::{snippets}/member-controller-unit-test/change_member_password/response-fields.adoc[]
 
-
 == Board
 
 === 게시판 생성
@@ -74,7 +73,6 @@ include::{snippets}/board-controller-unit-test/create_board/request-fields.adoc[
 include::{snippets}/board-controller-unit-test/create_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/create_board/response-fields.adoc[]
 
-
 === 게시판 단건 조회
 
 ==== 요청
@@ -87,7 +85,6 @@ include::{snippets}/board-controller-unit-test/find_board/request-headers.adoc[]
 include::{snippets}/board-controller-unit-test/find_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/find_board/response-fields.adoc[]
 
-
 === 게시판 전체 조회
 
 ==== 요청
@@ -99,7 +96,6 @@ include::{snippets}/board-controller-unit-test/find_all_boards/request-headers.a
 
 include::{snippets}/board-controller-unit-test/find_all_boards/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/find_all_boards/response-fields.adoc[]
-
 
 === 게시판 수정
 
@@ -114,7 +110,6 @@ include::{snippets}/board-controller-unit-test/update_board/request-fields.adoc[
 include::{snippets}/board-controller-unit-test/update_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/update_board/response-fields.adoc[]
 
-
 === 게시판 삭제
 
 ==== 요청
@@ -126,7 +121,42 @@ include::{snippets}/board-controller-unit-test/delete_board/request-headers.adoc
 
 include::{snippets}/board-controller-unit-test/delete_board/http-response.adoc[]
 
+== 채팅
 
+=== 새로운 채팅방 생성
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-response.adoc[]
+
+=== 기존 채팅방 입장
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
+
+=== 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_chat_bot/response-fields.adoc[]
+=======
 === 게시판의 제목이 비었을때 예외
 
 ==== 요청
@@ -174,8 +204,3 @@ include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_boa
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-response.adoc[]
-
-
-
-
-

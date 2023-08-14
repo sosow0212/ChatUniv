@@ -73,6 +73,9 @@ dependencies {
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'io.rest-assured:rest-assured:4.4.0'
 
+    // jasypt
+    implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3"
+
     // slf4j
     implementation 'org.slf4j:slf4j-api:1.7.31'
 }

@@ -1,6 +1,7 @@
 package mju.chatuniv.comment.domain;
 
 import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
+import mju.chatuniv.global.domain.BaseEntity;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.hibernate.annotations.OnDelete;
@@ -24,7 +25,7 @@ import javax.persistence.Table;
 @Table(name = "COMMENT")
 @DiscriminatorColumn
 
-public abstract class Comment {
+public abstract class Comment extends BaseEntity {
 
     private static final int MAX_CONTENT_LENGTH = 500;
 

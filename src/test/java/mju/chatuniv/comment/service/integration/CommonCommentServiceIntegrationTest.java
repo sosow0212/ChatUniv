@@ -3,13 +3,12 @@ package mju.chatuniv.comment.service.integration;
 import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardRequest;
-import mju.chatuniv.comment.application.dto.CommentAllResponse;
 import mju.chatuniv.comment.application.dto.CommentRequest;
-import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.BoardCommentService;
-import mju.chatuniv.comment.application.service.CommonCommentService;
 import mju.chatuniv.comment.application.service.CommentService;
-import mju.chatuniv.comment.controller.intergration.BeanUtils;
+import mju.chatuniv.comment.application.service.CommonCommentService;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.presentation.intergration.BeanUtils;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberResponse;
@@ -20,11 +19,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -74,12 +73,12 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
                 CommentRequest commentRequest = new CommentRequest("initContent");
 
                 //when
-                CommentResponse commentResponse = commentService.create(id, member, commentRequest);
+                Comment comment = commentService.create(id, member, commentRequest);
 
                 //then
                 assertAll(
-                        () -> assertThat(commentResponse.getCommentId()).isEqualTo(1L),
-                        () -> assertThat(commentResponse.getContent()).isEqualTo(commentRequest.getContent())
+                        () -> assertThat(comment.getId()).isEqualTo(1L),
+                        () -> assertThat(comment.getContent()).isEqualTo(commentRequest.getContent())
                 );
             }));
         });
@@ -99,15 +98,15 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
                 Pageable pageable = getPageable(commentService, id);
 
                 //when
-                CommentAllResponse comments = commentService.findComments(id, pageable);
+                Page<Comment> comments = commentService.findComments(id, pageable);
 
                 //then
                 assertAll(
-                        () -> assertThat(comments.getComments().size()).isEqualTo(4),
-                        () -> assertThat(comments.getCommentPageInfo().getNowPage()).isEqualTo(0),
-                        () -> assertThat(comments.getCommentPageInfo().getTotalPage()).isEqualTo(4),
-                        () -> assertThat(comments.getCommentPageInfo().getTotalElements()).isEqualTo(15),
-                        () -> assertThat(comments.getCommentPageInfo().isHasNextPage()).isTrue()
+                        () -> assertThat(comments.getSize()).isEqualTo(4),
+                        () -> assertThat(comments.getNumber()).isEqualTo(0),
+                        () -> assertThat(comments.getTotalPages()).isEqualTo(4),
+                        () -> assertThat(comments.getTotalElements()).isEqualTo(15),
+                        () -> assertThat(comments.hasNext()).isTrue()
                 );
             }));
         });
@@ -130,7 +129,7 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
                 CommentRequest commentUpdateRequest = new CommentRequest("updateContent");
 
                 //when
-                CommentResponse comment = commonCommentService.update(commentId, member, commentUpdateRequest);
+                Comment comment = commonCommentService.update(commentId, member, commentUpdateRequest);
 
                 //then
                 assertThat(comment.getContent()).isEqualTo(commentUpdateRequest.getContent());
@@ -152,14 +151,14 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
                 Long commentId = 1L;
                 CommentRequest commentRequest = new CommentRequest("initContent");
                 boardCommentService.create(id, member, commentRequest);
-                CommentAllResponse beforeDeleteComments = commentService.findComments(id, PageRequest.of(0, 10));
+                Page<Comment> beforeDeleteComments = commentService.findComments(id, PageRequest.of(0, 10));
 
                 //when
                 commonCommentService.delete(commentId, member);
 
                 //then
-                CommentAllResponse afterDeleteComments = boardCommentService.findComments(id, PageRequest.of(0, 10));
-                assertThat(beforeDeleteComments.getComments().size() - 1).isEqualTo(afterDeleteComments.getComments().size());
+                Page<Comment> afterDeleteComments = boardCommentService.findComments(id, PageRequest.of(0, 10));
+                assertThat(beforeDeleteComments.getContent().size() - 1).isEqualTo(afterDeleteComments.getContent().size());
             }));
         });
         return dynamicTestList;

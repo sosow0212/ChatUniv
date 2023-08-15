@@ -156,7 +156,7 @@ include::{snippets}/chat-controller-unit-test/use_chat_bot/http-request.adoc[]
 
 include::{snippets}/chat-controller-unit-test/use_chat_bot/http-response.adoc[]
 include::{snippets}/chat-controller-unit-test/use_chat_bot/response-fields.adoc[]
-=======
+
 === 게시판의 제목이 비었을때 예외
 
 ==== 요청

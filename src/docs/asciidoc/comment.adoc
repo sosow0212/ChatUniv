@@ -1,0 +1,58 @@
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+== Comment
+
+=== 댓글 수정
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/update_comment/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/request-headers.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/common-comment-controller-unit-test/update_comment/http-response.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/response-fields.adoc[]
+
+=== 댓글 삭제
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/delete_comment/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/delete_comment/request-headers.adoc[]
+
+
+==== 응답
+
+include::{snippets}/common-comment-controller-unit-test/delete_comment/http-response.adoc[]
+
+
+=== 게시판 댓글 생성
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/create_board/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/request-headers.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/create_board/http-response.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/response-fields.adoc[]
+
+=== 게시판 id로 댓글 조회
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/http-response.adoc[]
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/response-fields.adoc[]

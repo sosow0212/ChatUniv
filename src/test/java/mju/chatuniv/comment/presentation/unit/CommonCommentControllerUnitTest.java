@@ -1,12 +1,11 @@
-package mju.chatuniv.comment.controller.unit;
+package mju.chatuniv.comment.presentation.unit;
 
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.comment.application.dto.CommentRequest;
-import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.CommonCommentService;
-import mju.chatuniv.comment.controller.CommentController;
 import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.presentation.controller.CommentController;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
 import mju.chatuniv.fixture.member.MemberFixture;
@@ -72,9 +71,8 @@ public class CommonCommentControllerUnitTest {
         // given
         CommentRequest commentRequest = new CommentRequest("updateComment");
         comment.update("updateComment");
-        CommentResponse commentResponse = CommentResponse.from(comment);
 
-        given(commonCommentService.update(anyLong(), any(Member.class), any(CommentRequest.class))).willReturn(commentResponse);
+        given(commonCommentService.update(anyLong(), any(Member.class), any(CommentRequest.class))).willReturn(comment);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/comments/1"), commentRequest)

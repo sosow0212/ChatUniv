@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.application.dto;
+package mju.chatuniv.comment.presentation.dto;
 
 import mju.chatuniv.comment.domain.Comment;
 import org.springframework.data.domain.Page;

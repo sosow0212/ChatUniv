@@ -1,15 +1,12 @@
-package mju.chatuniv.comment.controller.unit;
+package mju.chatuniv.comment.presentation.unit;
 
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.comment.application.dto.CommentAllResponse;
-import mju.chatuniv.comment.application.dto.CommentPageInfo;
 import mju.chatuniv.comment.application.dto.CommentRequest;
-import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.application.service.BoardCommentService;
-import mju.chatuniv.comment.controller.BoardCommentController;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.presentation.controller.BoardCommentController;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
 import mju.chatuniv.fixture.member.MemberFixture;
@@ -32,7 +29,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
@@ -81,10 +77,9 @@ public class BoardCommentControllerUnitTest {
         Board board = BoardFixture.createBoard(member);
         CommentRequest commentRequest = new CommentRequest("content");
         BoardComment boardComment = CommentFixture.createBoardComment(member, board);
-        CommentResponse commentResponse = CommentResponse.from(boardComment);
 
         given(boardCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class)))
-                .willReturn(commentResponse);
+                .willReturn(boardComment);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(post("/api/boards/1/comments"), commentRequest)
@@ -111,9 +106,10 @@ public class BoardCommentControllerUnitTest {
         Member member = MemberFixture.createMember();
         Board board = BoardFixture.createBoard(member);
         List<Comment> comments = makeBoardComments(member, board);
-        CommentAllResponse commentAllResponse = makeCommentAllResponse(comments);
+        Pageable pageable = PageRequest.of(0, 4);
+        Page<Comment> pagedBoardComments = new PageImpl<>(comments, pageable, 10);
 
-        given(boardCommentService.findComments(anyLong(), any(Pageable.class))).willReturn(commentAllResponse);
+        given(boardCommentService.findComments(anyLong(), any(Pageable.class))).willReturn(pagedBoardComments);
 
         // when & then
         // nowPage = 0, totalPage = 3, totalElements = 10, hasNextPage = true
@@ -149,16 +145,16 @@ public class BoardCommentControllerUnitTest {
         return comments;
     }
 
-    private CommentAllResponse makeCommentAllResponse(final List<Comment> comments) {
-        Pageable pageable = PageRequest.of(0, 4);
-        Page<Comment> pagedBoardComments = new PageImpl<>(comments, pageable, 10);
-        CommentPageInfo commentPageInfo = CommentPageInfo.from(pagedBoardComments);
-
-        List<CommentResponse> commentResponses = pagedBoardComments.stream()
-                .limit(pagedBoardComments.getSize())
-                .map(CommentResponse::from)
-                .collect(Collectors.toList());
-
-        return CommentAllResponse.from(commentResponses, commentPageInfo);
-    }
+//    private CommentAllResponse makeCommentAllResponse(final List<Comment> comments) {
+//        Pageable pageable = PageRequest.of(0, 4);
+//        Page<Comment> pagedBoardComments = new PageImpl<>(comments, pageable, 10);
+//        CommentPageInfo commentPageInfo = CommentPageInfo.from(pagedBoardComments);
+//
+//        List<CommentResponse> commentResponses = pagedBoardComments.stream()
+//                .limit(pagedBoardComments.getSize())
+//                .map(CommentResponse::from)
+//                .collect(Collectors.toList());
+//
+//        return CommentAllResponse.from(commentResponses, commentPageInfo);
+//    }
 }

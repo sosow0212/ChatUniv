@@ -42,9 +42,9 @@ public class BoardCommentService implements CommentService {
         return commentRepository.findAllByBoardId(pageable, boardId);
     }
 
-        private void validateExistenceOfBoard(final Long boardId) {
+    private void validateExistenceOfBoard(final Long boardId) {
         if (!boardRepository.existsBoardById(boardId)) {
-            throw new IllegalArgumentException();
+            throw new BoardNotFoundException(boardId);
         }
     }
 

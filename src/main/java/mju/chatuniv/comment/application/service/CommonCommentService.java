@@ -1,7 +1,6 @@
 package mju.chatuniv.comment.application.service;
 
 import mju.chatuniv.comment.application.dto.CommentRequest;
-import mju.chatuniv.comment.application.dto.CommentResponse;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
@@ -19,13 +18,13 @@ public class CommonCommentService {
     }
 
     @Transactional
-    public CommentResponse update(final Long commentId, final Member member, final CommentRequest commentRequest) {
+    public Comment update(final Long commentId, final Member member, final CommentRequest commentRequest) {
         Comment comment = findComment(commentId);
 
         comment.validateCorrectWriter(member);
         comment.update(commentRequest.getContent());
 
-        return CommentResponse.from(comment);
+        return comment;
     }
 
     @Transactional

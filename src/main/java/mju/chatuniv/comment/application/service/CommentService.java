@@ -1,14 +1,14 @@
 package mju.chatuniv.comment.application.service;
 
-import mju.chatuniv.comment.application.dto.CommentAllResponse;
 import mju.chatuniv.comment.application.dto.CommentRequest;
-import mju.chatuniv.comment.application.dto.CommentResponse;
+import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.member.domain.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
 
-    CommentResponse create(Long id, Member member, CommentRequest commentRequest);
+    Comment create(Long id, Member member, CommentRequest commentRequest);
 
-    CommentAllResponse findComments(Long id, Pageable pageable);
+    Page<Comment> findComments(Long id, Pageable pageable);
 }

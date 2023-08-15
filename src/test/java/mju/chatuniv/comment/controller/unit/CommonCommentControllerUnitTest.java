@@ -34,6 +34,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -84,6 +85,9 @@ public class CommonCommentControllerUnitTest {
                 .andDo(customDocument("update_comment",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글의 내용")
                         ),
                         responseFields(
                                 fieldWithPath("commentId").description("작성한 댓글의 id"),

@@ -1,10 +1,10 @@
-package mju.chatuniv.comment.presentation.controller;
+package mju.chatuniv.comment.controller.controller;
 
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.service.CommonCommentService;
+import mju.chatuniv.comment.controller.dto.CommentResponse;
 import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.presentation.dto.CommentResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;

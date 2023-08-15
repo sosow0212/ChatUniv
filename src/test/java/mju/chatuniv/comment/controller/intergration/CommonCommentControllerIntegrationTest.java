@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.presentation.intergration;
+package mju.chatuniv.comment.controller.intergration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

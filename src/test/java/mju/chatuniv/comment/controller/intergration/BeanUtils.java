@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.presentation.intergration;
+package mju.chatuniv.comment.controller.intergration;
 
 import mju.chatuniv.comment.application.service.CommentService;
 import org.springframework.context.ApplicationContext;

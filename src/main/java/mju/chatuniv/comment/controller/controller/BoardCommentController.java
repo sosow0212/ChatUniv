@@ -1,11 +1,11 @@
-package mju.chatuniv.comment.presentation.controller;
+package mju.chatuniv.comment.controller.controller;
 
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.service.BoardCommentService;
+import mju.chatuniv.comment.controller.dto.CommentAllResponse;
+import mju.chatuniv.comment.controller.dto.CommentResponse;
 import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.presentation.dto.CommentAllResponse;
-import mju.chatuniv.comment.presentation.dto.CommentResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

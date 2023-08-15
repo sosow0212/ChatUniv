@@ -1,11 +1,11 @@
-package mju.chatuniv.comment.presentation.unit;
+package mju.chatuniv.comment.controller.unit;
 
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.service.CommonCommentService;
+import mju.chatuniv.comment.controller.controller.CommentController;
 import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.presentation.controller.CommentController;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
 import mju.chatuniv.fixture.member.MemberFixture;

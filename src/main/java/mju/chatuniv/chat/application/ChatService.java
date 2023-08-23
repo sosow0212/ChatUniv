@@ -1,7 +1,6 @@
 package mju.chatuniv.chat.application;
 
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
 import mju.chatuniv.chat.application.dto.gpt.ChatRequest;
 import mju.chatuniv.chat.application.dto.gpt.ChatResponse;
 import mju.chatuniv.chat.application.dto.gpt.Message;
@@ -60,7 +59,7 @@ public class ChatService {
     }
 
     @Transactional
-    public ConversationResponse useChatBot(final String prompt, final Long chatId) {
+    public Conversation useChatBot(final String prompt, final Long chatId) {
         // TODO: 성능 개선 (batch, 도메인)
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
@@ -72,8 +71,7 @@ public class ChatService {
         List<Word> newWords = aleadyBeingWords.findNotContainsWordsFromOthers(pureWordsFromPrompt.getWords());
         wordRepository.saveAll(newWords);
 
-        Conversation conversation = conversationRepository.save(Conversation.from(prompt, getChatBotRawAnswer(prompt), chat));
-        return ConversationResponse.from(conversation);
+        return conversationRepository.save(Conversation.from(prompt, getChatBotRawAnswer(prompt), chat));
     }
 
     private String getChatBotRawAnswer(final String prompt) {

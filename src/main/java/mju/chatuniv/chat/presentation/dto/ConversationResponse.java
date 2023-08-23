@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.application.dto.chat;
+package mju.chatuniv.chat.presentation.dto;
 
 import mju.chatuniv.chat.domain.chat.Conversation;
 

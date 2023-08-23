@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.internal.RestAssuredResponseImpl;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,14 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
-@Sql(value = "/data.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+public class AcceptanceTest extends IntegrationTest {
 
     @LocalServerPort
     private int port;

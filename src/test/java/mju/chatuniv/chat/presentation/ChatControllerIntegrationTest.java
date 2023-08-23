@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.controller;
+package mju.chatuniv.chat.presentation;
 
 import io.restassured.RestAssured;
 import mju.chatuniv.auth.application.AuthService;

@@ -1,10 +1,11 @@
-package mju.chatuniv.chat.controller;
+package mju.chatuniv.chat.presentation;
 
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.chat.application.ChatService;
 import mju.chatuniv.chat.application.dto.chat.ChatPromptRequest;
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
+import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.presentation.dto.ConversationResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ public class ChatController {
     @PostMapping("/{chatId}")
     public ResponseEntity<ConversationResponse> useChatBot(@RequestBody final ChatPromptRequest prompt,
                                                            @PathVariable final Long chatId) {
-        return ResponseEntity.ok(chatService.useChatBot(prompt.getPrompt(), chatId));
+        Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId);
+        return ResponseEntity.ok(ConversationResponse.from(conversation));
     }
 }

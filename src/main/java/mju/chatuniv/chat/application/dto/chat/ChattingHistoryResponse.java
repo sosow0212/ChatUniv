@@ -2,6 +2,7 @@ package mju.chatuniv.chat.application.dto.chat;
 
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.presentation.dto.ConversationResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

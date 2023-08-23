@@ -8,26 +8,13 @@ import io.restassured.response.Response;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.function.Executable;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest extends IntegrationTest {
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = this.port;
-    }
 
     protected String 로그인() {
         생성요청("/api/auth/sign-up", new MemberCreateRequest("a@a.com", "1234"));
@@ -86,7 +73,7 @@ public class AcceptanceTest extends IntegrationTest {
                 .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put(url)
+                .patch(url)
                 .then().log().all()
                 .extract();
     }

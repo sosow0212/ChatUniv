@@ -129,7 +129,7 @@ class ChatControllerUnitTest {
         Conversation response = createConversation();
         ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
 
-        when(chatService.useChatBot(request.getPrompt(), chatId)).thenReturn(response);
+        when(chatService.useRawChatBot(request.getPrompt(), chatId)).thenReturn(response);
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}", chatId)

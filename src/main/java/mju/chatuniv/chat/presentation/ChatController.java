@@ -42,7 +42,7 @@ public class ChatController {
     @PostMapping("/{chatId}")
     public ResponseEntity<ConversationResponse> useChatBot(@RequestBody final ChatPromptRequest prompt,
                                                            @PathVariable final Long chatId) {
-        Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId);
+        Conversation conversation = chatService.useRawChatBot(prompt.getPrompt(), chatId);
         return ResponseEntity.ok(ConversationResponse.from(conversation));
     }
 }

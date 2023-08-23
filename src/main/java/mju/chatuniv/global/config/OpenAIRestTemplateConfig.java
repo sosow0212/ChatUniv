@@ -9,6 +9,9 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class OpenAIRestTemplateConfig {
 
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER_TOKEN = "Bearer ";
+
     @Value("${api.gpt_key}")
     private String API_KEY;
 
@@ -16,9 +19,10 @@ public class OpenAIRestTemplateConfig {
     @Qualifier("openaiRestTemplate")
     public RestTemplate openaiRestTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        
+
         restTemplate.getInterceptors().add(((request, body, execution) -> {
-            request.getHeaders().add("Authorization", "Bearer " + API_KEY);
+            request.getHeaders()
+                    .add(AUTHORIZATION, BEARER_TOKEN + API_KEY);
             return execution.execute(request, body);
         }));
 

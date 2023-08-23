@@ -4,8 +4,11 @@ import mju.chatuniv.member.domain.Member;
 
 public class MemberResponse {
 
-    private final Long memberId;
-    private final String email;
+    private Long memberId;
+    private String email;
+
+    private MemberResponse() {
+    }
 
     private MemberResponse(final Long memberId, final String email) {
         this.memberId = memberId;

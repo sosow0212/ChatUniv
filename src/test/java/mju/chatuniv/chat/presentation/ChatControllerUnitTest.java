@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.controller;
+package mju.chatuniv.chat.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -8,7 +8,6 @@ import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.chat.application.ChatService;
 import mju.chatuniv.chat.application.dto.chat.ChatPromptRequest;
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.chat.application.dto.chat.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.member.domain.Member;
@@ -130,7 +129,7 @@ class ChatControllerUnitTest {
         Conversation response = createConversation();
         ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
 
-        when(chatService.useChatBot(request.getPrompt(), chatId)).thenReturn(ConversationResponse.from(response));
+        when(chatService.useRawChatBot(request.getPrompt(), chatId)).thenReturn(response);
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}", chatId)

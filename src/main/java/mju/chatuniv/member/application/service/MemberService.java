@@ -1,7 +1,6 @@
 package mju.chatuniv.member.application.service;
 
 import mju.chatuniv.member.application.dto.ChangePasswordRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
@@ -19,12 +18,12 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse getUsingMemberIdAndEmail(final Member member){
-        return MemberResponse.from(member);
+    public Member getUsingMemberIdAndEmail(final Member member){
+        return member;
     }
 
     @Transactional
-    public MemberResponse changeMembersPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
+    public Member changeMembersPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
         if( !member.isPasswordSameWith(changePasswordRequest.getCurrentPassword())) {
             throw new NotCurrentPasswordException();
         }
@@ -33,7 +32,7 @@ public class MemberService {
 
         member.changePassword(changePasswordRequest.getNewPassword());
 
-        return MemberResponse.from(member);
+        return member;
     }
 
     public void validateNewPassword(final ChangePasswordRequest changePasswordRequest) {

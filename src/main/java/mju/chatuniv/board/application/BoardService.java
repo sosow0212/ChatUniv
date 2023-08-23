@@ -3,10 +3,10 @@ package mju.chatuniv.board.application;
 import mju.chatuniv.board.application.dto.BoardAllResponse;
 import mju.chatuniv.board.application.dto.BoardPageInfo;
 import mju.chatuniv.board.application.dto.BoardRequest;
-import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.presentation.dto.BoardResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,18 +33,19 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponse create(final Member member, final BoardRequest boardRequest) {
+    public Board create(final Member member, final BoardRequest boardRequest) {
         Board board = Board.from(boardRequest.getTitle(), boardRequest.getContent(), member);
-        boardRepository.save(board);
-        return BoardResponse.from(board);
+        return boardRepository.save(board);
     }
 
     @Transactional(readOnly = true)
-    public BoardResponse findBoard(final Long boardId) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new BoardNotFoundException(boardId));
+    public Board findBoard(final Long boardId) {
+        return getBoard(boardId);
+    }
 
-        return BoardResponse.from(board);
+    private Board getBoard(final Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(boardId));
     }
 
     @Transactional(readOnly = true)
@@ -54,27 +55,25 @@ public class BoardService {
         BoardPageInfo boardPageInfo = BoardPageInfo.from(sortedBoards);
 
         List<BoardResponse> boards = sortedBoards.stream()
-            .map(BoardResponse::from)
-            .collect(collectingAndThen(toList(), Collections::unmodifiableList));
+                .map(BoardResponse::from)
+                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
 
-        return BoardAllResponse.from(boards, boardPageInfo);
+        return BoardAllResponse.of(boards, boardPageInfo);
     }
 
     @Transactional
-    public BoardResponse update(final Long boardId, final Member member, final BoardRequest boardRequest) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new BoardNotFoundException(boardId));
+    public Board update(final Long boardId, final Member member, final BoardRequest boardRequest) {
+        Board board = getBoard(boardId);
 
         board.checkWriter(member);
         board.update(boardRequest.getTitle(), boardRequest.getContent());
 
-        return BoardResponse.from(board);
+        return board;
     }
 
     @Transactional
     public void delete(final Long boardId, final Member member) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new BoardNotFoundException(boardId));
+        Board board = getBoard(boardId);
 
         board.checkWriter(member);
         boardRepository.delete(board);

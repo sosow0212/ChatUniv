@@ -39,7 +39,7 @@ public class JwtLoginResolverTest extends IntegrationTest {
         // given
         Member member = Member.from(1L, "a@a.com", "1234");
         jwtAuthService.register(new MemberCreateRequest(member.getEmail(), member.getPassword()));
-        String accessToken = jwtAuthService.login(new MemberLoginRequest("a@a.com", "1234")).getAccessToken();
+        String accessToken = jwtAuthService.login(new MemberLoginRequest("a@a.com", "1234"));
         String header = "Bearer " + accessToken;
         given(webRequest.getHeader(HttpHeaders.AUTHORIZATION)).willReturn(header);
 

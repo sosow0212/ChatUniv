@@ -6,7 +6,7 @@ on:
       - master
       - develop
     paths:
-      - src/**
+      - ./
       - .github/**
 
 permissions:
@@ -19,7 +19,7 @@ jobs:
     environment: test
     defaults:
       run:
-        working-directory: ./src
+        working-directory: ./
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11

@@ -4,12 +4,10 @@ import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardAllResponse;
 import mju.chatuniv.board.application.dto.BoardRequest;
-import mju.chatuniv.board.application.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +42,9 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
-        MemberResponse register = authService.register(memberCreateRequest);
-        member = memberRepository.findByEmail(register.getEmail()).get();
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
+        authService.register(memberCreateRequest);
+        member = memberRepository.findByEmail("a@a.com").get();
         BoardRequest boardRequest = new BoardRequest("initTitle", "initContent");
         boardService.create(member, boardRequest);
     }
@@ -58,13 +56,13 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         BoardRequest boardRequest = new BoardRequest("title", "content");
 
         //when
-        BoardResponse board = boardService.create(member, boardRequest);
+        Board board = boardService.create(member, boardRequest);
 
         //then
-        Board result = boardRepository.findById(board.getBoardId()).get();
+        Board result = boardRepository.findById(board.getId()).get();
         assertAll(
-            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
-            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+                () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+                () -> assertThat(result.getContent()).isEqualTo(board.getContent())
         );
     }
 
@@ -75,12 +73,12 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         Long boardId = 1L;
 
         //when
-        BoardResponse board = boardService.findBoard(boardId);
+        Board board = boardService.findBoard(boardId);
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("initContent")
+                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -95,8 +93,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(boards.getBoards().size()).isEqualTo(1),
-            () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
+                () -> assertThat(boards.getBoards().size()).isEqualTo(1),
+                () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
         );
     }
 
@@ -108,12 +106,12 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
 
         //when
-        BoardResponse board = boardService.update(boardId, member, boardRequest);
+        Board board = boardService.update(boardId, member, boardRequest);
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("updateContent")
+                () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("updateContent")
         );
     }
 

@@ -7,11 +7,10 @@ import mju.chatuniv.comment.application.dto.CommentRequest;
 import mju.chatuniv.comment.application.service.BoardCommentService;
 import mju.chatuniv.comment.application.service.CommentService;
 import mju.chatuniv.comment.application.service.CommonCommentService;
-import mju.chatuniv.comment.controller.intergration.BeanUtils;
 import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.presentation.intergration.BeanUtils;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,8 +52,8 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @BeforeEach
     void setUp() {
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
-        MemberResponse register = authService.register(memberCreateRequest);
-        member = memberRepository.findByEmail(register.getEmail()).get();
+        authService.register(memberCreateRequest);
+        member = memberRepository.findByEmail(memberCreateRequest.getEmail()).get();
         createBoard();
     }
 

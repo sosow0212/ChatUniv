@@ -1,12 +1,11 @@
 package mju.chatuniv.auth.service;
 
 import mju.chatuniv.auth.application.AuthService;
-import mju.chatuniv.auth.application.dto.TokenResponse;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
+import mju.chatuniv.auth.presentation.dto.TokenResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -33,10 +32,10 @@ class AuthServiceIntegrationTest extends IntegrationTest {
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
 
         // when
-        MemberResponse member = authService.register(memberCreateRequest);
+        Member member = authService.register(memberCreateRequest);
 
         // then
-        Member result = memberRepository.findById(member.getMemberId()).get();
+        Member result = memberRepository.findById(member.getId()).get();
         assertThat(result.getEmail()).isEqualTo(member.getEmail());
     }
 
@@ -49,9 +48,9 @@ class AuthServiceIntegrationTest extends IntegrationTest {
         MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberCreateRequest.getEmail(), memberCreateRequest.getPassword());
 
         // when
-        TokenResponse token = authService.login(memberLoginRequest);
+        String token = authService.login(memberLoginRequest);
 
         // then
-        assertThat(jwtTokenProvider.getPayload(token.getAccessToken())).isEqualTo(memberCreateRequest.getEmail());
+        assertThat(jwtTokenProvider.getPayload(TokenResponse.from(token).getAccessToken())).isEqualTo(memberCreateRequest.getEmail());
     }
 }

@@ -2,7 +2,6 @@ package mju.chatuniv.chat.presentation;
 
 import io.restassured.RestAssured;
 import mju.chatuniv.auth.application.AuthService;
-import mju.chatuniv.auth.application.dto.TokenResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -10,7 +9,6 @@ import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,11 +40,10 @@ public class ChatControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberResponse register = authService.register(new MemberCreateRequest("a@a.com", "1234"));
-        member = memberRepository.findByEmail(register.getEmail()).get();
+        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        member = memberRepository.findByEmail("a@a.com").get();
         MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "1234");
-        TokenResponse tokenResponse = authService.login(memberLoginRequest);
-        token = tokenResponse.getAccessToken();
+        token = authService.login(memberLoginRequest);
     }
 
     @DisplayName("채팅방을 생성한다.")

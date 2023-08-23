@@ -2,7 +2,6 @@ package mju.chatuniv.member.service;
 
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.ChangePasswordRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.application.service.MemberService;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
@@ -26,13 +25,10 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
         //given
         Member member = createMember();
 
-        //when
-        MemberResponse response = memberService.getUsingMemberIdAndEmail(member);
-
         //then
         assertAll(
-                () -> assertEquals(expected, response.getMemberId() == id),
-                () -> assertEquals(expected, response.getEmail().equals(email))
+                () -> assertEquals(expected, member.getId() == id),
+                () -> assertEquals(expected, member.getEmail().equals(email))
         );
     }
 

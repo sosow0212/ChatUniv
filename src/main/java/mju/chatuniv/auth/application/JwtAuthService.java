@@ -1,10 +1,8 @@
 package mju.chatuniv.auth.application;
 
-import mju.chatuniv.auth.application.dto.TokenResponse;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.application.dto.MemberLoginRequest;
-import mju.chatuniv.member.application.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
@@ -25,23 +23,19 @@ public class JwtAuthService implements AuthService {
     }
 
     @Transactional
-    public MemberResponse register(final MemberCreateRequest memberCreateRequest) {
-        Member member = memberRepository.save(Member.from(memberCreateRequest.getEmail(),
+    public Member register(final MemberCreateRequest memberCreateRequest) {
+        return memberRepository.save(Member.from(memberCreateRequest.getEmail(),
                 memberCreateRequest.getPassword()));
-
-        return MemberResponse.from(member);
     }
 
     @Transactional(readOnly = true)
-    public TokenResponse login(final MemberLoginRequest memberLoginRequest) {
+    public String login(final MemberLoginRequest memberLoginRequest) {
         Member member = memberRepository.findByEmail(memberLoginRequest.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
 
         validateLogin(member, memberLoginRequest);
 
-        String accessToken = jwtTokenProvider.createAccessToken(memberLoginRequest.getEmail());
-
-        return new TokenResponse(accessToken);
+        return jwtTokenProvider.createAccessToken(memberLoginRequest.getEmail());
     }
 
     private void validateLogin(final Member member, final MemberLoginRequest memberLoginRequest) {

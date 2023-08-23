@@ -3,7 +3,6 @@ name: backend-test-ci
 on:
   pull_request:
     branches:
-      - master
       - develop
     paths:
       - ./

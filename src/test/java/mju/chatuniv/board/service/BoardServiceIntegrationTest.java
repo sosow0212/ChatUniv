@@ -2,10 +2,10 @@ package mju.chatuniv.board.service;
 
 import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
-import mju.chatuniv.board.application.dto.BoardAllResponse;
 import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.Member;
@@ -14,16 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Transactional
 public class BoardServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
@@ -86,15 +83,24 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
     @Test
     void find_all_boards() {
         //given
-        Pageable pageable = PageRequest.of(0, 10);
+
+        LongStream.range(1, 100)
+                .forEach(index -> {
+                    Board save = boardRepository.save(Board.from("title" + index, "content" + index, member));
+                    System.out.println("aaaaaaaaaa: " + save.getId());
+                });
 
         //when
-        BoardAllResponse boards = boardService.findAllBoards(pageable);
+        List<BoardPagingResponse> boards = boardService.findAllBoards(10L, 50L);
+
+        System.out.println("qqqqqq");
+        for (BoardPagingResponse b : boards) {
+            System.out.println(b.getBoardId());
+        }
 
         //then
         assertAll(
-                () -> assertThat(boards.getBoards().size()).isEqualTo(1),
-                () -> assertThat(boards.getBoardPageInfo().getNowPage()).isEqualTo(0)
+                () -> assertThat(boards.size()).isEqualTo(10)
         );
     }
 

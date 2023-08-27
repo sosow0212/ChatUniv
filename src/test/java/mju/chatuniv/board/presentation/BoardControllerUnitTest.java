@@ -3,12 +3,10 @@ package mju.chatuniv.board.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.board.application.BoardService;
-import mju.chatuniv.board.application.dto.BoardAllResponse;
-import mju.chatuniv.board.application.dto.BoardPageInfo;
 import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.board.presentation.dto.BoardResponse;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
@@ -25,20 +23,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -143,21 +140,14 @@ public class BoardControllerUnitTest {
     @Test
     void find_all_boards() throws Exception {
         // given
-        Board board = BoardFixture.createBoard(createMember());
-        BoardAllResponse boardAllResponse = getBoardAllResponse(board);
+        List<BoardPagingResponse> boardPagingResponses = getBoardAllResponse();
 
-        given(boardService.findAllBoards(any(Pageable.class))).willReturn(boardAllResponse);
+        given(boardService.findAllBoards(anyLong(), anyLong())).willReturn(boardPagingResponses);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards?page=0?size=10"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/all/{pageSize}/{boardId}", 10 , 1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.boards[0].boardId").value(board.getId()))
-                .andExpect(jsonPath("$.boards[0].title").value(board.getTitle()))
-                .andExpect(jsonPath("$.boards[0].content").value(board.getContent()))
-                .andExpect(jsonPath("$.boardPageInfo.totalPage").value(boardAllResponse.getBoardPageInfo().getTotalPage()))
-                .andExpect(jsonPath("$.boardPageInfo.nowPage").value(boardAllResponse.getBoardPageInfo().getNowPage()))
-                .andExpect(jsonPath("$.boardPageInfo.numberOfElements").value(boardAllResponse.getBoardPageInfo().getNumberOfElements()))
-                .andExpect(jsonPath("$.boardPageInfo.hasNextPage").value(boardAllResponse.getBoardPageInfo().isHasNextPage()))
+                .andExpect(jsonPath("$.boardPagingResponses.size()").value(10))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_all_boards",
                         requestHeaders(
@@ -165,12 +155,7 @@ public class BoardControllerUnitTest {
                         ),
                         responseFields(
                                 fieldWithPath("boards[0].boardId").description("게시판 전체 조회 후 반환된 board의 ID"),
-                                fieldWithPath("boards[0].title").description("게시판 전체 조회 후 반환된 board의 제목"),
-                                fieldWithPath("boards[0].content").description("게시판 전체 조회 후 반환된 board의 내용"),
-                                fieldWithPath("boardPageInfo.totalPage").description("게시판 전체 조회 후 반환된 전체 페이지"),
-                                fieldWithPath("boardPageInfo.nowPage").description("게시판 전체 조회 후 반환된 현재 페이지"),
-                                fieldWithPath("boardPageInfo.numberOfElements").description("게시판 전체 조회 후 반환된 갯수"),
-                                fieldWithPath("boardPageInfo.hasNextPage").description("게시판 전체 조회 후 다음 페이지가 존재하는지 여부")
+                                fieldWithPath("boards[0].title").description("게시판 전체 조회 후 반환된 board의 제목")
                         )
                 )).andReturn();
     }
@@ -330,14 +315,12 @@ public class BoardControllerUnitTest {
         );
     }
 
-    private BoardAllResponse getBoardAllResponse(final Board board) {
-        List<Board> boards = new ArrayList<>();
-        boards.add(board);
-        List<BoardResponse> responses = List.of(BoardResponse.from(board));
-
-        Page<Board> page = new PageImpl<>(boards);
-        BoardPageInfo pageInfo = BoardPageInfo.from(page);
-
-        return BoardAllResponse.of(responses, pageInfo);
+    private List<BoardPagingResponse> getBoardAllResponse() {
+        List<BoardPagingResponse> boards = new ArrayList<>();
+        LongStream.range(1, 10)
+                .forEach(index -> {
+                    boards.add(new BoardPagingResponse(index, "title" + index));
+                });
+        return boards;
     }
 }

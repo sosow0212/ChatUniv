@@ -1,6 +1,7 @@
 package mju.chatuniv.board.presentation.dto;
 
 import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 
 public class BoardResponse {
 
@@ -16,6 +17,11 @@ public class BoardResponse {
 
     public static BoardResponse from(final Board board) {
         return new BoardResponse(board.getId(), board.getTitle(), board.getContent());
+    }
+
+    // 테스트를 위한 코드 추가
+    public static BoardResponse from(final BoardPagingResponse pagingResponse) {
+        return new BoardResponse(pagingResponse.getBoardId(), pagingResponse.getTitle(), null);
     }
 
     public Long getBoardId() {

@@ -19,7 +19,6 @@ public class BoardResponse {
         return new BoardResponse(board.getId(), board.getTitle(), board.getContent());
     }
 
-    // 테스트를 위한 코드 추가
     public static BoardResponse from(final BoardPagingResponse pagingResponse) {
         return new BoardResponse(pagingResponse.getBoardId(), pagingResponse.getTitle(), null);
     }

@@ -17,21 +17,19 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    // no offset
     @Override
     public List<BoardPagingResponse> findBoards(final Long pageSize, final Long id) {
-
         return jpaQueryFactory
-                .select(Projections.fields(BoardPagingResponse.class,
-                        board.id,
-                        board.title))
-                .from(board)
-                .where(
-                        ltBoardId(id)
-                )
-                .orderBy(board.id.desc())
-                .limit(pageSize)
-                .fetch();
+            .select(Projections.constructor(BoardPagingResponse.class,
+                board.id.as("boardId"),
+                board.title))
+            .from(board)
+            .where(
+                ltBoardId(id)
+            )
+            .orderBy(board.id.desc())
+            .limit(pageSize)
+            .fetch();
     }
 
     private BooleanExpression ltBoardId(final Long boardId) {

@@ -58,8 +58,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         //then
         Board result = boardRepository.findById(board.getId()).get();
         assertAll(
-                () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
-                () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
         );
     }
 
@@ -74,8 +74,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-                () -> assertThat(board.getContent()).isEqualTo("initContent")
+            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -85,22 +85,17 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         //given
 
         LongStream.range(1, 100)
-                .forEach(index -> {
-                    Board save = boardRepository.save(Board.from("title" + index, "content" + index, member));
-                    System.out.println("aaaaaaaaaa: " + save.getId());
-                });
+            .forEach(index -> {
+                boardRepository.save(Board.from("title" + index, "content" + index, member));
+            });
 
         //when
         List<BoardPagingResponse> boards = boardService.findAllBoards(10L, 50L);
 
-        System.out.println("qqqqqq");
-        for (BoardPagingResponse b : boards) {
-            System.out.println(b.getBoardId());
-        }
-
         //then
         assertAll(
-                () -> assertThat(boards.size()).isEqualTo(10)
+            () -> assertThat(boards.size()).isEqualTo(10),
+            () -> assertThat(boards.get(0).getBoardId()).isEqualTo(49L)
         );
     }
 
@@ -116,8 +111,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
-                () -> assertThat(board.getContent()).isEqualTo("updateContent")
+            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+            () -> assertThat(board.getContent()).isEqualTo("updateContent")
         );
     }
 

@@ -11,7 +11,7 @@ public class AppConfig {
 
     private final EntityManager entityManager;
 
-    public AppConfig(EntityManager entityManager) {
+    public AppConfig(final EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

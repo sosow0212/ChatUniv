@@ -1,12 +1,5 @@
 package mju.chatuniv.board.domain;
 
-import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
-import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
-import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,8 +9,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
+import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
+import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
+@Table(name = "BOARD")
 public class Board {
 
     @Id

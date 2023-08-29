@@ -3,6 +3,9 @@ package mju.chatuniv.comment.presentation.intergration;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardRequest;
@@ -19,14 +22,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
 
 public class CommonCommentControllerIntegrationTest extends IntegrationTest {
 
@@ -75,7 +72,7 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
                         .auth().preemptive().oauth2(token)
                         .body(commentRequest)
                         .when()
-                        .post(uriProvider().get(index));
+                        .post(uriProvider());
 
                 // then
                 response.then()
@@ -94,19 +91,20 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
             CommentService commentService = commentServices.get(index);
             dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 // given
-                Pageable pageable = PageRequest.of(0, 10);
-                IntStream.range(0, 15).forEach(i -> {
+                Long pageSize = 10L;
+                Long boardId = 1L;
+                Long commentId = 5L;
+                IntStream.range(1, 15).forEach(i -> {
                     CommentRequest commentRequest = new CommentRequest("comment" + i);
-                    commentService.create(1L, member, commentRequest);
+                    commentService.create(boardId, member, commentRequest);
                 });
 
                 // when
                 Response response = RestAssured.given()
                         .contentType(ContentType.JSON)
                         .auth().preemptive().oauth2(token)
-                        .body(pageable)
                         .when()
-                        .get(uriProvider().get(index));
+                        .get(uriProvider(pageSize, boardId, commentId));
 
                 // then
                 response.then()
@@ -171,8 +169,12 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
         return dynamicTestList;
     }
 
-    private List<String> uriProvider() {
-        return List.of("/api/boards/1/comments");
+    private String uriProvider(final Long pageSize, final Long boardId, final Long commentId) {
+        return "/api/boards/" + pageSize + "/" + boardId + "/" + commentId;
+    }
+
+    private String uriProvider() {
+        return "/api/boards/1/comments";
     }
 
     private void createBoard() {

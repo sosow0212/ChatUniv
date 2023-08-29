@@ -1,5 +1,11 @@
 package mju.chatuniv.comment.service.unit;
 
+import static mju.chatuniv.fixture.member.MemberFixture.otherMember;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.comment.application.dto.CommentRequest;
@@ -23,13 +29,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static mju.chatuniv.fixture.member.MemberFixture.otherMember;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class CommonCommentServiceUnitTest {
@@ -57,7 +56,8 @@ public class CommonCommentServiceUnitTest {
     @DisplayName("댓글 수정시 댓글 기능을 가지는 도메인의 id가 존재하지 않는다면 예외를 발생한다.")
     @ParameterizedTest(name = "{index} : {0}")
     @MethodSource("exceptionProvider")
-    void throws_exception_when_update_comment_with_invalid_id(final String text, final Class<RuntimeException> expectedException) {
+    void throws_exception_when_update_comment_with_invalid_id(final String text,
+                                                              final Class<RuntimeException> expectedException) {
         //given
         Long wrongId = 2L;
         CommentRequest commentRequest = new CommentRequest("content");
@@ -72,7 +72,8 @@ public class CommonCommentServiceUnitTest {
     @DisplayName("댓글 삭제시 댓글 기능을 가지는 도메인의 id가 존재하지 않는다면 예외를 발생한다.")
     @ParameterizedTest(name = "{index} : {0}")
     @MethodSource("exceptionProvider")
-    void throws_exception_when_delete_comment_with_invalid_board_id(final String text, final Class<RuntimeException> expectedException) {
+    void throws_exception_when_delete_comment_with_invalid_board_id(final String text,
+                                                                    final Class<RuntimeException> expectedException) {
         //given
         Long wrongId = 2L;
 

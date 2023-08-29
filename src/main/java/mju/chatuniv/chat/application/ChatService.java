@@ -41,7 +41,7 @@ public class ChatService {
     }
 
     @Transactional
-    public Conversation useRawChatBot(final String prompt, final Long chatId) {
+    public Conversation useChatBot(final String prompt, final Long chatId, boolean isMild) {
         Chat chat = findChat(chatId);
 
         Words pureWords = Words.fromRawPrompt(prompt);
@@ -51,8 +51,17 @@ public class ChatService {
         List<Word> newWords = duplicatedWords.findNotContainsWordsFromOthers(pureWords.getWords());
         wordRepository.saveAll(newWords);
 
-        String rawAnswer = chatBot.getRawAnswer(prompt);
-        return conversationRepository.save(Conversation.from(prompt, rawAnswer, chat));
+        return getConversation(prompt, isMild, chat);
+    }
+
+    private Conversation getConversation(final String prompt, final boolean isMild, final Chat chat) {
+        if (isMild) {
+            String answer = chatBot.getMildAnswer(prompt);
+            return conversationRepository.save(Conversation.from(prompt, answer, chat));
+        }
+
+        String answer = chatBot.getRawAnswer(prompt);
+        return conversationRepository.save(Conversation.from(prompt, answer, chat));
     }
 
     private Chat findChat(final Long chatId) {

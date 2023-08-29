@@ -48,3 +48,9 @@ api:
     ENC(zUsQGAGTSZ/woKN2fkZXJ0uQarJHMrHivknfxQF311Ok3iWNeUc8ke5G2FSAOn06nflCIsbyGSqu5JeeeWnTXg==)
   gpt_mild_prefix_starter:
     ENC(cB4FSos0z/ETorq6kn9YWo3B3UR3E2bRSidT+1cBcvw5m+Y29/M9K/IQHeVgcTK1)
+
+logging:
+  slack:
+    webhook-uri: ENC(rNS4570hrSdkGfj6ofGoGVSYsxzmGQb5M54hOcIqqk0Bxdalxq1uJbFrfEw7+zzPtSCEuWIl2yRmtb91WJ7SD0+VLzZZpDI3BtbY7JBA3MxDF2V4U3FOcWgiQyo/bj6h)
+  config: classpath:logback-spring.xml
+

@@ -78,4 +78,7 @@ dependencies {
 
     // slf4j
     implementation 'org.slf4j:slf4j-api:1.7.31'
+
+    // logback-slack-appender
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }

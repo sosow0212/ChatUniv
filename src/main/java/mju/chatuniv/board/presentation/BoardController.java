@@ -1,5 +1,7 @@
 package mju.chatuniv.board.presentation;
 
+import java.util.List;
+import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardRequest;
@@ -19,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-
 @RequestMapping("/api/boards")
 @RestController
 public class BoardController {
@@ -33,7 +32,8 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<BoardResponse> create(@JwtLogin final Member member, @RequestBody @Valid final BoardRequest boardRequest) {
+    public ResponseEntity<BoardResponse> create(@JwtLogin final Member member,
+                                                @RequestBody @Valid final BoardRequest boardRequest) {
         Board board = boardService.create(member, boardRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(BoardResponse.from(board));
@@ -48,7 +48,7 @@ public class BoardController {
 
     @GetMapping("/all/{pageSize}/{boardId}")
     public ResponseEntity<BoardAllResponse> findAllBoards(@PathVariable("pageSize") final Long pageSize,
-                                                                      @PathVariable("boardId") final Long boardId) {
+                                                          @PathVariable("boardId") final Long boardId) {
 
         List<BoardPagingResponse> allBoards = boardService.findAllBoards(pageSize, boardId);
 

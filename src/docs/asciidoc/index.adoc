@@ -146,16 +146,28 @@ include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-requ
 include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
 include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
 
-=== 챗봇 사용
+=== 매운맛 챗봇 사용
 
 ==== 요청
 
-include::{snippets}/chat-controller-unit-test/use_chat_bot/http-request.adoc[]
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-request.adoc[]
 
 ==== 응답
 
-include::{snippets}/chat-controller-unit-test/use_chat_bot/http-response.adoc[]
-include::{snippets}/chat-controller-unit-test/use_chat_bot/response-fields.adoc[]
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/response-fields.adoc[]
+
+=== 순한맛 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/response-fields.adoc[]
+
 
 === 게시판의 제목이 비었을때 예외
 

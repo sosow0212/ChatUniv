@@ -39,10 +39,17 @@ public class ChatController {
         return ResponseEntity.ok(chatService.joinChattingRoom(chatId));
     }
 
-    @PostMapping("/{chatId}")
-    public ResponseEntity<ConversationResponse> useChatBot(@RequestBody final ChatPromptRequest prompt,
-                                                           @PathVariable final Long chatId) {
-        Conversation conversation = chatService.useRawChatBot(prompt.getPrompt(), chatId);
+    @PostMapping("/{chatId}/mild")
+    public ResponseEntity<ConversationResponse> useMildChatBot(@RequestBody final ChatPromptRequest prompt,
+                                                                @PathVariable final Long chatId) {
+        Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId, true);
+        return ResponseEntity.ok(ConversationResponse.from(conversation));
+    }
+
+    @PostMapping("/{chatId}/raw")
+    public ResponseEntity<ConversationResponse> useFunnyChatBot(@RequestBody final ChatPromptRequest prompt,
+                                                                @PathVariable final Long chatId) {
+        Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId, false);
         return ResponseEntity.ok(ConversationResponse.from(conversation));
     }
 }

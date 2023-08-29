@@ -40,7 +40,11 @@ jasypt:
 api:
   gpt_key:
     ENC(ebHdVzXHPdbW05xbVvOjiABzYS6QE6zpCVRy3w+80b3v3KTz1Bf45lqka9p60k8f9jycNeZ5SPWaVET8o4lyfg==)
-  gpt_prefix_helper:
+  gpt_raw_prefix_helper:
     ENC(LfFEuPY65+Gtl/N5rNp0XAADqEqx6nii9YEYKC01ZFsGlKO8zMtb1KdDFczZZiF0aCV5NpWmSuSjbRwgd2lKRd4afLYj6yLLDZUHA75LmPewIOqyXWRvnE98H1IP06evsrovf0I7cJyjgahX8n3TlzrHIhzFVCAjCWeP3rMHgAv7O9xigkMJZI1JhowtP6mt94orr+EkouvAx82mZjtZNL2CS3+ovWw78RNDDp77FHK7r/I5FL1arA==)
-  gpt_prefix_starter:
+  gpt_raw_prefix_starter:
     ENC(bbEXs6ATGgApf5kXjNkVhWN363hwbzXUrGOuc5rr2dBG4ZzJnxB9hYNWbyzH/dWTK4LcLfkkmhrU5yeSsKfzN7B0s9kPBvBB/JPVo10lUiDaiaDt1LSVhnnjVb/Axyzuy6QAjD7J0NM=)
+  gpt_mild_prefix_helper:
+    ENC(zUsQGAGTSZ/woKN2fkZXJ0uQarJHMrHivknfxQF311Ok3iWNeUc8ke5G2FSAOn06nflCIsbyGSqu5JeeeWnTXg==)
+  gpt_mild_prefix_starter:
+    ENC(cB4FSos0z/ETorq6kn9YWo3B3UR3E2bRSidT+1cBcvw5m+Y29/M9K/IQHeVgcTK1)

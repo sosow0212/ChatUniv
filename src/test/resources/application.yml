@@ -24,5 +24,7 @@ jasypt:
 
 api:
   gpt_key: service_key
-  gpt_prefix_helper: helper
-  gpt_prefix_starter: starter
+  gpt_raw_prefix_helper: helper
+  gpt_raw_prefix_starter: starter
+  gpt_mild_prefix_helper: helper
+  gpt_mild_prefix_starter: starter

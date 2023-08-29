@@ -119,24 +119,50 @@ class ChatControllerUnitTest {
                 ));
     }
 
-    @DisplayName("챗봇과 대화한다.")
+    @DisplayName("매운맛 챗봇과 대화한다.")
     @Test
-    void use_chat_bot() throws Exception {
+    void use_raw_chat_bot() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = createMember();
-
         Conversation response = createConversation();
         ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
 
-        when(chatService.useRawChatBot(request.getPrompt(), chatId)).thenReturn(response);
+        when(chatService.useChatBot(request.getPrompt(), chatId, false)).thenReturn(response);
 
         // when & then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}", chatId)
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}/raw", chatId)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(customDocument("use_chat_bot",
+                .andDo(customDocument("use_raw_chat_bot",
+                        pathParameters(
+                                parameterWithName("chatId").description("채팅방 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("conversationId").description("대화 Id"),
+                                fieldWithPath("content").description("사용자 질문 내용"),
+                                fieldWithPath("answer").description("챗봇 답변 내용"),
+                                fieldWithPath("createdAt").description("대화 날짜")
+                        )
+                ));
+    }
+
+    @DisplayName("순한맛 챗봇과 대화한다.")
+    @Test
+    void use_mild_chat_bot() throws Exception {
+        // given
+        Long chatId = 1L;
+        Conversation response = createConversation();
+        ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
+
+        when(chatService.useChatBot(request.getPrompt(), chatId, true)).thenReturn(response);
+
+        // when & then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}/mild", chatId)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(customDocument("use_mild_chat_bot",
                         pathParameters(
                                 parameterWithName("chatId").description("채팅방 ID")
                         ),

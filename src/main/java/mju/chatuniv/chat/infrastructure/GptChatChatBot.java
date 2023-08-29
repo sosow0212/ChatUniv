@@ -15,10 +15,14 @@ import java.util.List;
 @Component
 public class GptChatChatBot implements ChatBot {
 
-    @Value("${api.gpt_prefix_helper}")
-    private String PREFIX_HELPER;
-    @Value("${api.gpt_prefix_starter}")
-    private String PREFIX_STARTER;
+    @Value("${api.gpt_raw_prefix_helper}")
+    private String rawPrefixHelper;
+    @Value("${api.gpt_raw_prefix_starter}")
+    private String rawPrefixStarter;
+    @Value("${api.gpt_mild_prefix_helper}")
+    private String mildPrefixHelper;
+    @Value("${api.gpt_mild_prefix_starter}")
+    private String mildPrefixStarter;
 
     private static final String CHAT_BOT_SYSTEM = "system";
     private static final String USER = "user";
@@ -35,19 +39,28 @@ public class GptChatChatBot implements ChatBot {
 
     @Override
     public String getRawAnswer(final String prompt) {
-        ChatResponse chatBotAnswer = getChatBotAnswer(prompt);
+        return getChatBotAnswer(prompt, rawPrefixHelper, rawPrefixStarter);
+    }
+
+    @Override
+    public String getMildAnswer(final String prompt) {
+        return getChatBotAnswer(prompt, mildPrefixHelper, mildPrefixStarter);
+    }
+
+    private String getChatBotAnswer(final String prompt, String prefixHelper, String prefixStarter) {
+        ChatResponse chatBotAnswer = getChatBotResponse(prompt, prefixHelper, prefixStarter);
         return filterAnswer(chatBotAnswer);
     }
 
-    private ChatResponse getChatBotAnswer(final String prompt) {
-        ChatRequest promptRequest = preparePrompt(prompt);
+    private ChatResponse getChatBotResponse(final String prompt, String prefixHelper, String prefixStarter) {
+        ChatRequest promptRequest = preparePrompt(prompt, prefixHelper, prefixStarter);
         return restTemplate.postForObject(ENDPOINT, promptRequest, ChatResponse.class);
     }
 
-    private ChatRequest preparePrompt(final String prompt) {
+    private ChatRequest preparePrompt(final String prompt, String prefixHelper, String prefixStarter) {
         List<Message> messages = new ArrayList<>();
-        messages.add(new Message(CHAT_BOT_SYSTEM, PREFIX_HELPER));
-        messages.add(new Message(CHAT_BOT_SYSTEM, PREFIX_STARTER));
+        messages.add(new Message(CHAT_BOT_SYSTEM, prefixHelper));
+        messages.add(new Message(CHAT_BOT_SYSTEM, prefixStarter));
         messages.add(new Message(USER, prompt));
 
         return new ChatRequest(MODEL, messages);
@@ -66,10 +79,5 @@ public class GptChatChatBot implements ChatBot {
 
     private boolean isFailureResponse(final ChatResponse chatBotAnswer) {
         return chatBotAnswer == null || chatBotAnswer.getChoices() == null || chatBotAnswer.getChoices().isEmpty();
-    }
-
-    @Override
-    public String getMildAnswer(final String prompt) {
-        return null;
     }
 }

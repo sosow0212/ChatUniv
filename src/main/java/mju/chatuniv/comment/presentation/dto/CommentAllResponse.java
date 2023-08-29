@@ -1,40 +1,21 @@
 package mju.chatuniv.comment.presentation.dto;
 
-import mju.chatuniv.comment.domain.Comment;
-import org.springframework.data.domain.Page;
-
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 
 public class CommentAllResponse {
 
-    private final List<CommentResponse> comments;
-    private final CommentPageInfo commentPageInfo;
+    private final List<CommentPagingResponse> commentResponse;
 
-    private CommentAllResponse(final List<CommentResponse> comments, final CommentPageInfo commentPageInfo) {
-        this.comments = Collections.unmodifiableList(comments);
-        this.commentPageInfo = commentPageInfo;
+    private CommentAllResponse(final List<CommentPagingResponse> commentResponse) {
+        this.commentResponse = commentResponse;
     }
 
-    public static CommentAllResponse from(final Page<Comment> page) {
-        return new CommentAllResponse(getCurrentContent(page) , CommentPageInfo.from(page));
+    public static CommentAllResponse from(final List<CommentPagingResponse> commentPagingResponses) {
+        return new CommentAllResponse(commentPagingResponses);
     }
 
-    public List<CommentResponse> getComments() {
-        return comments;
-    }
-
-    public CommentPageInfo getCommentPageInfo() {
-        return commentPageInfo;
-    }
-
-    private static List<CommentResponse> getCurrentContent(final Page<Comment> page) {
-        return page
-                .stream()
-                .skip((long) page.getNumber() * page.getSize())
-                .limit(page.getSize())
-                .map(CommentResponse::from)
-                .collect(Collectors.toList());
+    public List<CommentPagingResponse> getCommentResponse() {
+        return commentResponse;
     }
 }

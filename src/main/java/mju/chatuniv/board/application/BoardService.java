@@ -1,30 +1,18 @@
 package mju.chatuniv.board.application;
 
-import mju.chatuniv.board.application.dto.BoardAllResponse;
-import mju.chatuniv.board.application.dto.BoardPageInfo;
 import mju.chatuniv.board.application.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.board.presentation.dto.BoardResponse;
 import mju.chatuniv.member.domain.Member;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class BoardService {
-
-    private static final String BOARD_ID = "id";
 
     private final BoardRepository boardRepository;
 
@@ -49,16 +37,9 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardAllResponse findAllBoards(final Pageable pageable) {
-        Page<Board> sortedBoards = boardRepository.findAll(sortByIdWithDesc(pageable));
+    public List<BoardPagingResponse> findAllBoards(final Long pageSize, final Long boardId) {
 
-        BoardPageInfo boardPageInfo = BoardPageInfo.from(sortedBoards);
-
-        List<BoardResponse> boards = sortedBoards.stream()
-                .map(BoardResponse::from)
-                .collect(collectingAndThen(toList(), Collections::unmodifiableList));
-
-        return BoardAllResponse.of(boards, boardPageInfo);
+        return boardRepository.findBoards(pageSize, boardId);
     }
 
     @Transactional
@@ -77,9 +58,5 @@ public class BoardService {
 
         board.checkWriter(member);
         boardRepository.delete(board);
-    }
-
-    private PageRequest sortByIdWithDesc(final Pageable pageable) {
-        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(BOARD_ID).descending());
     }
 }

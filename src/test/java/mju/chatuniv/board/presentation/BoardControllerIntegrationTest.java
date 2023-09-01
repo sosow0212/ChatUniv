@@ -16,8 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 
 public class BoardControllerIntegrationTest extends IntegrationTest {
@@ -84,15 +82,17 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
     @Test
     void findAll_board() {
         //given
-        Pageable pageable = PageRequest.of(10, 10);
+        Long pageSize = 1L;
+        Long boardId = 10L;
 
         //when
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .auth().preemptive().oauth2(token)
-                .body(pageable)
+                .pathParam("pageSize", pageSize)
+                .pathParam("boardId", boardId)
                 .when()
-                .get("/api/boards");
+                .get("/api/boards/all/{pageSize}/{boardId}");
 
         //then
         response.then()

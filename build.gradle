@@ -1,8 +1,15 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'mju'
@@ -49,6 +56,26 @@ asciidoctor {
     dependsOn test
 }
 
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -81,4 +108,8 @@ dependencies {
 
     // logback-slack-appender
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+
+    //querydsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }

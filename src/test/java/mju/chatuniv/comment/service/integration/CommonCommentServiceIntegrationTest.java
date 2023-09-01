@@ -1,5 +1,12 @@
 package mju.chatuniv.comment.service.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.board.application.BoardService;
 import mju.chatuniv.board.application.dto.BoardRequest;
@@ -8,6 +15,7 @@ import mju.chatuniv.comment.application.service.BoardCommentService;
 import mju.chatuniv.comment.application.service.CommentService;
 import mju.chatuniv.comment.application.service.CommonCommentService;
 import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 import mju.chatuniv.comment.presentation.intergration.BeanUtils;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.application.dto.MemberCreateRequest;
@@ -18,17 +26,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
@@ -91,20 +88,20 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
             CommentService commentService = commentServices.get(index);
             dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
+                Long pageSize = 10L;
                 Long id = 1L;
-                Pageable pageable = getPageable(commentService, id);
+                Long commentId = 7L;
+                setAllCommentResponse(commentService, id);
 
                 //when
-                Page<Comment> comments = commentService.findComments(id, pageable);
+                List<CommentPagingResponse> comments = commentService.findComments(pageSize, id, commentId);
 
                 //then
                 assertAll(
-                        () -> assertThat(comments.getSize()).isEqualTo(4),
-                        () -> assertThat(comments.getNumber()).isEqualTo(0),
-                        () -> assertThat(comments.getTotalPages()).isEqualTo(4),
-                        () -> assertThat(comments.getTotalElements()).isEqualTo(15),
-                        () -> assertThat(comments.hasNext()).isTrue()
-                );
+                        () -> assertThat(comments.size()).isEqualTo(6),
+                        () -> assertThat(comments.get(0).getCommentId()).isEqualTo(6L),
+                        () -> assertThat(comments.get(0).getContent()).isEqualTo("content6"));
+
             }));
         });
         return dynamicTestList;
@@ -144,18 +141,20 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
             CommentService commentService = commentServices.get(index);
             dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 //given
+                Long pageSize = 10L;
                 Long id = 1L;
-                Long commentId = 1L;
-                CommentRequest commentRequest = new CommentRequest("initContent");
-                boardCommentService.create(id, member, commentRequest);
-                Page<Comment> beforeDeleteComments = commentService.findComments(id, PageRequest.of(0, 10));
+                Long commentId = 7L;
+                Long deleteCommentId = 6L;
+                setAllCommentResponse(commentService, id);
+                List<CommentPagingResponse> beforeDeleteComments = commentService.findComments(pageSize, id, commentId);
 
                 //when
-                commonCommentService.delete(commentId, member);
+                commonCommentService.delete(deleteCommentId, member);
 
                 //then
-                Page<Comment> afterDeleteComments = boardCommentService.findComments(id, PageRequest.of(0, 10));
-                assertThat(beforeDeleteComments.getContent().size() - 1).isEqualTo(afterDeleteComments.getContent().size());
+                List<CommentPagingResponse> afterDeleteComments = boardCommentService.findComments(pageSize, id,
+                        commentId);
+                assertThat(beforeDeleteComments.size() - 1).isEqualTo(afterDeleteComments.size());
             }));
         });
         return dynamicTestList;
@@ -170,10 +169,9 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
         return commentService.getClass().getSimpleName().split("\\$\\$")[0];
     }
 
-    private Pageable getPageable(final CommentService commentService, final Long id) {
+    private void setAllCommentResponse(final CommentService commentService, final Long id) {
         LongStream.range(1, 16).forEach(index -> {
             commentService.create(id, member, new CommentRequest("content" + index));
         });
-        return PageRequest.of(0, 4);
     }
 }

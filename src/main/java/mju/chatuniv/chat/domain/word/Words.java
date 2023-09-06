@@ -2,6 +2,7 @@ package mju.chatuniv.chat.domain.word;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -11,7 +12,7 @@ public class Words {
 
     private static final int LIMIT_WORD_LENGTH = 10;
 
-    private final List<Word> words;
+    private List<Word> words;
 
     private Words(final List<Word> words) {
         this.words = words;
@@ -24,6 +25,10 @@ public class Words {
 
     public static Words ofPureWords(final List<Word> pureWords) {
         return new Words(pureWords);
+    }
+
+    public static Words createEmpty() {
+        return new Words(List.of());
     }
 
     private static List<String> separateFromSentenceToWords(final String prompt) {
@@ -49,13 +54,17 @@ public class Words {
                 .collect(Collectors.toList());
     }
 
+    public void update(final List<Word> words) {
+        this.words = words;
+    }
+
     public List<Word> getWords() {
-        return words;
+        return Collections.unmodifiableList(words);
     }
 
     public List<String> getWordsToString() {
         return words.stream()
                 .map(Word::getWord)
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
     }
 }

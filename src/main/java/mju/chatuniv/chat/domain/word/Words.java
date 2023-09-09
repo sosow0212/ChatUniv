@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import mju.chatuniv.statistic.domain.Statistic;
 
 public class Words {
 
@@ -46,6 +47,10 @@ public class Words {
 
     public void updateFrequencyCount() {
         this.words.forEach(Word::updateFrequency);
+    }
+
+    public void updateStaticsCount() {
+        this.words.forEach(Statistic::add);
     }
 
     public List<Word> findNotContainsWordsFromOthers(final List<Word> words) {

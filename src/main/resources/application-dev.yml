@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ENC(gMsCRSGeV45G4T/uJzdoFOoeEEegtQGEEyOIXeadDEAThENVO9S5/n15rb3DFawqkd49ul6y09t7Cf1HEdfCQf36V3nEuKDji3swYWDVXCzH1tb7n+kB/B2cF/VUp0jwcWdtTKA+zK/0SLWUBpNua+GlWKGdrf13F6G0hy2Z/lg=)
+    username: ENC(UDkGiVZDkstZt6FY5xGirQ==)
+    password: ENC(fNL9xt9xSheYJJLVEYWuFhYDLJkyp39a)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        #use_sql_comments: true
+
+  servlet.multipart.max-file-size: 5MB
+  servlet.multipart.max-request-size: 5MB
+

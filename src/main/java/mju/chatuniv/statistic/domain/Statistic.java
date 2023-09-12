@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import mju.chatuniv.chat.domain.word.Word;
+import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
 
 public class Statistic {
 
@@ -25,10 +26,16 @@ public class Statistic {
     }
 
     public static List<Word> getWords() {
-        return words.entrySet()
+        List<Word> result = words.entrySet()
                 .stream()
                 .sorted(Entry.comparingByValue(Comparator.reverseOrder()))
                 .map(Entry::getKey)
                 .collect(Collectors.toUnmodifiableList());
+
+        if (result.isEmpty()){
+            throw new StatisticNotFoundException();
+        }
+
+        return result;
     }
 }

@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: ENC(r3MeJfVQf2Yc0EbtARyPlO3Gs0dcHGI4amDcTSHyoaxQMOim4eftnZg5P75vunA5bW1ov4JfAv+gtdf0DNLH/jF5J0XZNd+cRqHMd/uwSL0xlQDsWRvzScof/9EFzi/jDrx1vreu9B/P0vKRn/XnB9waxQFJoaC0jOAYtXpio2adG89K7jyBTA==)
+    username: ENC(34JsSe89D0aKfhOD0NSwqA==)
+    password: ENC(XwY1heWBzxa0dMHCdcF5kaRMAKY0mRh0)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: false
+

@@ -1,5 +1,6 @@
 package mju.chatuniv.chat.application;
 
+import java.util.List;
 import mju.chatuniv.chat.application.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
@@ -13,8 +14,6 @@ import mju.chatuniv.chat.infrastructure.ChatBot;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ChatService {
@@ -45,6 +44,8 @@ public class ChatService {
         Chat chat = findChat(chatId);
 
         Words pureWords = Words.fromRawPrompt(prompt);
+        pureWords.updateStaticsCount();
+
         Words duplicatedWords = Words.ofPureWords(wordRepository.findAllByWords(pureWords.getWordsToString()));
         duplicatedWords.updateFrequencyCount();
 

@@ -1,0 +1,19 @@
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+== Statistic
+
+=== 통계 조회
+
+==== 요청
+
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/http-response.adoc[]
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/response-fields.adoc[]

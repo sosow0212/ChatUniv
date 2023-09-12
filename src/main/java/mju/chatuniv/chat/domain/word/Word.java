@@ -1,5 +1,7 @@
 package mju.chatuniv.chat.domain.word;
 
+import mju.chatuniv.global.domain.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "WORD")
-public class Word {
+public class Word extends BaseEntity {
 
     private static final int DEFAULT_FREQUENCY = 1;
     private static final List<String> specialLetters = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$", "%", "^", "*", "(", ")", "-", "_", "+", "=");
@@ -26,6 +28,9 @@ public class Word {
     @Lob
     private String word;
 
+    @Column(name = "total_frequency")
+    private int totalFrequency;
+
     private int frequency;
 
     protected Word() {
@@ -34,6 +39,7 @@ public class Word {
     private Word(final String word) {
         this.id = null;
         this.word = word;
+        this.totalFrequency = DEFAULT_FREQUENCY;
         this.frequency = DEFAULT_FREQUENCY;
     }
 
@@ -58,6 +64,7 @@ public class Word {
     }
 
     public void updateFrequency() {
+        this.totalFrequency++;
         this.frequency++;
     }
 
@@ -67,6 +74,10 @@ public class Word {
 
     public String getWord() {
         return word;
+    }
+
+    public int getTotalFrequency() {
+        return totalFrequency;
     }
 
     public int getFrequency() {

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ENC(lLrmoMMbtvcmAITmiNUe/I9QPp033i7zZ8scxhZhUMvBdPtBXRjC6SRf00Kb8snkK46MwXMpWEPJEeGYUYYXr8JMeAo4tCFLWUDni5D0PbQp9xbB0twB6JPKjIF7xb5yVkB0YJmhuLgTZDogfzCQnGumMr6J66sAfKIK4d9zxP4=)
-    username: ENC(UtY8yI1YcUpbS8SPbKUHag==)
-    password: ENC(d8C/I8mjrv55ahGuaQ6w7I5bUC4BHawq)
+    url: ENC(r3MeJfVQf2Yc0EbtARyPlO3Gs0dcHGI4amDcTSHyoaxQMOim4eftnZg5P75vunA5bW1ov4JfAv+gtdf0DNLH/jF5J0XZNd+cRqHMd/uwSL0xlQDsWRvzScof/9EFzi/jDrx1vreu9B/P0vKRn/XnB9waxQFJoaC0jOAYtXpio2adG89K7jyBTA==)
+    username: ENC(34JsSe89D0aKfhOD0NSwqA==)
+    password: ENC(XwY1heWBzxa0dMHCdcF5kaRMAKY0mRh0)
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -17,8 +17,5 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-        #use_sql_comments: true
-
-  servlet.multipart.max-file-size: 5MB
-  servlet.multipart.max-request-size: 5MB
+        use_sql_comments: false
 

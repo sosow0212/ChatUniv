@@ -1,0 +1,55 @@
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+== Chat
+
+=== 새로운 채팅방 생성
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-response.adoc[]
+
+=== 기존 채팅방 입장
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
+
+=== 매운맛 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/response-fields.adoc[]
+
+=== 순한맛 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/response-fields.adoc[]
+
+

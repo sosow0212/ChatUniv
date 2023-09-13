@@ -5,59 +5,6 @@
 :sectlinks:
 :sectnums:
 
-== Auth
-
-=== 회원 가입
-
-==== 요청
-
-include::{snippets}/auth-controller-unit-test/register_member/http-request.adoc[]
-include::{snippets}/auth-controller-unit-test/register_member/request-fields.adoc[]
-
-==== 응답
-
-include::{snippets}/auth-controller-unit-test/register_member/http-response.adoc[]
-include::{snippets}/auth-controller-unit-test/register_member/response-fields.adoc[]
-
-=== 로그인
-
-==== 요청
-
-include::{snippets}/auth-controller-unit-test/login/http-request.adoc[]
-include::{snippets}/auth-controller-unit-test/login/request-fields.adoc[]
-
-==== 응답
-
-include::{snippets}/auth-controller-unit-test/login/http-response.adoc[]
-include::{snippets}/auth-controller-unit-test/login/response-fields.adoc[]
-
-== Member
-
-=== 회원 정보 조회
-
-==== 요청
-
-include::{snippets}/member-controller-unit-test/member_id_and_email/http-request.adoc[]
-include::{snippets}/member-controller-unit-test/member_id_and_email/request-headers.adoc[]
-
-==== 응답
-
-include::{snippets}/member-controller-unit-test/member_id_and_email/http-response.adoc[]
-include::{snippets}/member-controller-unit-test/member_id_and_email/response-fields.adoc[]
-
-=== 회원 비밀번호 수정
-
-==== 요청
-
-include::{snippets}/member-controller-unit-test/change_member_password/http-request.adoc[]
-include::{snippets}/member-controller-unit-test/change_member_password/request-headers.adoc[]
-include::{snippets}/member-controller-unit-test/change_member_password/request-fields.adoc[]
-
-==== 응답
-
-include::{snippets}/member-controller-unit-test/change_member_password/http-response.adoc[]
-include::{snippets}/member-controller-unit-test/change_member_password/response-fields.adoc[]
-
 == Board
 
 === 게시판 생성
@@ -121,53 +68,7 @@ include::{snippets}/board-controller-unit-test/delete_board/request-headers.adoc
 
 include::{snippets}/board-controller-unit-test/delete_board/http-response.adoc[]
 
-== 채팅
-
-=== 새로운 채팅방 생성
-
-==== 요청
-
-include::{snippets}/chat-controller-unit-test/create_new_chatting_room/request-headers.adoc[]
-include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-request.adoc[]
-
-==== 응답
-
-include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-response.adoc[]
-
-=== 기존 채팅방 입장
-
-==== 요청
-
-include::{snippets}/chat-controller-unit-test/join_being_chatting_room/request-headers.adoc[]
-include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-request.adoc[]
-
-==== 응답
-
-include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
-include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
-
-=== 매운맛 챗봇 사용
-
-==== 요청
-
-include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-request.adoc[]
-
-==== 응답
-
-include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-response.adoc[]
-include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/response-fields.adoc[]
-
-=== 순한맛 챗봇 사용
-
-==== 요청
-
-include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-request.adoc[]
-
-==== 응답
-
-include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-response.adoc[]
-include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/response-fields.adoc[]
-
+== Exception
 
 === 게시판의 제목이 비었을때 예외
 

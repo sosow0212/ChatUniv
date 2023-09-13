@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +23,7 @@ public class Word extends BaseEntity {
     @Column(name = "word_id")
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    @Lob
+    @Column(nullable = false, unique = true, length = 255)
     private String word;
 
     @Column(name = "total_frequency")

@@ -1,0 +1,33 @@
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
+
+== Member
+
+=== 회원 정보 조회
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/member_id_and_email/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/member_id_and_email/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/member_id_and_email/http-response.adoc[]
+include::{snippets}/member-controller-unit-test/member_id_and_email/response-fields.adoc[]
+
+=== 회원 비밀번호 수정
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/change_member_password/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/change_member_password/http-response.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/response-fields.adoc[]

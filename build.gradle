@@ -29,17 +29,19 @@ asciidoctor {
     configurations 'asciidoctorExt'
 }
 
-tasks.register('copyApiDocument', Copy) {
-    dependsOn asciidoctor
-    doFirst {
-        delete file("src/main/resources/static/docs")
-    }
-    from asciidoctor.outputDir
-    into file("src/main/resources/static/docs")
+// Asciidoctor 문서를 JAR 파일에 포함하는 태스크 정의
+task packageAsciidocJar(type: Jar) {
+    classifier = 'asciidoc' // JAR 파일에 분류자를 추가하여 다른 JAR와 구분합니다.
+    from 'src/docs/asciidoc' // Asciidoctor 문서가 있는 디렉토리를 지정합니다.
 }
 
-build {
-    dependsOn copyApiDocument
+// 빌드 태스크가 Asciidoctor JAR 패키지 태스크에 의존하도록 설정
+build.dependsOn packageAsciidocJar
+
+// JAR 파일에 포함할 문서 태스크와 복사 태스크를 연결
+jar {
+    dependsOn packageAsciidocJar
+    from tasks.packageAsciidocJar
 }
 
 ext {
@@ -55,7 +57,6 @@ asciidoctor {
     inputs.dir snippetsDir
     dependsOn test
 }
-
 
 def querydslDir = "$buildDir/generated/querydsl"
 
@@ -112,4 +113,25 @@ dependencies {
     //querydsl
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+task copyApiDocument(type: Copy) {
+    dependsOn asciidoctor
+    doFirst {
+        delete file("src/main/resources/static/docs")
+    }
+    from asciidoctor.outputDir
+    into file("src/main/resources/static/docs")
+}
+
+jar {
+    dependsOn copyApiDocument
+    from("src/main/resources/static/docs") {
+        into "static/docs"
+    }
 }

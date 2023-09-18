@@ -1,15 +1,286 @@
-ifndef::snippets[]
-:snippets: ./build/generated-snippets
-endif::[]
 = chat-univ
-:doctype: book
 :toc: left
 :source-highlighter: highlightjs
 :sectlinks:
+:toclevels: 2
+:sectlinks:
+:sectnums:
 
-include::auth.adoc[]
-include::member.adoc[]
-include::chat.adoc[]
-include::statistic.adoc[]
-include::board.adoc[]
-include::comment.adoc[]
+== Auth
+
+=== 회원 가입
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/register_member/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/register_member/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/register_member/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/register_member/response-fields.adoc[]
+
+=== 로그인
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/login/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/login/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/login/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/login/response-fields.adoc[]
+
+== Board
+
+=== 게시판 생성
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/create_board/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/create_board/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/create_board/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/create_board/http-response.adoc[]
+include::{snippets}/board-controller-unit-test/create_board/response-fields.adoc[]
+
+=== 게시판 단건 조회
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/find_board/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/find_board/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/find_board/http-response.adoc[]
+include::{snippets}/board-controller-unit-test/find_board/response-fields.adoc[]
+
+=== 게시판 전체 조회
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/find_all_boards/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/find_all_boards/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/find_all_boards/http-response.adoc[]
+include::{snippets}/board-controller-unit-test/find_all_boards/response-fields.adoc[]
+
+=== 게시판 수정
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/update_board/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/update_board/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/update_board/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/update_board/http-response.adoc[]
+include::{snippets}/board-controller-unit-test/update_board/response-fields.adoc[]
+
+=== 게시판 삭제
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/delete_board/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/delete_board/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/delete_board/http-response.adoc[]
+
+== Exception
+
+=== 게시판의 제목이 비었을때 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_title/http-response.adoc[]
+
+
+=== 게시판의 내용이 비었을때 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_create_board_with_blank_content/http-response.adoc[]
+
+
+=== 게시판을 다른 사람이 수정하면 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/http-response.adoc[]
+
+
+
+=== 게시판이 존재하지 않으면 예외
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-response.adoc[]
+
+== Chat
+
+=== 새로운 채팅방 생성
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-response.adoc[]
+
+=== 기존 채팅방 입장
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
+
+=== 매운맛 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/response-fields.adoc[]
+
+=== 순한맛 챗봇 사용
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/response-fields.adoc[]
+
+
+== Comment
+
+=== 댓글 수정
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/update_comment/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/request-headers.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/request-fields.adoc[]
+
+==== 응답
+include::{snippets}/common-comment-controller-unit-test/update_comment/http-response.adoc[]
+include::{snippets}/common-comment-controller-unit-test/update_comment/response-fields.adoc[]
+
+=== 댓글 삭제
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/delete_comment/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/delete_comment/request-headers.adoc[]
+
+
+==== 응답
+
+include::{snippets}/common-comment-controller-unit-test/delete_comment/http-response.adoc[]
+
+
+=== 게시판 댓글 생성
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/create_board/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/request-headers.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/create_board/http-response.adoc[]
+include::{snippets}/board-comment-controller-unit-test/create_board/response-fields.adoc[]
+
+=== 게시판 id로 댓글 조회
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/http-response.adoc[]
+include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/response-fields.adoc[]
+
+== Member
+
+=== 회원 정보 조회
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/member_id_and_email/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/member_id_and_email/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/member_id_and_email/http-response.adoc[]
+include::{snippets}/member-controller-unit-test/member_id_and_email/response-fields.adoc[]
+
+=== 회원 비밀번호 수정
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/change_member_password/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/change_member_password/http-response.adoc[]
+include::{snippets}/member-controller-unit-test/change_member_password/response-fields.adoc[]
+
+== Statistic
+
+=== 통계 조회
+
+==== 요청
+
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/http-response.adoc[]
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/response-fields.adoc[]

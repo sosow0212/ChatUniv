@@ -1,0 +1,15 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+= chat-univ
+:doctype: book
+:toc: left
+:source-highlighter: highlightjs
+:sectlinks:
+
+include::auth.adoc[]
+include::member.adoc[]
+include::chat.adoc[]
+include::statistic.adoc[]
+include::board.adoc[]
+include::comment.adoc[]

@@ -1,5 +1,7 @@
 package mju.chatuniv.chat.domain.word;
 
+import mju.chatuniv.statistic.domain.Statistic;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,11 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import mju.chatuniv.statistic.domain.Statistic;
 
 public class Words {
 
     private static final int LIMIT_WORD_LENGTH = 10;
+    private static final String WORD_SEPARATOR = " ";
 
     private List<Word> words;
 
@@ -28,12 +30,8 @@ public class Words {
         return new Words(pureWords);
     }
 
-    public static Words createEmpty() {
-        return new Words(List.of());
-    }
-
     private static List<String> separateFromSentenceToWords(final String prompt) {
-        return Arrays.stream(prompt.split(" "))
+        return Arrays.stream(prompt.split(WORD_SEPARATOR))
                 .filter(word -> word.length() < LIMIT_WORD_LENGTH)
                 .collect(Collectors.toList());
     }

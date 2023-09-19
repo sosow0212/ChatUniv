@@ -23,12 +23,12 @@ public class Conversation extends BaseEntity {
     @Column(name = "conversation_id")
     private Long id;
 
-    @Column(nullable = false)
     @Lob
+    @Column(nullable = false)
     private String ask;
 
-    @Column(nullable = false)
     @Lob
+    @Column(nullable = false)
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)

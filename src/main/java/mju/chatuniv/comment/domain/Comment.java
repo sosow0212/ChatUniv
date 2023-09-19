@@ -27,13 +27,11 @@ import javax.persistence.Table;
 
 public abstract class Comment extends BaseEntity {
 
-    private static final int MAX_CONTENT_LENGTH = 500;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = MAX_CONTENT_LENGTH)
+    @Column(nullable = false, length = 500)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

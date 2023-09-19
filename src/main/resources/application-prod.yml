@@ -4,6 +4,9 @@ spring:
     username: ENC(nfm1V3CT9wN/hrAJHzP7c9BN5h6sXnc/)
     password: ENC(WsNdztxR7knyXMS3Ll7l3HKJ52JwOHaB)
     driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 
   jpa:
     hibernate:

@@ -1,6 +1,6 @@
 package mju.chatuniv.global.config;
 
-import mju.chatuniv.auth.application.JwtAuthService;
+import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.auth.support.JwtLoginResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

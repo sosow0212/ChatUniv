@@ -1,11 +1,10 @@
 package mju.chatuniv.auth.service;
 
-import mju.chatuniv.auth.application.AuthService;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
-import mju.chatuniv.auth.presentation.dto.TokenResponse;
+import mju.chatuniv.auth.controller.dto.TokenResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.application.dto.MemberCreateRequest;
-import mju.chatuniv.member.application.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;

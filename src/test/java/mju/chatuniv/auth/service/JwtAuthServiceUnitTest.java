@@ -1,8 +1,7 @@
 package mju.chatuniv.auth.service;
 
-import mju.chatuniv.auth.application.JwtAuthService;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
-import mju.chatuniv.member.application.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;

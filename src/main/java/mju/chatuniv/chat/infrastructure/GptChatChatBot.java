@@ -1,8 +1,8 @@
 package mju.chatuniv.chat.infrastructure;
 
-import mju.chatuniv.chat.application.dto.gpt.ChatRequest;
-import mju.chatuniv.chat.application.dto.gpt.ChatResponse;
-import mju.chatuniv.chat.application.dto.gpt.Message;
+import mju.chatuniv.chat.service.dto.gpt.ChatRequest;
+import mju.chatuniv.chat.service.dto.gpt.ChatResponse;
+import mju.chatuniv.chat.service.dto.gpt.Message;
 import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

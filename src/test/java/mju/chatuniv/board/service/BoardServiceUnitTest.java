@@ -1,7 +1,6 @@
 package mju.chatuniv.board.service;
 
-import mju.chatuniv.board.application.BoardService;
-import mju.chatuniv.board.application.dto.BoardRequest;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;

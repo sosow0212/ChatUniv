@@ -1,13 +1,14 @@
 package mju.chatuniv.statistic.domain;
 
+import mju.chatuniv.chat.domain.word.Word;
+import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import mju.chatuniv.chat.domain.word.Word;
-import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
 
 public class Statistic {
 
@@ -32,7 +33,7 @@ public class Statistic {
                 .map(Entry::getKey)
                 .collect(Collectors.toUnmodifiableList());
 
-        if (result.isEmpty()){
+        if (result.isEmpty()) {
             throw new StatisticNotFoundException();
         }
 

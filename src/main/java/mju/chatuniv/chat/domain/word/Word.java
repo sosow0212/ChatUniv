@@ -26,9 +26,10 @@ public class Word extends BaseEntity {
     @Column(nullable = false, unique = true, length = 255)
     private String word;
 
-    @Column(name = "total_frequency")
+    @Column(name = "total_frequency", nullable = false)
     private int totalFrequency;
 
+    @Column(nullable = false)
     private int frequency;
 
     protected Word() {

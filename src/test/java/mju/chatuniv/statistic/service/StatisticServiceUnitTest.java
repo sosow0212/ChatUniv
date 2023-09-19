@@ -2,7 +2,6 @@ package mju.chatuniv.statistic.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import mju.chatuniv.statistic.application.StatisticService;
 import mju.chatuniv.statistic.domain.Statistic;
 import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
 import org.junit.jupiter.api.DisplayName;

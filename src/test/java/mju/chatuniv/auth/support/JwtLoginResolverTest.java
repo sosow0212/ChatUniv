@@ -1,10 +1,10 @@
 package mju.chatuniv.auth.support;
 
-import mju.chatuniv.auth.application.JwtAuthService;
+import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.application.dto.MemberCreateRequest;
-import mju.chatuniv.member.application.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;

@@ -3,12 +3,11 @@ package mju.chatuniv.statistic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import mju.chatuniv.auth.application.AuthService;
+import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.application.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.statistic.application.StatisticService;
 import mju.chatuniv.statistic.domain.Statistic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

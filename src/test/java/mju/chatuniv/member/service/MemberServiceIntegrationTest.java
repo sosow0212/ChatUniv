@@ -1,8 +1,8 @@
 package mju.chatuniv.member.service;
 
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.application.dto.ChangePasswordRequest;
-import mju.chatuniv.member.application.service.MemberService;
+import mju.chatuniv.member.service.dto.ChangePasswordRequest;
+import mju.chatuniv.member.service.service.MemberService;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

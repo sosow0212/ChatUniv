@@ -1,13 +1,12 @@
 package mju.chatuniv.board.service;
 
-import mju.chatuniv.auth.application.AuthService;
-import mju.chatuniv.board.application.BoardService;
-import mju.chatuniv.board.application.dto.BoardRequest;
+import mju.chatuniv.auth.service.AuthService;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.application.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;

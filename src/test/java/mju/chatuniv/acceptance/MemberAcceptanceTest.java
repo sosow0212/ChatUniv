@@ -1,7 +1,7 @@
 package mju.chatuniv.acceptance;
 
-import mju.chatuniv.member.application.dto.ChangePasswordRequest;
-import mju.chatuniv.member.presentation.dto.MemberResponse;
+import mju.chatuniv.member.service.dto.ChangePasswordRequest;
+import mju.chatuniv.member.controller.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

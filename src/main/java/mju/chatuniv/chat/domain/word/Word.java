@@ -47,9 +47,7 @@ public class Word extends BaseEntity {
     }
 
     private static String makePureWord(final String word) {
-        // TODO : 단어 파싱 로직 더 추가하기
-        String wordWithoutSpecialLetters = removeSpecialLetters(word);
-        return wordWithoutSpecialLetters;
+        return removeSpecialLetters(word);
     }
 
     private static String removeSpecialLetters(final String word) {

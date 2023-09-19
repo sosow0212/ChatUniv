@@ -4,13 +4,17 @@ spring:
     username: sa
     password: sa
     driver-class-name: org.h2.Driver
+  flyway:
+    enabled: false
+    baseline-on-migrate: false
+
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
 
 security:
   jwt:

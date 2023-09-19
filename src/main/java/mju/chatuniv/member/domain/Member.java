@@ -59,6 +59,10 @@ public class Member {
         return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
     }
 
+    public boolean isSameMemberId(final Long id) {
+        return this.id.equals(id);
+    }
+
     private static boolean isEmpty(final String password) {
         return password == null || password.isBlank();
     }

@@ -114,7 +114,7 @@ public class AuthControllerUnitTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isForbidden())
-                .andDo(customDocument("fail_to_register_member_with_duplicated_email",
+                .andDo(customDocument("fail_to_sign_up_with_duplicated_email",
                         requestFields(
                                 fieldWithPath(".email").description("회원가입할 이메일 주소"),
                                 fieldWithPath(".password").description("사용할 패스워드")
@@ -195,7 +195,7 @@ public class AuthControllerUnitTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberLoginRequest))
                 ).andExpect(status().isNotFound())
-                .andDo(customDocument("fail_to_with_not_exist_login",
+                .andDo(customDocument("fail_to_login_with_not_exist_email",
                         requestFields(
                                 fieldWithPath(".email").description("로그인 이메일 주소"),
                                 fieldWithPath(".password").description("로그인 패스워드")
@@ -217,7 +217,7 @@ public class AuthControllerUnitTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(memberLoginRequest))
                 ).andExpect(status().isForbidden())
-                .andDo(customDocument("fail_to_with_wrong_password_login",
+                .andDo(customDocument("fail_to_login_with_wrong_password",
                         requestFields(
                                 fieldWithPath(".email").description("로그인 이메일 주소"),
                                 fieldWithPath(".password").description("로그인 패스워드")

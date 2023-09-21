@@ -30,3 +30,40 @@ include::{snippets}/auth-controller-unit-test/login/request-fields.adoc[]
 
 include::{snippets}/auth-controller-unit-test/login/http-response.adoc[]
 include::{snippets}/auth-controller-unit-test/login/response-fields.adoc[]
+
+=== exception
+
+=== 이미 존재하는 이메일로 회원가입 시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/http-response.adoc[]
+
+=== 잘못된 이메일로 로그인시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_with_not_exist_login/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_with_not_exist_login/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_with_not_exist_login/http-response.adoc[]
+
+
+=== 잘못된 비밀번호로 로그인시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/http-request.adoc[]
+
+include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/http-response.adoc[]

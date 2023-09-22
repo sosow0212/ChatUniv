@@ -1,25 +1,23 @@
 package mju.chatuniv.auth.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Optional;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtAuthServiceUnitTest {
@@ -37,10 +35,10 @@ public class JwtAuthServiceUnitTest {
     @Test
     void throws_exception_when_login_with_invalid_member() {
         // given
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("b@b.com", "1234");
+        MemberRequest memberRequest = new MemberRequest("b@b.com", "1234");
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberLoginRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 
@@ -48,12 +46,12 @@ public class JwtAuthServiceUnitTest {
     @Test
     void throws_exception_when_login_with_invalid_email() {
         // given
-        Member member = createMember();
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("b@b.com", "1234");
+        Member member = Member.from("a@a.com", "password");
+        MemberRequest memberRequest = new MemberRequest("b@b.com", "1234");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberLoginRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
                 .isInstanceOf(AuthorizationInvalidEmailException.class);
     }
 
@@ -61,12 +59,12 @@ public class JwtAuthServiceUnitTest {
     @Test
     void throws_exception_when_login_with_invalid_password() {
         // given
-        Member member = createMember();
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "12345");
+        Member member = Member.from("a@a.com", "password");
+        MemberRequest memberRequest = new MemberRequest("a@a.com", "12345");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberLoginRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
                 .isInstanceOf(AuthorizationInvalidPasswordException.class);
     }
 

@@ -1,12 +1,32 @@
 package mju.chatuniv.board.controller;
 
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.board.service.BoardService;
-import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.service.BoardService;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
@@ -26,28 +46,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
-
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
 @AutoConfigureRestDocs
@@ -79,7 +77,7 @@ public class BoardControllerUnitTest {
     @Test
     void create_board() throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("title", "content");
         Board board = BoardFixture.createBoard(member);
 
@@ -112,7 +110,7 @@ public class BoardControllerUnitTest {
     @Test
     void find_board() throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
 
         given(boardService.findBoard(any(Long.class))).willReturn(board);
@@ -171,7 +169,7 @@ public class BoardControllerUnitTest {
     @DisplayName("게시글을 수정한다.")
     void update_board() throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("title", "content");
         Board board = BoardFixture.createBoard(member);
 
@@ -216,7 +214,7 @@ public class BoardControllerUnitTest {
     @MethodSource("boardRequestProviderWithNoTitle")
     public void fail_to_create_board_with_blank_title(String text, BoardRequest boardRequest) throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
 
         given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(board);
@@ -241,7 +239,7 @@ public class BoardControllerUnitTest {
     @MethodSource("boardRequestProviderWithNoContent")
     public void fail_to_create_board_with_blank_content(String text, BoardRequest boardRequest) throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
 
         given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(board);
@@ -265,7 +263,7 @@ public class BoardControllerUnitTest {
     @Test
     public void fail_to_update_board_with_different_member() throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("title", "content");
         BoardFixture.createBoard(member);
 
@@ -290,7 +288,7 @@ public class BoardControllerUnitTest {
     @Test
     public void fail_to_find_board_with_wrong_board_id() throws Exception {
         // given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
 
         given(boardService.findBoard(any(Long.class))).willThrow(new BoardNotFoundException(board.getId()));

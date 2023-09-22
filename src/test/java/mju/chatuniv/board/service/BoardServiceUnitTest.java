@@ -1,11 +1,18 @@
 package mju.chatuniv.board.service;
 
-import mju.chatuniv.board.service.dto.BoardRequest;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
+import java.util.Optional;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,13 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceUnitTest {
@@ -49,7 +49,7 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.create(member, boardRequest))
-            .isInstanceOf(BoardTitleBlankException.class);
+                .isInstanceOf(BoardTitleBlankException.class);
     }
 
     @DisplayName("게시판 생성시 내용이 비어있다면 예외가 발생한다.")
@@ -60,7 +60,7 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.create(member, boardRequest))
-            .isInstanceOf(BoardContentBlankException.class);
+                .isInstanceOf(BoardContentBlankException.class);
     }
 
     @DisplayName("게시판 단건 조회시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")
@@ -71,20 +71,21 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.findBoard(wrongBoardId))
-            .isInstanceOf(BoardNotFoundException.class);
+                .isInstanceOf(BoardNotFoundException.class);
     }
 
     @DisplayName("게시판 수정시 작성자가 다르면 예외가 발생한다.")
     @Test
     void throws_exception_when_update_board_with_invalid_member() {
         //given
-        Member others = createMember();
+        Member others = Member.from("a@a.com", "password");
+        ;
         BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(board));
 
         //when & then
         assertThatThrownBy(() -> boardService.update(anyLong(), others, boardRequest))
-            .isInstanceOf(MemberNotEqualsException.class);
+                .isInstanceOf(MemberNotEqualsException.class);
     }
 
     @DisplayName("게시판 수정시 제목이 비어있다면 예외가 발생한다.")
@@ -96,7 +97,7 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.update(anyLong(), member, boardRequest))
-            .isInstanceOf(BoardTitleBlankException.class);
+                .isInstanceOf(BoardTitleBlankException.class);
     }
 
     @DisplayName("게시판 수정시 내용이 비어있다면 예외가 발생한다.")
@@ -108,7 +109,7 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.update(anyLong(), member, boardRequest))
-            .isInstanceOf(BoardContentBlankException.class);
+                .isInstanceOf(BoardContentBlankException.class);
     }
 
     @DisplayName("게시판 삭제시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")
@@ -119,18 +120,21 @@ public class BoardServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> boardService.delete(wrongBoardId, member))
-            .isInstanceOf(BoardNotFoundException.class);
+                .isInstanceOf(BoardNotFoundException.class);
     }
 
     @DisplayName("게시판 삭제시 작성자가 다르면 예외가 발생한다.")
     @Test
     void throws_exception_when_delete_board_with_invalid_member() {
         //given
-        Member others = createMember();
-        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(board));
+        Member other = Member.from("aaaa@a.com", "password");
+        Board bo = mock(Board.class);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(bo));
+        doThrow(new MemberNotEqualsException()).when(bo).checkWriter(member);
+
 
         //when & then
-        assertThatThrownBy(() -> boardService.delete(anyLong(), others))
-            .isInstanceOf(MemberNotEqualsException.class);
+        assertThatThrownBy(() -> boardService.delete(anyLong(), other))
+                .isInstanceOf(MemberNotEqualsException.class);
     }
 }

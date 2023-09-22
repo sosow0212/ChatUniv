@@ -1,6 +1,5 @@
 package mju.chatuniv.comment.service.unit;
 
-import static mju.chatuniv.fixture.member.MemberFixture.otherMember;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -8,14 +7,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.assertj.core.api.Assertions;
@@ -44,7 +42,7 @@ public class CommonCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = MemberFixture.createMember();
+        member = Member.from("a@a.com", "password");
         createBoardAndComment();
     }
 
@@ -88,7 +86,7 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_update_comment_with_invalid_member() {
         //given
-        Member others = otherMember();
+        Member others = Member.from("b@b.com", "password");
         CommentRequest commentRequest = new CommentRequest("content");
 
         given(commentRepository.findById(anyLong())).willReturn(Optional.of(comment));
@@ -102,7 +100,7 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_delete_comment_with_invalid_member() {
         //given
-        Member others = otherMember();
+        Member others = Member.from("b@b.com", "password");
         given(commentRepository.findById(anyLong())).willReturn(Optional.of(comment));
 
         //when & then

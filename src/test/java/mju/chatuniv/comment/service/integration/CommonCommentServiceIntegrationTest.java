@@ -10,17 +10,17 @@ import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.comment.controller.intergration.BeanUtils;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.comment.service.service.CommentService;
 import mju.chatuniv.comment.service.service.CommonCommentService;
-import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
-import mju.chatuniv.comment.controller.intergration.BeanUtils;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -48,9 +48,9 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
-        authService.register(memberCreateRequest);
-        member = memberRepository.findByEmail(memberCreateRequest.getEmail()).get();
+        MemberRequest memberRequest = new MemberRequest("a@naver.com", "1234");
+        authService.register(memberRequest);
+        member = memberRepository.findByEmail(memberRequest.getEmail()).get();
         createBoard();
     }
 

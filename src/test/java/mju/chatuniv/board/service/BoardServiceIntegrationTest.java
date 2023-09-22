@@ -1,24 +1,23 @@
 package mju.chatuniv.board.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.List;
+import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
-import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.domain.dto.BoardPagingResponse;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.stream.LongStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class BoardServiceIntegrationTest extends IntegrationTest {
 
@@ -38,8 +37,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-        authService.register(memberCreateRequest);
+        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        authService.register(memberRequest);
         member = memberRepository.findByEmail("a@a.com").get();
         BoardRequest boardRequest = new BoardRequest("initTitle", "initContent");
         boardService.create(member, boardRequest);

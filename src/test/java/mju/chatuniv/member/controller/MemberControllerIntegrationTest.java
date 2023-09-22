@@ -8,8 +8,7 @@ import io.restassured.response.Response;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +26,9 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
     @Test
     void get_current_members_id_and_email() {
         // given
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        authService.register(new MemberRequest("a@a.com", "1234"));
 
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberRequest("a@a.com", "1234"));
 
         // when
         Response response = RestAssured.given()
@@ -50,9 +49,9 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
     @Test
     void change_current_members_password() {
         // given
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        authService.register(new MemberRequest("a@a.com", "1234"));
 
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberRequest("a@a.com", "1234"));
 
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");

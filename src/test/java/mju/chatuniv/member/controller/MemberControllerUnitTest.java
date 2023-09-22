@@ -1,24 +1,5 @@
 package mju.chatuniv.member.controller;
 
-import mju.chatuniv.global.config.ArgumentResolverConfig;
-import mju.chatuniv.helper.MockTestHelper;
-import mju.chatuniv.member.service.dto.ChangePasswordRequest;
-import mju.chatuniv.member.service.service.MemberService;
-import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
-import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
-import org.apache.http.HttpHeaders;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -31,6 +12,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import mju.chatuniv.global.config.ArgumentResolverConfig;
+import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
+import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
+import mju.chatuniv.member.service.dto.ChangePasswordRequest;
+import mju.chatuniv.member.service.service.MemberService;
+import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
@@ -56,7 +55,7 @@ public class MemberControllerUnitTest {
     @Test
     public void get_using_member_id_and_email() throws Exception {
         //given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
 
         given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(member);
 
@@ -93,7 +92,7 @@ public class MemberControllerUnitTest {
     @Test
     public void change_current_members_password() throws Exception {
         //given
-        Member member = createMember();
+        Member member = Member.from("a@a.com", "password");
 
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");

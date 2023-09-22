@@ -9,14 +9,13 @@ import java.util.stream.IntStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.CommentService;
-import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -48,10 +47,10 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        authService.register(new MemberRequest("a@a.com", "1234"));
         member = memberRepository.findByEmail("a@a.com").orElseThrow();
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("a@a.com", "1234");
-        this.token = authService.login(memberLoginRequest);
+        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        this.token = authService.login(memberRequest);
         createBoard();
     }
 

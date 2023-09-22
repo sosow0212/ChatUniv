@@ -6,8 +6,8 @@ import java.util.List;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import mju.chatuniv.statistic.domain.Statistic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,8 +27,8 @@ public class StatisticServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setup() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-        authService.register(memberCreateRequest);
+        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        authService.register(memberRequest);
     }
 
     @DisplayName("통계를 조회한다.")

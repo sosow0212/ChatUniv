@@ -1,31 +1,5 @@
 package mju.chatuniv.comment.controller.unit;
 
-import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
-import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.controller.CommentController;
-import mju.chatuniv.fixture.board.BoardFixture;
-import mju.chatuniv.fixture.comment.CommentFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
-import mju.chatuniv.global.config.ArgumentResolverConfig;
-import mju.chatuniv.helper.MockTestHelper;
-import mju.chatuniv.member.domain.Member;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.stream.Stream;
-
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -40,6 +14,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.stream.Stream;
+import mju.chatuniv.auth.service.JwtAuthService;
+import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.comment.controller.CommentController;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.CommonCommentService;
+import mju.chatuniv.fixture.board.BoardFixture;
+import mju.chatuniv.fixture.comment.CommentFixture;
+import mju.chatuniv.global.config.ArgumentResolverConfig;
+import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = CommentController.class)
 @AutoConfigureRestDocs
@@ -110,7 +108,7 @@ public class CommonCommentControllerUnitTest {
     }
 
     private static Stream<Arguments> commentProvider() {
-        Member member = MemberFixture.createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
         return Stream.of(
                 Arguments.of("BoardComment", CommentFixture.createBoardComment(member, board)));

@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.BoardCommentService;
+import mju.chatuniv.comment.controller.BoardCommentController;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
-import mju.chatuniv.comment.controller.BoardCommentController;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.fixture.comment.CommentFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.domain.Member;
@@ -68,7 +67,7 @@ public class BoardCommentControllerUnitTest {
     @Test
     void create_board() throws Exception {
         // given
-        Member member = MemberFixture.createMember();
+        Member member = Member.from("a@a.com", "password");
         Board board = BoardFixture.createBoard(member);
         CommentRequest commentRequest = new CommentRequest("content");
         BoardComment boardComment = CommentFixture.createBoardComment(member, board);

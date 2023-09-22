@@ -1,11 +1,15 @@
 package mju.chatuniv.auth.support;
 
-import mju.chatuniv.auth.service.JwtAuthService;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
+import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.member.service.dto.MemberRequest;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,11 +18,6 @@ import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 public class JwtLoginResolverTest extends IntegrationTest {
 
@@ -37,9 +36,9 @@ public class JwtLoginResolverTest extends IntegrationTest {
     @Test
     void returns_access_member() throws Exception {
         // given
-        Member member = Member.from(1L, "a@a.com", "1234");
-        jwtAuthService.register(new MemberCreateRequest(member.getEmail(), member.getPassword()));
-        String accessToken = jwtAuthService.login(new MemberLoginRequest("a@a.com", "1234"));
+        Member member = Member.from( "a@a.com", "1234");
+        jwtAuthService.register(new MemberRequest(member.getEmail(), member.getPassword()));
+        String accessToken = jwtAuthService.login(new MemberRequest("a@a.com", "1234"));
         String header = "Bearer " + accessToken;
         given(webRequest.getHeader(HttpHeaders.AUTHORIZATION)).willReturn(header);
 

@@ -1,15 +1,14 @@
 package mju.chatuniv.board.service;
 
-import mju.chatuniv.board.service.dto.BoardRequest;
+import java.util.List;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class BoardService {
@@ -55,7 +54,6 @@ public class BoardService {
     @Transactional
     public void delete(final Long boardId, final Member member) {
         Board board = getBoard(boardId);
-
         board.checkWriter(member);
         boardRepository.delete(board);
     }

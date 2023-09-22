@@ -1,5 +1,6 @@
 package mju.chatuniv.chat.service;
 
+import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -14,8 +15,6 @@ import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ChatService {
@@ -62,7 +61,7 @@ public class ChatService {
     }
 
     private void validateOwner(final Member member, final Chat chat) {
-        if (!member.isSameMemberId(chat.getId())) {
+        if (!member.equals(chat.getId())) {
             throw new OwnerInvalidException();
         }
     }

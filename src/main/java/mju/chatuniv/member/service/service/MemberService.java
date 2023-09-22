@@ -1,10 +1,9 @@
 package mju.chatuniv.member.service.service;
 
-import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.NewPasswordsNotMatchingException;
-import mju.chatuniv.member.exception.exceptions.NotCurrentPasswordException;
+import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,29 +17,24 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member getUsingMemberIdAndEmail(final Member member){
+    public Member getUsingMemberIdAndEmail(final Member member) {
         return member;
     }
 
     @Transactional
     public Member changeMembersPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
-        if( !member.isPasswordSameWith(changePasswordRequest.getCurrentPassword())) {
-            throw new NotCurrentPasswordException();
-        }
-
+        member.validPassword(changePasswordRequest.getCurrentPassword());
         validateNewPassword(changePasswordRequest);
-
         member.changePassword(changePasswordRequest.getNewPassword());
 
         return member;
     }
 
     public void validateNewPassword(final ChangePasswordRequest changePasswordRequest) {
-
         String newPassword = changePasswordRequest.getNewPassword();
         String newPasswordCheck = changePasswordRequest.getNewPasswordCheck();
 
-        if( !newPassword.equals(newPasswordCheck)) {
+        if (!newPassword.equals(newPasswordCheck)) {
             throw new NewPasswordsNotMatchingException();
         }
     }

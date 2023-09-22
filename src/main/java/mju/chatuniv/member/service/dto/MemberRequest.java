@@ -1,14 +1,19 @@
 package mju.chatuniv.member.service.dto;
 
-public class MemberLoginRequest {
+import javax.validation.constraints.NotBlank;
 
+public class MemberRequest {
+
+    @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
+
+    @NotBlank(message = "패스워드를 입력해주세요.")
     private String password;
 
-    private MemberLoginRequest() {
+    private MemberRequest() {
     }
 
-    public MemberLoginRequest(final String email, final String password) {
+    public MemberRequest(final String email, final String password) {
         this.email = email;
         this.password = password;
     }

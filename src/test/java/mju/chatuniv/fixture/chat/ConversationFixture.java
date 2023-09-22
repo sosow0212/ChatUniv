@@ -4,7 +4,6 @@ import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.member.domain.Member;
 
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 
 public class ConversationFixture {
 
@@ -12,7 +11,7 @@ public class ConversationFixture {
         return Conversation.from(
                 "명지대학교 총장은 누구니?",
                 "유병진 총장님입니다.",
-                Chat.createDefault(createMember())
+                Chat.createDefault(Member.from("a@a.com", "password"))
         );
     }
 

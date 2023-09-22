@@ -68,4 +68,17 @@ class MemberTest {
         // then
         assertThat(result).isEqualTo(expected);
     }
+
+    @DisplayName("id가 다르면 다른 유저로 인식한다")
+    @Test
+    void throws_exception_when_member_id_not_equals() {
+        // given
+        Member member = createMember();
+
+        // when
+        boolean result = member.isSameMemberId(2L);
+
+        // when & then
+        assertThat(result).isEqualTo(false);
+    }
 }

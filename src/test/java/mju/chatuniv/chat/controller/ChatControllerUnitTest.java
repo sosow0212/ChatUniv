@@ -5,11 +5,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import mju.chatuniv.auth.service.JwtAuthService;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.service.ChatService;
 import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.chat.domain.chat.Chat;
-import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,10 @@ import java.util.List;
 import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -124,17 +128,22 @@ class ChatControllerUnitTest {
     void use_raw_chat_bot() throws Exception {
         // given
         Long chatId = 1L;
+        Member member = createMember();
         Conversation response = createConversation();
         ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
 
-        when(chatService.useChatBot(request.getPrompt(), chatId, false)).thenReturn(response);
+        when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenReturn(response);
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}/raw", chatId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(customDocument("use_raw_chat_bot",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Basic Auth")
+                        ),
                         pathParameters(
                                 parameterWithName("chatId").description("채팅방 ID")
                         ),
@@ -152,17 +161,22 @@ class ChatControllerUnitTest {
     void use_mild_chat_bot() throws Exception {
         // given
         Long chatId = 1L;
-        Conversation response = createConversation();
-        ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
+        Member member = createMember();
+        Conversation conversation = createConversation(member);
+        ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 
-        when(chatService.useChatBot(request.getPrompt(), chatId, true)).thenReturn(response);
+        when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenReturn(conversation);
 
         // when & then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/chats/{chatId}/mild", chatId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + createTokenByMember(member))
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(customDocument("use_mild_chat_bot",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Basic Auth")
+                        ),
                         pathParameters(
                                 parameterWithName("chatId").description("채팅방 ID")
                         ),

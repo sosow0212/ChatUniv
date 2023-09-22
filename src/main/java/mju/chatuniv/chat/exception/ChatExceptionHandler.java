@@ -2,6 +2,7 @@ package mju.chatuniv.chat.exception;
 
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
 import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
+import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,11 +21,20 @@ public class ChatExceptionHandler {
         return getServiceUnavailableResponse(exception.getMessage());
     }
 
+    @ExceptionHandler(OwnerInvalidException.class)
+    public ResponseEntity<String> handleOwnerInvalidException(final OwnerInvalidException exception) {
+        return getInvalidException(exception.getMessage());
+    }
+
     private ResponseEntity<String> getNotFoundResponse(final String message) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 
     private ResponseEntity<String> getServiceUnavailableResponse(final String message) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(message);
+    }
+
+    private ResponseEntity<String> getInvalidException(final String message) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 }

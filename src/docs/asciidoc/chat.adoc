@@ -34,6 +34,7 @@ include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-
 
 ==== 요청
 
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/request-headers.adoc[]
 include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/http-request.adoc[]
 
 ==== 응답
@@ -45,6 +46,7 @@ include::{snippets}/chat-controller-unit-test/use_raw_chat_bot/response-fields.a
 
 ==== 요청
 
+include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/request-headers.adoc[]
 include::{snippets}/chat-controller-unit-test/use_mild_chat_bot/http-request.adoc[]
 
 ==== 응답

@@ -1,7 +1,5 @@
 package mju.chatuniv.chat.service;
 
-import java.util.List;
-import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -10,10 +8,14 @@ import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.chat.domain.word.WordRepository;
 import mju.chatuniv.chat.domain.word.Words;
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
 import mju.chatuniv.chat.infrastructure.ChatBot;
+import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ChatService {
@@ -40,8 +42,12 @@ public class ChatService {
     }
 
     @Transactional
-    public Conversation useChatBot(final String prompt, final Long chatId, boolean isMild) {
+    public Conversation useChatBot(final String prompt,
+                                   final Long chatId,
+                                   final boolean isMild,
+                                   final Member member) {
         Chat chat = findChat(chatId);
+        validateOwner(member, chat);
 
         Words pureWords = Words.fromRawPrompt(prompt);
         pureWords.updateStaticsCount();
@@ -53,6 +59,12 @@ public class ChatService {
         wordRepository.saveAll(newWords);
 
         return getConversation(prompt, isMild, chat);
+    }
+
+    private void validateOwner(final Member member, final Chat chat) {
+        if (!member.isSameMemberId(chat.getId())) {
+            throw new OwnerInvalidException();
+        }
     }
 
     private Conversation getConversation(final String prompt, final boolean isMild, final Chat chat) {

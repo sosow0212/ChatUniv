@@ -126,7 +126,7 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_sign_up_wrong_email() throws Exception {
         // given
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@.com", "1234");
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("sscom", "1234");
 
         given(jwtAuthService.register(Mockito.any(MemberCreateRequest.class))).willThrow(
                 new MemberEmailFormatInvalidException(memberCreateRequest.getEmail()));

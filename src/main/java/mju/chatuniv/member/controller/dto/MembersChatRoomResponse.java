@@ -18,4 +18,8 @@ public class MembersChatRoomResponse {
     public static MembersChatRoomResponse from(final List<Chat> myChats) {
         return new MembersChatRoomResponse((myChats));
     }
+
+    public List<Chat> getMyChats() {
+        return myChats;
+    }
 }

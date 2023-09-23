@@ -1,6 +1,7 @@
 package mju.chatuniv.member.controller;
 
 import mju.chatuniv.auth.support.JwtLogin;
+import mju.chatuniv.member.controller.dto.MembersChatRoomResponse;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.service.service.MemberService;
 import mju.chatuniv.member.domain.Member;
@@ -29,6 +30,11 @@ public class MemberController {
     public ResponseEntity<MemberResponse> getUsingMemberIdAndEmail(@JwtLogin final Member member) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MemberResponse.from(memberService.getUsingMemberIdAndEmail(member)));
+    }
+
+    @GetMapping("/chats")
+    public ResponseEntity<MembersChatRoomResponse> findMembersChatRooms (@JwtLogin final Member member) {
+        return ResponseEntity.ok(MembersChatRoomResponse.from(memberService.findMembersChat(member)));
     }
 
     @PatchMapping

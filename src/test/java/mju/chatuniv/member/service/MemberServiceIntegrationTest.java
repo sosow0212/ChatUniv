@@ -26,9 +26,10 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
         Member member = createMember();
 
         //then
+        Member result = memberService.getUsingMemberIdAndEmail(member);
         assertAll(
-                () -> assertEquals(expected, member.getId() == id),
-                () -> assertEquals(expected, member.getEmail().equals(email))
+                () -> assertEquals(expected, result.getId() == id),
+                () -> assertEquals(expected, result.getEmail().equals(email))
         );
     }
 

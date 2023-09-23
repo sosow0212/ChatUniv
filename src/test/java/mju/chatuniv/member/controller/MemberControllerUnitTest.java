@@ -27,8 +27,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -165,5 +164,15 @@ public class MemberControllerUnitTest {
         mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @DisplayName("회원의 채팅방 내역들을 조회하면 현재 회원이 사용한 채팅방이 리스트로 반환된다.")
+    @Test
+    public void find_current_members_chat_rooms() throws Exception {
+        //given
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/chats"))
+                .andExpect(status().isOk());
+
+        //when & then
     }
 }

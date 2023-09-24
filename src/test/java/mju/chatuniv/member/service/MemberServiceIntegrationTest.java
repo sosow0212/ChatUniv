@@ -1,5 +1,8 @@
 package mju.chatuniv.member.service;
 
+import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.helper.integration.IntegrationTest;
@@ -14,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
@@ -30,6 +34,9 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private BoardRepository boardRepository;
 
     @DisplayName("회원 정보는 입력받은 회원으로 만든다.")
     @CsvSource({"1, a@a.com, true", "2, b@b.com, false"})
@@ -68,8 +75,7 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
     @Test
     public void find_members_chat_rooms() {
         //given
-        Member member = createMember();
-        memberRepository.save(member);
+        Member member = initializeMember();
         IntStream.range(0, 10)
                 .forEach(id -> chatRepository.save(Chat.createDefault(member)));
 
@@ -78,5 +84,32 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertEquals(membersChat.size(), 10);
+    }
+
+    @DisplayName("회원의 게시물들을 반환한다.")
+    @Test
+    public void find_members_boards() {
+        //given
+        Member member = initializeMember();
+
+        //when
+        IntStream.range(0, 10)
+                .forEach(id -> boardRepository.save(Board.from("title"+id, "content"+id, member)));
+
+        //then
+        assertAll(
+                () ->
+                        assertEquals(memberService.findMembersBoard(member).stream().map(BoardResponse::getTitle).collect(Collectors.toList()),
+                                List.of("title9", "title8", "title7", "title6", "title5", "title4", "title3", "title2", "title1", "title0")),
+                () ->
+                        assertEquals(memberService.findMembersBoard(member).stream().map(BoardResponse::getContent).collect(Collectors.toList()),
+                                List.of("content9", "content8", "content7", "content6", "content5", "content4", "content3", "content2", "content1", "content0"))
+        );
+    }
+
+    private Member initializeMember() {
+        Member member = createMember();
+        memberRepository.save(member);
+        return memberRepository.findByEmail(member.getEmail()).get();
     }
 }

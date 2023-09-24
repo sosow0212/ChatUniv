@@ -32,12 +32,12 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public List<Chat> findMembersChat(final Member member) {
-        return chatRepository.findAllByMember_Id(member.getId());
+        return chatRepository.findAllByMember(member);
     }
 
     @Transactional(readOnly = true)
     public List<BoardResponse> findMembersBoard(final Member member) {
-        return boardRepository.findAllByMember_IdOrderByIdDesc(member)
+        return boardRepository.findAllByMemberOrderByIdDesc(member)
                 .stream().map(BoardResponse::from).collect(Collectors.toList());
     }
 

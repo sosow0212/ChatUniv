@@ -18,7 +18,7 @@ class MemberTest {
     @Test
     void create_member_success() {
         // when & then
-        Assertions.assertDoesNotThrow(() -> Member.from("a@a.com", "1234"));
+        Assertions.assertDoesNotThrow(() -> Member.of("a@a.com", "1234"));
     }
 
     @DisplayName("이메일 형식에 맞지 않으면 생성에 실패한다.")
@@ -26,7 +26,7 @@ class MemberTest {
     @ParameterizedTest
     void throws_exception_when_email_invalid_format(final String email) {
         // when & then
-        assertThatThrownBy(() -> Member.from(email, "1234"))
+        assertThatThrownBy(() -> Member.of(email, "1234"))
                 .isInstanceOf(MemberEmailFormatInvalidException.class);
     }
 
@@ -35,7 +35,7 @@ class MemberTest {
     @ParameterizedTest
     void throws_exception_when_password_blank(final String password) {
         // when & then
-        assertThatThrownBy(() -> Member.from("a@a.com", password))
+        assertThatThrownBy(() -> Member.of("a@a.com", password))
                 .isInstanceOf(MemberPasswordBlankException.class);
     }
 
@@ -43,10 +43,10 @@ class MemberTest {
     @Test
     void throws_exception_when_not_equals_password() {
         // given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
 
         // when & then
-        assertThatThrownBy(() -> member.validPassword("newPassword"))
+        assertThatThrownBy(() -> member.validatePassword("newPassword"))
                 .isInstanceOf(AuthorizationInvalidPasswordException.class);
     }
 }

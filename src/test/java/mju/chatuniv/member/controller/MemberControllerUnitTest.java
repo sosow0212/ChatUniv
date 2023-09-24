@@ -55,7 +55,7 @@ public class MemberControllerUnitTest {
     @Test
     public void get_using_member_id_and_email() throws Exception {
         //given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
 
         given(memberService.getUsingMemberIdAndEmail(any(Member.class))).willReturn(member);
 
@@ -92,7 +92,7 @@ public class MemberControllerUnitTest {
     @Test
     public void change_current_members_password() throws Exception {
         //given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
 
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");

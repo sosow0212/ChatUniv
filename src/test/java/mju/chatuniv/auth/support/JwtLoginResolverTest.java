@@ -36,7 +36,11 @@ public class JwtLoginResolverTest extends IntegrationTest {
     @Test
     void returns_access_member() throws Exception {
         // given
-        Member member = Member.from( "a@a.com", "1234");
+        Member member = mock(Member.class);
+        given(member.getId()).willReturn(1L);
+        given(member.getEmail()).willReturn("a@a.com");
+        given(member.getPassword()).willReturn("1234");
+
         jwtAuthService.register(new MemberRequest(member.getEmail(), member.getPassword()));
         String accessToken = jwtAuthService.login(new MemberRequest("a@a.com", "1234"));
         String header = "Bearer " + accessToken;

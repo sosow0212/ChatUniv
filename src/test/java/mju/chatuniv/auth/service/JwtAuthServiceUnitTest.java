@@ -8,7 +8,6 @@ import java.util.Optional;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
 import mju.chatuniv.member.service.dto.MemberRequest;
@@ -46,20 +45,20 @@ public class JwtAuthServiceUnitTest {
     @Test
     void throws_exception_when_login_with_invalid_email() {
         // given
-        Member member = Member.from("a@a.com", "password");
-        MemberRequest memberRequest = new MemberRequest("b@b.com", "1234");
+        Member member = Member.of("a@a.com", "password");
+        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when & then
         assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
-                .isInstanceOf(AuthorizationInvalidEmailException.class);
+                .isInstanceOf(AuthorizationInvalidPasswordException.class);
     }
 
     @DisplayName("로그인 시 일치하지 않는 일치하지 않는 패스워드라면 예외를 발생시킨다.")
     @Test
     void throws_exception_when_login_with_invalid_password() {
         // given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         MemberRequest memberRequest = new MemberRequest("a@a.com", "12345");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 

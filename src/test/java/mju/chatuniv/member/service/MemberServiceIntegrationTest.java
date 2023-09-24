@@ -22,7 +22,7 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
     @ParameterizedTest
     void get_log_in_members_id_and_email(final String email, final boolean expected) {
         //given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
 
         //then
         assertThat(member.getEmail().equals(email)).isEqualTo(expected);
@@ -35,7 +35,7 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
                                                 final String newPassword,
                                                 final String newPasswordCheck) {
         //given
-        Member member = Member.from("a@a.com", "1234");
+        Member member = Member.of("a@a.com", "1234");
 
         //when
         ChangePasswordRequest changePasswordRequest =

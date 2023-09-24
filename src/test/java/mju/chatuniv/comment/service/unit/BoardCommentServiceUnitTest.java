@@ -11,7 +11,6 @@ import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.BoardCommentService;
-import mju.chatuniv.fixture.board.BoardFixture;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +37,8 @@ public class BoardCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.from("a@a.com", "password");
-        board = BoardFixture.createBoard(member);
+        member = Member.of("a@a.com", "password");
+        board = Board.of( "title","content", member);
     }
 
     @DisplayName("댓글 생성시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")

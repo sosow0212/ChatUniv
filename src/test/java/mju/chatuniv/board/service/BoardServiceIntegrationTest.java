@@ -84,7 +84,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         LongStream.range(1, 100)
             .forEach(index -> {
-                boardRepository.save(Board.from("title" + index, "content" + index, member));
+                boardRepository.save(Board.of("title" + index, "content" + index, member));
             });
 
         //when

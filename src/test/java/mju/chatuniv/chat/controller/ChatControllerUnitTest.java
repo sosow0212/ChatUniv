@@ -68,7 +68,7 @@ class ChatControllerUnitTest {
     @Test
     void make_new_chatting_room() throws Exception {
         // given
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         when(chatService.createNewChattingRoom(member)).thenReturn(1L);
 
         // when & then
@@ -90,9 +90,9 @@ class ChatControllerUnitTest {
     void join_being_chatting_room() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
 
-        ChattingHistoryResponse response = ChattingHistoryResponse.from(
+        ChattingHistoryResponse response = ChattingHistoryResponse.of(
                 Chat.createDefault(member), List.of(createConversation())
         );
 
@@ -124,7 +124,7 @@ class ChatControllerUnitTest {
     void use_raw_chat_bot() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         Conversation response = createConversation();
         ChatPromptRequest request = new ChatPromptRequest(response.getAsk());
 
@@ -154,7 +154,7 @@ class ChatControllerUnitTest {
     void use_mild_chat_bot() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         Conversation conversation = createConversation(member);
         ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 
@@ -184,7 +184,7 @@ class ChatControllerUnitTest {
     void fail_to_use_with_different_member() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         Conversation conversation = createConversation(member);
         ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 
@@ -209,7 +209,7 @@ class ChatControllerUnitTest {
     void fail_to_use_with_not_exist_chat_room() throws Exception {
         // given
         Long chatId = 2L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         Conversation conversation = createConversation(member);
         ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 
@@ -234,7 +234,7 @@ class ChatControllerUnitTest {
     void fail_to_use_with_wrong_gpt_server() throws Exception {
         // given
         Long chatId = 1L;
-        Member member = Member.from("a@a.com", "password");
+        Member member = Member.of("a@a.com", "password");
         Conversation conversation = createConversation(member);
         ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 

@@ -4,6 +4,7 @@ import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -17,13 +18,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.stream.Stream;
 import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.comment.controller.CommentController;
+import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.CommonCommentService;
-import mju.chatuniv.fixture.board.BoardFixture;
-import mju.chatuniv.fixture.comment.CommentFixture;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.domain.Member;
@@ -68,9 +67,9 @@ public class CommonCommentControllerUnitTest {
     void update_comment(final String text, final Comment comment) throws Exception {
         // given
         CommentRequest commentRequest = new CommentRequest("updateComment");
-        comment.update("updateComment");
-
         given(commonCommentService.update(anyLong(), any(Member.class), any(CommentRequest.class))).willReturn(comment);
+        given(comment.getId()).willReturn(1L);
+        given(comment.getContent()).willReturn("updateComment");
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/comments/1"), commentRequest)
@@ -108,11 +107,7 @@ public class CommonCommentControllerUnitTest {
     }
 
     private static Stream<Arguments> commentProvider() {
-        Member member = Member.from("a@a.com", "password");
-        Board board = BoardFixture.createBoard(member);
         return Stream.of(
-                Arguments.of("BoardComment", CommentFixture.createBoardComment(member, board)));
+                Arguments.of("BoardComment", mock(BoardComment.class)));
     }
 }
-
-

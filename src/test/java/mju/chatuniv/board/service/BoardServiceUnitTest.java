@@ -37,8 +37,8 @@ public class BoardServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.from("123@naver.com", "12455");
-        board = Board.from("initTile", "initContent", member);
+        member = Member.of("123@naver.com", "12455");
+        board = Board.of("initTile", "initContent", member);
     }
 
     @DisplayName("게시판 생성시 제목이 비어있다면 예외가 발생한다.")
@@ -78,13 +78,14 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_update_board_with_invalid_member() {
         //given
-        Member others = Member.from("a@a.com", "password");
-        ;
+        Member other = Member.of("aaaa@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
-        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(board));
+        Board mockBoard = mock(Board.class);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
+        doThrow(new MemberNotEqualsException()).when(mockBoard).checkWriter(member);
 
         //when & then
-        assertThatThrownBy(() -> boardService.update(anyLong(), others, boardRequest))
+        assertThatThrownBy(() -> boardService.update(anyLong(), other, boardRequest))
                 .isInstanceOf(MemberNotEqualsException.class);
     }
 
@@ -127,10 +128,10 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_delete_board_with_invalid_member() {
         //given
-        Member other = Member.from("aaaa@a.com", "password");
-        Board bo = mock(Board.class);
-        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(bo));
-        doThrow(new MemberNotEqualsException()).when(bo).checkWriter(member);
+        Member other = Member.of("aaaa@a.com", "password");
+        Board mockBoard = mock(Board.class);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
+        doThrow(new MemberNotEqualsException()).when(mockBoard).checkWriter(member);
 
 
         //when & then

@@ -36,7 +36,7 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
     @Test
     void create_new_chatting_room() {
         // given
-        Member member = memberRepository.save(Member.from("a@a.com", "password"));
+        Member member = memberRepository.save(Member.of("a@a.com", "password"));
 
         // when
         Long id = chatService.createNewChattingRoom(member);
@@ -49,10 +49,10 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
     @Test
     void join_being_chatting_room() {
         // given
-        Member member = memberRepository.save(Member.from("a@a.com", "password"));
+        Member member = memberRepository.save(Member.of("a@a.com", "password"));
         Chat chat = chatRepository.save(Chat.createDefault(member));
-        conversationRepository.save(Conversation.from("ask", "answer", chat));
-        conversationRepository.save(Conversation.from("ask2", "answer2", chat));
+        conversationRepository.save(Conversation.of("ask", "answer", chat));
+        conversationRepository.save(Conversation.of("ask2", "answer2", chat));
 
         // when
         ChattingHistoryResponse result = chatService.joinChattingRoom(chat.getId());

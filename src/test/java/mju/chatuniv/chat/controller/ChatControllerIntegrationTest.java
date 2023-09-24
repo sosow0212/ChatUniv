@@ -68,7 +68,7 @@ public class ChatControllerIntegrationTest extends IntegrationTest {
     void join_being_chatting_room() {
         // given
         Chat chat = chatRepository.save(Chat.createDefault(member));
-        Conversation conversation = Conversation.from("ask", "answer", chat);
+        Conversation conversation = Conversation.of("ask", "answer", chat);
         conversationRepository.save(conversation);
 
         // when

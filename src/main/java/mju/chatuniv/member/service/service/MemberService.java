@@ -37,7 +37,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public List<BoardResponse> findMembersBoard(final Member member) {
-        return boardRepository.findAllByMember_Id(member)
+        return boardRepository.findAllByMember_IdOrderByIdDesc(member)
                 .stream().map(BoardResponse::from).collect(Collectors.toList());
     }
 

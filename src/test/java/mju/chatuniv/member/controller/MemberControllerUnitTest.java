@@ -205,6 +205,18 @@ public class MemberControllerUnitTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @DisplayName("토큰이 없을 때 게시물을 조회하면 401에러와 토큰이 없음이 반환된다. ")
+    @Test
+    public void fail_to_find_current_members_boards_Unauthorized() throws Exception {
+        //given
+        given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
+
+        //when&then
+        mockTestHelper.createMockRequestWithoutTokenAndContent(get("/api/members/boards"))
+                .andExpect(status().isUnauthorized())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
     private List<Chat> makeDummyChats () {
          return IntStream.range(0, 10)
                 .mapToObj(each -> Chat.createDefault(createMember()))

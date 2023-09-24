@@ -1,5 +1,7 @@
 package mju.chatuniv.member.service.service;
 
+import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
@@ -11,16 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
-
-    private final MemberRepository memberRepository;
     private final ChatRepository chatRepository;
+    private final BoardRepository boardRepository;
 
-    public MemberService(final MemberRepository memberRepository, final ChatRepository chatRepository) {
-        this.memberRepository = memberRepository;
+    public MemberService(final ChatRepository chatRepository, final BoardRepository boardRepository) {
         this.chatRepository = chatRepository;
+        this.boardRepository = boardRepository;
     }
 
     @Transactional(readOnly = true)
@@ -31,6 +33,12 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<Chat> findMembersChat(final Member member) {
         return chatRepository.findAllByMember_Id(member.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<BoardResponse> findMembersBoard(final Member member) {
+        return boardRepository.findAllByMember_Id(member)
+                .stream().map(BoardResponse::from).collect(Collectors.toList());
     }
 
     @Transactional

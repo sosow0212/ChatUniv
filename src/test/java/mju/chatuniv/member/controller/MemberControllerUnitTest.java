@@ -1,5 +1,7 @@
 package mju.chatuniv.member.controller;
 
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.service.ChatService;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
@@ -17,6 +19,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
@@ -37,6 +43,9 @@ public class MemberControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private ChatService chatService;
 
     @MockBean
     private ArgumentResolverConfig argumentResolverConfig;
@@ -170,9 +179,19 @@ public class MemberControllerUnitTest {
     @Test
     public void find_current_members_chat_rooms() throws Exception {
         //given
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/chats"))
-                .andExpect(status().isOk());
+        given(memberService.findMembersChat(any(Member.class)))
+                .willReturn(makeDummyChats());
 
         //when & then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/chats"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myChats").isArray())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    private List<Chat> makeDummyChats () {
+         return IntStream.range(0, 10)
+                .mapToObj(each -> Chat.createDefault(createMember()))
+                 .collect(Collectors.toList());
     }
 }

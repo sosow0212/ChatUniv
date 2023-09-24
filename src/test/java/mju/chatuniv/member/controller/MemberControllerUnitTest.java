@@ -1,5 +1,7 @@
 package mju.chatuniv.member.controller;
 
+import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.service.ChatService;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
@@ -189,9 +191,30 @@ public class MemberControllerUnitTest {
                 .andDo(MockMvcResultHandlers.print());
     }
 
+    @DisplayName("회원의 게시물을 조회하면 게시물의 id, 제목, 내용이 반환된다. ")
+    @Test
+    public void find_current_members_boards() throws Exception {
+        //given
+        given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
+
+        //when&then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/boards"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.boardResponses").isArray())
+                .andExpect(jsonPath("$.boardResponses.length()").value(10))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
     private List<Chat> makeDummyChats () {
          return IntStream.range(0, 10)
                 .mapToObj(each -> Chat.createDefault(createMember()))
                  .collect(Collectors.toList());
+    }
+
+    private List<BoardResponse> makeDummyBoards () {
+        return IntStream.range(0, 10)
+                .mapToObj(each -> Board.from("title"+each, "content"+each, createMember()))
+                .map(BoardResponse::from)
+                .collect(Collectors.toList());
     }
 }

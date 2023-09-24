@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
 import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
@@ -35,7 +36,7 @@ public class Member {
         this.password = password;
     }
 
-    public static Member from(final String email, final String password) {
+    public static Member of(final String email, final String password) {
         validateCreateMember(email, password);
         return new Member(null, email, password);
     }
@@ -58,9 +59,15 @@ public class Member {
         return password == null || password.isBlank();
     }
 
-    public void validPassword(final String password) {
+    public void validatePassword(final String password) {
         if (!this.password.equals(password)) {
             throw new AuthorizationInvalidPasswordException(password);
+        }
+    }
+
+    public void validateEmail(final String email) {
+        if (!this.email.equals(email)) {
+            throw new AuthorizationInvalidEmailException(email);
         }
     }
 

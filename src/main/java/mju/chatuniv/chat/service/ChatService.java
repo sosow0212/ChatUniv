@@ -9,7 +9,6 @@ import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.chat.domain.word.WordRepository;
 import mju.chatuniv.chat.domain.word.Words;
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
-import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
 import mju.chatuniv.chat.infrastructure.ChatBot;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.member.domain.Member;
@@ -40,52 +39,44 @@ public class ChatService {
         return chat.getId();
     }
 
+    @Transactional(readOnly = true)
+    public ChattingHistoryResponse joinChattingRoom(final Long chatId) {
+        Chat chat = findChat(chatId);
+        List<Conversation> conversationsHistory = conversationRepository.findAllByChat(chat);
+        return ChattingHistoryResponse.of(chat, conversationsHistory);
+    }
+
     @Transactional
     public Conversation useChatBot(final String prompt,
                                    final Long chatId,
                                    final boolean isMild,
                                    final Member member) {
         Chat chat = findChat(chatId);
-        validateOwner(member, chat);
+        chat.validateOwner(member);
 
         Words pureWords = Words.fromRawPrompt(prompt);
         pureWords.updateStaticsCount();
 
         Words duplicatedWords = Words.ofPureWords(wordRepository.findAllByWords(pureWords.getWordsToString()));
         duplicatedWords.updateFrequencyCount();
-
         List<Word> newWords = duplicatedWords.findNotContainsWordsFromOthers(pureWords.getWords());
+
         wordRepository.saveAll(newWords);
 
         return getConversation(prompt, isMild, chat);
     }
 
-    private void validateOwner(final Member member, final Chat chat) {
-        if (!member.equals(chat.getId())) {
-            throw new OwnerInvalidException();
-        }
-    }
-
     private Conversation getConversation(final String prompt, final boolean isMild, final Chat chat) {
         if (isMild) {
             String answer = chatBot.getMildAnswer(prompt);
-            return conversationRepository.save(Conversation.from(prompt, answer, chat));
+            return conversationRepository.save(Conversation.of(prompt, answer, chat));
         }
-
         String answer = chatBot.getRawAnswer(prompt);
-        return conversationRepository.save(Conversation.from(prompt, answer, chat));
+        return conversationRepository.save(Conversation.of(prompt, answer, chat));
     }
 
     private Chat findChat(final Long chatId) {
         return chatRepository.findById(chatId)
                 .orElseThrow(() -> new ChattingRoomNotFoundException(chatId));
-    }
-
-    @Transactional(readOnly = true)
-    public ChattingHistoryResponse joinChattingRoom(final Long chatId) {
-        Chat chat = findChat(chatId);
-
-        List<Conversation> conversationsHistory = conversationRepository.findAllByChat(chat);
-        return ChattingHistoryResponse.from(chat, conversationsHistory);
     }
 }

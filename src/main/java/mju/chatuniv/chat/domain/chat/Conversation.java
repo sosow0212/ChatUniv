@@ -1,9 +1,5 @@
 package mju.chatuniv.chat.domain.chat;
 
-import mju.chatuniv.global.domain.BaseEntity;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import mju.chatuniv.global.domain.BaseEntity;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "CONVERSATION")
@@ -48,9 +47,9 @@ public class Conversation extends BaseEntity {
         this.chat = chat;
     }
 
-    public static Conversation from(final String ask,
-                                    final String answer,
-                                    final Chat chat) {
+    public static Conversation of(final String ask,
+                                  final String answer,
+                                  final Chat chat) {
         return new Conversation(null, ask, answer, chat);
     }
 

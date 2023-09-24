@@ -23,24 +23,22 @@ public class JwtAuthService implements AuthService {
     @Transactional
     public Member register(final MemberRequest memberRequest) {
         validateEmail(memberRequest);
-        return memberRepository.save(Member.from(memberRequest.getEmail(),
+        return memberRepository.save(Member.of(memberRequest.getEmail(),
                 memberRequest.getPassword()));
     }
 
     @Transactional(readOnly = true)
     public String login(final MemberRequest memberRequest) {
-        System.out.println("hihi");
         Member member = memberRepository.findByEmail(memberRequest.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
-        member.validPassword(memberRequest.getPassword());
-
+        member.validateEmail(memberRequest.getEmail());
+        member.validatePassword(memberRequest.getPassword());
         return jwtTokenProvider.createAccessToken(memberRequest.getEmail());
     }
 
     @Transactional(readOnly = true)
     public Member findMemberByJwtPayload(final String jwtPayload) {
         String jwtPayloadOfEmail = jwtTokenProvider.getPayload(jwtPayload);
-
         return memberRepository.findByEmail(jwtPayloadOfEmail)
                 .orElseThrow(MemberNotFoundException::new);
     }

@@ -1,12 +1,11 @@
 package mju.chatuniv.chat.service.dto.chat;
 
-import mju.chatuniv.chat.domain.chat.Chat;
-import mju.chatuniv.chat.domain.chat.Conversation;
-import mju.chatuniv.chat.controller.dto.ConversationResponse;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import mju.chatuniv.chat.controller.dto.ConversationResponse;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.domain.chat.Conversation;
 
 public class ChattingHistoryResponse {
 
@@ -22,7 +21,7 @@ public class ChattingHistoryResponse {
         this.createdAt = createdAt;
     }
 
-    public static ChattingHistoryResponse from(final Chat chat, final List<Conversation> conversations) {
+    public static ChattingHistoryResponse of(final Chat chat, final List<Conversation> conversations) {
         return new ChattingHistoryResponse(
                 chat.getId(),
                 getConversationsResponse(conversations),

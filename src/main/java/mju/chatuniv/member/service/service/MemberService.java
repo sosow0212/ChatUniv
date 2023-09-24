@@ -23,7 +23,7 @@ public class MemberService {
 
     @Transactional
     public Member changeMembersPassword(final Member member, final ChangePasswordRequest changePasswordRequest) {
-        member.validPassword(changePasswordRequest.getCurrentPassword());
+        member.validatePassword(changePasswordRequest.getCurrentPassword());
         validateNewPassword(changePasswordRequest);
         member.changePassword(changePasswordRequest.getNewPassword());
 

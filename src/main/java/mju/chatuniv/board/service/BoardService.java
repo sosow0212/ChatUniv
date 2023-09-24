@@ -21,7 +21,7 @@ public class BoardService {
 
     @Transactional
     public Board create(final Member member, final BoardRequest boardRequest) {
-        Board board = Board.from(boardRequest.getTitle(), boardRequest.getContent(), member);
+        Board board = Board.of(boardRequest.getTitle(), boardRequest.getContent(), member);
         return boardRepository.save(board);
     }
 
@@ -37,17 +37,14 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public List<BoardPagingResponse> findAllBoards(final Long pageSize, final Long boardId) {
-
         return boardRepository.findBoards(pageSize, boardId);
     }
 
     @Transactional
     public Board update(final Long boardId, final Member member, final BoardRequest boardRequest) {
         Board board = getBoard(boardId);
-
         board.checkWriter(member);
         board.update(boardRequest.getTitle(), boardRequest.getContent());
-
         return board;
     }
 

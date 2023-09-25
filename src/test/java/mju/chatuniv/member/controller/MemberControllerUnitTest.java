@@ -211,7 +211,7 @@ public class MemberControllerUnitTest {
                         ),
                         responseFields(
                                 fieldWithPath(".boardResponses").description("조회시 반환되는 데이터 배열"),
-                                fieldWithPath(".boardResponses[0].id").description("조회시 반환되는 board의 id"),
+                                fieldWithPath(".boardResponses[0].boardId").description("조회시 반환되는 board의 id"),
                                 fieldWithPath(".boardResponses[0].title").description("조회시 반환되는 board의 id"),
                                 fieldWithPath(".boardResponses[0].content").description("조회시 반환되는 board의 id")
                         )

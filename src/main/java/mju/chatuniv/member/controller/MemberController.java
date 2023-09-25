@@ -34,13 +34,13 @@ public class MemberController {
                 .body(MemberResponse.from(memberService.getUsingMemberIdAndEmail(member)));
     }
 
-    @GetMapping("/chats")
+    @GetMapping("/me/chats")
     public ResponseEntity<MembersChatRoomResponse> findMembersChatRooms (@JwtLogin final Member member) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersChatRoomResponse.from(memberService.findMembersChat(member)));
     }
 
-    @GetMapping("/boards")
+    @GetMapping("/me/boards")
     public ResponseEntity<MembersBoardResponse> findMembersBoards (@JwtLogin final Member member) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersBoardResponse.from(memberService.findMembersBoard(member)));

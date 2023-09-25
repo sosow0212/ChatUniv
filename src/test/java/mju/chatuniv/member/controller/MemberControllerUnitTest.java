@@ -185,7 +185,7 @@ public class MemberControllerUnitTest {
                 .willReturn(makeDummyChats());
 
         //when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/chats"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/me/chats"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.myChats").isArray())
                 .andDo(MockMvcResultHandlers.print());
@@ -198,7 +198,7 @@ public class MemberControllerUnitTest {
         given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
 
         //when&then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/boards"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/members/me/boards"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.boardResponses").isArray())
                 .andExpect(jsonPath("$.boardResponses.length()").value(10))
@@ -212,7 +212,7 @@ public class MemberControllerUnitTest {
         given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
 
         //when&then
-        mockTestHelper.createMockRequestWithoutTokenAndContent(get("/api/members/boards"))
+        mockTestHelper.createMockRequestWithoutTokenAndContent(get("/api/members/me/boards"))
                 .andExpect(status().isUnauthorized())
                 .andDo(MockMvcResultHandlers.print());
     }

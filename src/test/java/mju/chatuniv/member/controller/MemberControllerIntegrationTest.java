@@ -74,6 +74,27 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
         });
     }
 
+    @DisplayName("토큰을 가지고 회원의 게시물을 요청하면 List로 반환된다..")
+    @Test
+    void find_current_members_boards() {
+        // given
+        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+
+        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+
+        // when
+        Response response = RestAssured.given()
+                .header("Authorization", BEARER_ + token)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/api/members/me/boards");
+
+        // then
+        response.then()
+                .statusCode(HttpStatus.OK.value());
+        Assertions.assertTrue(response.body().jsonPath().get("boardResponses"));
+    }
+
     private String makeJson(Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);

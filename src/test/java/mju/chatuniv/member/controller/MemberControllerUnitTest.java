@@ -202,7 +202,20 @@ public class MemberControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.boardResponses").isArray())
                 .andExpect(jsonPath("$.boardResponses.length()").value(10))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("$.boardResponses[0].title").value("title0"))
+                .andExpect(jsonPath("$.boardResponses[0].content").value("content0"))
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(customDocument("find_members_boards",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        responseFields(
+                                fieldWithPath(".boardResponses").description("조회시 반환되는 데이터 배열"),
+                                fieldWithPath(".boardResponses[0].id").description("조회시 반환되는 board의 id"),
+                                fieldWithPath(".boardResponses[0].title").description("조회시 반환되는 board의 id"),
+                                fieldWithPath(".boardResponses[0].content").description("조회시 반환되는 board의 id")
+                        )
+                ));
     }
 
     @DisplayName("토큰이 없을 때 게시물을 조회하면 401에러와 토큰이 없음이 반환된다. ")

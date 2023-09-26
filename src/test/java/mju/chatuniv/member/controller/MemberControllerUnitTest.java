@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
-public class MemberControllerUnitTest {
+class MemberControllerUnitTest {
 
     @MockBean
     private MemberService memberService;
@@ -53,7 +53,7 @@ public class MemberControllerUnitTest {
 
     @DisplayName("현재 로그인한 회원의 인조키와 이메일을 반환한다.")
     @Test
-    public void get_using_member_id_and_email() throws Exception {
+    void get_using_member_id_and_email() throws Exception {
         //given
         Member member = Member.of("a@a.com", "password");
 
@@ -79,7 +79,7 @@ public class MemberControllerUnitTest {
 
     @DisplayName("토큰이 없을 때 현재 회원정보를 조회하면 401에러와 토큰이 없음이 반환된다.")
     @Test
-    public void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
+    void fail_to_get_using_member_id_and_email_No_Token() throws Exception {
         // given
 
         // when & then
@@ -90,7 +90,7 @@ public class MemberControllerUnitTest {
 
     @DisplayName("현재 비밀번호, 새 비밀번호, 새 비밀번호 재입력을 성공적으로 입력하면 비밀번호가 교체된다. ")
     @Test
-    public void change_current_members_password() throws Exception {
+    void change_current_members_password() throws Exception {
         //given
         Member member = Member.of("a@a.com", "password");
 
@@ -111,32 +111,38 @@ public class MemberControllerUnitTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         requestFields(
-                                fieldWithPath(".currentPassword").description("기존 비밀번호"),
-                                fieldWithPath(".newPassword").description("새 비밀번호"),
-                                fieldWithPath(".newPasswordCheck").description("새 비밀번호 재입력")
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
                         ),
                         responseFields(
-                                fieldWithPath(".memberId").description("로그인한 MEMBER의 ID"),
-                                fieldWithPath(".email").description("로그인한 MEMBER의 EMAIL")
+                                fieldWithPath("memberId").description("로그인한 MEMBER의 ID"),
+                                fieldWithPath("email").description("로그인한 MEMBER의 EMAIL")
                         )
                 ));
     }
 
-    @DisplayName("토큰이 없을 경우 401에러와 함께 비밀번호 변경을 실패한다. ")
+    @DisplayName("토큰이 없을 경우 401에러와 함께 비밀번호 변경을 실패한다.")
     @Test
-    public void fail_to_change_password_Unauthorized() throws Exception {
+    void fail_to_change_password_Unauthorized() throws Exception {
         //given
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");
 
         // when & then
         mockTestHelper.createMockRequestWithoutTokenAndWithContent(patch("/api/members"), changePasswordRequest)
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andDo(customDocument("fail_to_change_password_Unauthorized",
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
     }
 
     @DisplayName("입력한 현재 비밀번호가 기존과 다르면 400에러와 메시지를 반환하며 비밀번호 변경을 실패한다.")
     @Test
-    public void fail_to_change_password_Not_Current_Password() throws Exception {
+    void fail_to_change_password_Not_Current_Password() throws Exception {
         //given
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("5678", "5678", "5678");
@@ -147,22 +153,102 @@ public class MemberControllerUnitTest {
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(customDocument("fail_to_change_password_Not_Current_Password",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
     }
 
-    @DisplayName("입력한 현재 비밀번호가 기존과 다르면 400에러와 메시지를 반환하며 비밀번호 변경을 실패한다.")
+    @DisplayName("입력한 새로운 비밀번호와 이를 확인하는 비밀번호가 다르면 400에러와 메시지를 반환하며 비밀번호 변경을 실패한다.")
     @Test
-    public void fail_to_change_password_New_Password_Unmatched() throws Exception {
+    void fail_to_change_password_New_Password_Unmatched() throws Exception {
         //given
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "9012");
 
         given(memberService.changeMembersPassword(any(Member.class), any(ChangePasswordRequest.class)))
-                .willThrow(NewPasswordsNotMatchingException.class);
+                .willThrow(new NewPasswordsNotMatchingException());
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
                 .andExpect(status().isBadRequest())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(customDocument("fail_to_change_password_New_Password_Unmatched",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
+    }
+
+    @DisplayName("비밀 번호를 변경할 때 현재 비밀번호가 공백이면 예외가 발생한다.")
+    @Test
+    void fail_to_change_password_with_empty_current_password() throws Exception {
+        // given
+        ChangePasswordRequest changePasswordRequest =
+                new ChangePasswordRequest("", "5678", "5678");
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
+                .andExpect(status().isBadRequest())
+                .andDo(customDocument("fail_to_change_password_with_empty_current_password",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
+    }
+
+    @DisplayName("비밀 번호를 변경할 때 새로운 비밀번호가 공백이면 예외가 발생한다.")
+    @Test
+    void fail_to_change_password_with_empty_new_password() throws Exception {
+        // given
+        ChangePasswordRequest changePasswordRequest =
+                new ChangePasswordRequest("1234", "", "5678");
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
+                .andExpect(status().isBadRequest())
+                .andDo(customDocument("fail_to_change_password_with_empty_new_password",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
+    }
+
+    @DisplayName("비밀 번호를 변경할 때 새로운 비밀번호를 검증하는 입력이 공백이면 예외가 발생한다.")
+    @Test
+    void fail_to_change_password_with_empty_new_password_check() throws Exception {
+        // given
+        ChangePasswordRequest changePasswordRequest =
+                new ChangePasswordRequest("1234", "5678", "");
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndContent(patch("/api/members"), changePasswordRequest)
+                .andExpect(status().isBadRequest())
+                .andDo(customDocument("fail_to_change_password_with_empty_new_password_check",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("currentPassword").description("기존 비밀번호"),
+                                fieldWithPath("newPassword").description("새 비밀번호"),
+                                fieldWithPath("newPasswordCheck").description("새 비밀번호 재입력")
+                        ))).andReturn();
     }
 }
+

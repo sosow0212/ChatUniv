@@ -253,4 +253,24 @@ class ChatControllerUnitTest {
                         )
                 ));
     }
+
+    @DisplayName("채팅 내용이 비어있을 때 예외가 발생한다.")
+    @Test
+    void fail_to_use_chat_bot_empty_prompt() throws Exception {
+        //given
+        ChatPromptRequest chatPromptRequest = new ChatPromptRequest("");
+        Long chatId = 1L;
+
+        //when & then
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), chatPromptRequest)
+                .andExpect(status().isBadRequest())
+                .andDo(customDocument("fail_to_use_chat_bot_empty_prompt",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("chatId").description("채팅방 ID")
+                        )
+                ));
+    }
 }

@@ -5,6 +5,8 @@ import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
+import mju.chatuniv.comment.domain.CommentRepository;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class MemberService {
     private final ChatRepository chatRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
-    public MemberService(final ChatRepository chatRepository, final BoardRepository boardRepository) {
+    public MemberService(final ChatRepository chatRepository, final BoardRepository boardRepository, final CommentRepository commentRepository) {
         this.chatRepository = chatRepository;
         this.boardRepository = boardRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional(readOnly = true)
@@ -43,6 +47,11 @@ public class MemberService {
         return boards.stream()
                 .map(BoardResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MembersCommentResponse> findMembersComment(final Member member) {
+        return commentRepository.findMembersComment(member.getId());
     }
 
     @Transactional

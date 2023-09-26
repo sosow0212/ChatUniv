@@ -5,7 +5,9 @@
 :sectlinks:
 :sectnums:
 
-== Comment
+= Comment
+
+== 공통
 
 === 댓글 수정
 
@@ -32,7 +34,40 @@ include::{snippets}/common-comment-controller-unit-test/delete_comment/request-h
 include::{snippets}/common-comment-controller-unit-test/delete_comment/http-response.adoc[]
 
 
-=== 게시판 댓글 생성
+=== 댓글의 내용이 비었을 경우 예외를 발생시킨다.
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_empty_content/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_empty_content/request-headers.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_empty_content/request-fields.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_empty_content/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_empty_content/http-response.adoc[]
+
+
+=== 댓글을 변경할 때 댓글의 작성자가 아닌 경우 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_not_equals_member/http-request.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_not_equals_member/request-headers.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_not_equals_member/request-fields.adoc[]
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_not_equals_member/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/common-comment-controller-unit-test/fail_to_update_comment_with_not_equals_member/http-response.adoc[]
+
+
+
+
+
+== Board
+
+=== 게시글의 댓글을 생성한다.
 
 ==== 요청
 
@@ -45,7 +80,7 @@ include::{snippets}/board-comment-controller-unit-test/create_board/request-fiel
 include::{snippets}/board-comment-controller-unit-test/create_board/http-response.adoc[]
 include::{snippets}/board-comment-controller-unit-test/create_board/response-fields.adoc[]
 
-=== 게시판 id로 댓글 조회
+=== 게시글의 id로 페이징 처리된 댓글을 조회한다.
 
 ==== 요청
 
@@ -56,3 +91,17 @@ include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id
 
 include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/http-response.adoc[]
 include::{snippets}/board-comment-controller-unit-test/find_comments_by_board_id/response-fields.adoc[]
+
+
+=== 게시판의 댓글을 작성할 때 게시판이 존재하지 않으면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comment_with_not_exist_board/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comment_with_not_exist_board/request-headers.adoc[]
+include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comment_with_not_exist_board/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comment_with_not_exist_board/http-response.adoc[]
+

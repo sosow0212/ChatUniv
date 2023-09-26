@@ -98,9 +98,12 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertEquals(memberService.findMembersBoard(member).stream().map(BoardResponse::getTitle).collect(Collectors.toList()),
+                () -> assertEquals(memberService.findMembersBoard(member).stream()
+                                .map(BoardResponse::getTitle).collect(Collectors.toList()),
                                 List.of("title9", "title8", "title7", "title6", "title5", "title4", "title3", "title2", "title1", "title0")),
-                () -> assertEquals(memberService.findMembersBoard(member).stream().map(BoardResponse::getContent).collect(Collectors.toList()),
+
+                () -> assertEquals(memberService.findMembersBoard(member).stream()
+                                .map(BoardResponse::getContent).collect(Collectors.toList()),
                                 List.of("content9", "content8", "content7", "content6", "content5", "content4", "content3", "content2", "content1", "content0"))
         );
     }

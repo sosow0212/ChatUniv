@@ -1,6 +1,7 @@
 package mju.chatuniv.member.service.service;
 
 import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
@@ -37,8 +38,11 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public List<BoardResponse> findMembersBoard(final Member member) {
-        return boardRepository.findAllByMemberOrderByIdDesc(member)
-                .stream().map(BoardResponse::from).collect(Collectors.toList());
+        List<Board> boards = boardRepository.findAllByMemberOrderByIdDesc(member);
+
+        return boards.stream()
+                .map(BoardResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional

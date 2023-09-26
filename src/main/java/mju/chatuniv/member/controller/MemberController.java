@@ -4,8 +4,10 @@ import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.board.controller.dto.BoardResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.service.dto.gpt.ChatResponse;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.member.controller.dto.MembersBoardResponse;
 import mju.chatuniv.member.controller.dto.MembersChatRoomResponse;
+import mju.chatuniv.member.controller.dto.MembersCommentsResponse;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.service.service.MemberService;
 import mju.chatuniv.member.domain.Member;
@@ -50,6 +52,13 @@ public class MemberController {
         List<BoardResponse> membersBoards = memberService.findMembersBoard(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersBoardResponse.from(membersBoards));
+    }
+
+    @GetMapping("/me/comments")
+    public ResponseEntity<MembersCommentsResponse> findMembersComments (@JwtLogin final Member member) {
+        List<MembersCommentResponse> membersComments = memberService.findMembersComment(member);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(MembersCommentsResponse.from(membersComments));
     }
 
     @PatchMapping

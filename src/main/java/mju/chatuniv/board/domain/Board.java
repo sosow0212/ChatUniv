@@ -48,11 +48,11 @@ public class Board {
     }
 
     public static Board of(final String title, final String content, final Member member) {
-        validationBoard(title, content);
+        validateBoard(title, content);
         return new Board(null, title, content, member);
     }
 
-    private static void validationBoard(final String title, final String content) {
+    private static void validateBoard(final String title, final String content) {
         if (isEmpty(title)) {
             throw new BoardTitleBlankException(title);
         }
@@ -73,7 +73,7 @@ public class Board {
     }
 
     public void update(final String title, final String content) {
-        validationBoard(title, content);
+        validateBoard(title, content);
         this.title = title;
         this.content = content;
     }

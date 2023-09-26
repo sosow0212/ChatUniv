@@ -13,10 +13,19 @@ import javax.servlet.Filter;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
+    public FilterRegistrationBean corsFilter() {
+        FilterRegistrationBean<CorsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new CorsFilter());
+        filterRegistrationBean.setOrder(1);
+        filterRegistrationBean.addUrlPatterns("/*");
+        return filterRegistrationBean;
+    }
+
+    @Bean
     public FilterRegistrationBean logFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new AuthorizationFilter());
-        filterRegistrationBean.setOrder(1);
+        filterRegistrationBean.setOrder(2);
         filterRegistrationBean.addUrlPatterns("/api/*");
         filterRegistrationBean.addInitParameter("exclusions", "/api/auth/*");
         return filterRegistrationBean;

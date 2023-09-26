@@ -1,5 +1,7 @@
 package mju.chatuniv.chat.controller;
 
+import java.net.URI;
+import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.chat.controller.dto.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.net.URI;
 
 @RequestMapping("/chats")
 @RestController
@@ -40,7 +40,7 @@ public class ChatController {
     }
 
     @PostMapping("/{chatId}/mild")
-    public ResponseEntity<ConversationResponse> useMildChatBot(@RequestBody final ChatPromptRequest prompt,
+    public ResponseEntity<ConversationResponse> useMildChatBot(@RequestBody @Valid final ChatPromptRequest prompt,
                                                                @PathVariable final Long chatId,
                                                                @JwtLogin final Member member) {
         Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId, true, member);
@@ -48,9 +48,9 @@ public class ChatController {
     }
 
     @PostMapping("/{chatId}/raw")
-    public ResponseEntity<ConversationResponse> useFunnyChatBot(@RequestBody final ChatPromptRequest prompt,
-                                                                @PathVariable final Long chatId,
-                                                                @JwtLogin final Member member) {
+    public ResponseEntity<ConversationResponse> useRawChatBot(@RequestBody @Valid final ChatPromptRequest prompt,
+                                                              @PathVariable final Long chatId,
+                                                              @JwtLogin final Member member) {
         Conversation conversation = chatService.useChatBot(prompt.getPrompt(), chatId, false, member);
         return ResponseEntity.ok(ConversationResponse.from(conversation));
     }

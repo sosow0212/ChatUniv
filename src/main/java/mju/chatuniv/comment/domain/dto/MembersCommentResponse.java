@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 
 public class MembersCommentResponse {
 
-    private String username;
+    private String email;
     private Long boardId;
     private String content;
 
@@ -12,14 +12,14 @@ public class MembersCommentResponse {
     }
 
     @QueryProjection
-    public MembersCommentResponse(final String username, final Long boardId, final String content) {
-        this.username = username;
+    public MembersCommentResponse(final String email, final Long boardId, final String content) {
+        this.email = email;
         this.boardId = boardId;
         this.content = content;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     public Long getBoardId() {

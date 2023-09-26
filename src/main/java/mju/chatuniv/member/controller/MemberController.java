@@ -1,6 +1,9 @@
 package mju.chatuniv.member.controller;
 
 import mju.chatuniv.auth.support.JwtLogin;
+import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.service.dto.gpt.ChatResponse;
 import mju.chatuniv.member.controller.dto.MembersBoardResponse;
 import mju.chatuniv.member.controller.dto.MembersChatRoomResponse;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/members")
 @RestController
@@ -36,14 +40,16 @@ public class MemberController {
 
     @GetMapping("/me/chats")
     public ResponseEntity<MembersChatRoomResponse> findMembersChatRooms (@JwtLogin final Member member) {
+        List<Chat> membersChat = memberService.findMembersChat(member);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(MembersChatRoomResponse.from(memberService.findMembersChat(member)));
+                .body(MembersChatRoomResponse.from(membersChat));
     }
 
     @GetMapping("/me/boards")
     public ResponseEntity<MembersBoardResponse> findMembersBoards (@JwtLogin final Member member) {
+        List<BoardResponse> membersBoards = memberService.findMembersBoard(member);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(MembersBoardResponse.from(memberService.findMembersBoard(member)));
+                .body(MembersBoardResponse.from(membersBoards));
     }
 
     @PatchMapping

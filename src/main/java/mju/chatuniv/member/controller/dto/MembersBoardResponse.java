@@ -20,6 +20,6 @@ public class MembersBoardResponse {
     }
 
     public List<BoardResponse> getBoardResponses() {
-        return this.boardResponses;
+        return boardResponses;
     }
 }

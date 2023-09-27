@@ -1,0 +1,5 @@
+ALTER TABLE MEMBER
+    CHANGE COLUMN email username varchar(200) NOT NULL;
+
+ALTER TABLE MEMBER
+DROP COLUMN password;

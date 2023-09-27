@@ -3,10 +3,8 @@ package mju.chatuniv.auth.service;
 import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.exception.exceptions.EmailAlreadyExistsException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,31 +20,18 @@ public class JwtAuthService implements AuthService {
     }
 
     @Transactional
-    public Member register(final MemberCreateRequest memberCreateRequest) {
-        validateEmail(memberCreateRequest.getEmail());
-        return memberRepository.save(Member.of(memberCreateRequest.getEmail(),
-                memberCreateRequest.getPassword()));
-    }
+    public String login(final MemberLoginRequest memberLoginRequest) {
+        if (!memberRepository.existsByUsername(memberLoginRequest.getUsername())) {
+            memberRepository.saveAndFlush(Member.from(memberLoginRequest.getUsername()));
+        }
 
-    @Transactional(readOnly = true)
-    public String login(final MemberLoginReqeust memberLoginReqeust) {
-        Member member = memberRepository.findByEmail(memberLoginReqeust.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
-        member.validateEmail(memberLoginReqeust.getEmail());
-        member.validatePassword(memberLoginReqeust.getPassword());
-        return jwtTokenProvider.createAccessToken(memberLoginReqeust.getEmail());
+        return jwtTokenProvider.createAccessToken(memberLoginRequest.getUsername());
     }
 
     @Transactional(readOnly = true)
     public Member findMemberByJwtPayload(final String jwtPayload) {
-        String jwtPayloadOfEmail = jwtTokenProvider.getPayload(jwtPayload);
-        return memberRepository.findByEmail(jwtPayloadOfEmail)
+        String jwtPayloadOfUsername = jwtTokenProvider.getPayload(jwtPayload);
+        return memberRepository.findByUsername(jwtPayloadOfUsername)
                 .orElseThrow(MemberNotFoundException::new);
-    }
-
-    private void validateEmail(final String email) {
-        if (memberRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException(email);
-        }
     }
 }

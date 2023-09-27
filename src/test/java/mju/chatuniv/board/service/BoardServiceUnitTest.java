@@ -1,5 +1,6 @@
 package mju.chatuniv.board.service;
 
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -24,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardServiceUnitTest {
+class BoardServiceUnitTest {
 
     private Member member;
     private Board board;
@@ -37,7 +38,7 @@ public class BoardServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.of("123@naver.com", "12455");
+        member = createMember();
         board = Board.of("initTile", "initContent", member);
     }
 
@@ -78,7 +79,7 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_update_board_with_invalid_member() {
         //given
-        Member other = Member.of("aaaa@a.com", "password");
+        Member other = Member.from("username2");
         BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
         Board mockBoard = mock(Board.class);
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
@@ -128,7 +129,7 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_delete_board_with_invalid_member() {
         //given
-        Member other = Member.of("aaaa@a.com", "password");
+        Member other = Member.from("username2");
         Board mockBoard = mock(Board.class);
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
         doThrow(new MemberNotEqualsException()).when(mockBoard).checkWriter(member);

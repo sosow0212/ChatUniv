@@ -16,7 +16,7 @@ import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -25,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-public class CommonCommentControllerIntegrationTest extends IntegrationTest {
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+
+class CommonCommentControllerIntegrationTest extends IntegrationTest {
 
     private String token;
 
@@ -48,10 +50,8 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
-        member = memberRepository.findByEmail("a@a.com").orElseThrow();
-        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
-        this.token = authService.login(memberLoginReqeust);
+        member = memberRepository.save(createMember());
+        token = authService.login(new MemberLoginRequest(member.getUsername()));
         createBoard();
     }
 

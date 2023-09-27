@@ -1,16 +1,11 @@
 package mju.chatuniv.member.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
-import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
-import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
+import mju.chatuniv.member.exception.exceptions.MemberUsernameInvalidException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class MemberTest {
 
@@ -18,35 +13,14 @@ class MemberTest {
     @Test
     void create_member_success() {
         // when & then
-        Assertions.assertDoesNotThrow(() -> Member.of("a@a.com", "1234"));
+        Assertions.assertDoesNotThrow(() -> Member.from("username"));
     }
 
-    @DisplayName("이메일 형식에 맞지 않으면 생성에 실패한다.")
-    @ValueSource(strings = {"aabbcc", ""})
-    @ParameterizedTest
-    void throws_exception_when_email_invalid_format(final String email) {
-        // when & then
-        assertThatThrownBy(() -> Member.of(email, "1234"))
-                .isInstanceOf(MemberEmailFormatInvalidException.class);
-    }
-
-    @DisplayName("패스워드는 공백일 수 없다.")
-    @NullAndEmptySource
-    @ParameterizedTest
-    void throws_exception_when_password_blank(final String password) {
-        // when & then
-        assertThatThrownBy(() -> Member.of("a@a.com", password))
-                .isInstanceOf(MemberPasswordBlankException.class);
-    }
-
-    @DisplayName("member의 비밀번호가 일치하지 않는 경우 예외가 발생한다.")
+    @DisplayName("공백이면 생성 불가")
     @Test
-    void throws_exception_when_not_equals_password() {
-        // given
-        Member member = Member.of("a@a.com", "password");
-
+    void throws_exception_when_invalid_username() {
         // when & then
-        assertThatThrownBy(() -> member.validatePassword("newPassword"))
-                .isInstanceOf(AuthorizationInvalidPasswordException.class);
+        assertThatThrownBy(() -> Member.from(""))
+                .isInstanceOf(MemberUsernameInvalidException.class);
     }
 }

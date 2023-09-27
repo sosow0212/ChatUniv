@@ -1,12 +1,5 @@
 package mju.chatuniv.comment.service.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardRequest;
@@ -20,14 +13,22 @@ import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CommonCommentServiceIntegrationTest extends IntegrationTest {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
 
@@ -48,9 +49,7 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
-        authService.register(memberCreateRequest);
-        member = memberRepository.findByEmail(memberCreateRequest.getEmail()).get();
+        member = memberRepository.save(createMember());
         createBoard();
     }
 
@@ -98,7 +97,7 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
                 //then
                 assertAll(
-                        () -> assertThat(comments.size()).isEqualTo(6),
+                        () -> assertThat(comments).hasSize(6),
                         () -> assertThat(comments.get(0).getCommentId()).isEqualTo(6L),
                         () -> assertThat(comments.get(0).getContent()).isEqualTo("content6"));
 

@@ -1,10 +1,5 @@
 package mju.chatuniv.board.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
-import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
@@ -19,7 +14,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BoardServiceIntegrationTest extends IntegrationTest {
+import java.util.List;
+import java.util.stream.LongStream;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class BoardServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
 
@@ -37,9 +39,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-        authService.register(memberCreateRequest);
-        member = memberRepository.findByEmail("a@a.com").get();
+        member = memberRepository.save(createMember());
         BoardRequest boardRequest = new BoardRequest("initTitle", "initContent");
         boardService.create(member, boardRequest);
     }
@@ -92,7 +92,7 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-                () -> assertThat(boards.size()).isEqualTo(10),
+                () -> assertThat(boards).hasSize(10),
                 () -> assertThat(boards.get(0).getBoardId()).isEqualTo(49L)
         );
     }

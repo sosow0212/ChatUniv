@@ -2,15 +2,15 @@ package mju.chatuniv.member.service.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class MemberCreateRequest {
+public class MemberLoginRequest {
 
     @NotBlank(message = "username을 입력해주세요.")
     private String username;
 
-    private MemberCreateRequest() {
+    private MemberLoginRequest() {
     }
 
-    public MemberCreateRequest(final String username) {
+    public MemberLoginRequest(final String username) {
         this.username = username;
     }
 

@@ -7,8 +7,7 @@ import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.statistic.domain.Statistic;
 import mju.chatuniv.statistic.service.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class StatisticControllerIntegrationTest extends IntegrationTest {
+class StatisticControllerIntegrationTest extends IntegrationTest {
 
     private String token;
 
@@ -32,14 +31,13 @@ public class StatisticControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setup() {
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
-        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
-        this.token = authService.login(memberLoginReqeust);
+        MemberLoginRequest memberLoginRequest = new MemberLoginRequest("username");
+        this.token = authService.login(memberLoginRequest);
     }
 
     @DisplayName("통계 조회를 한다.")
     @Test
-    public void find_all_statistics() {
+    void find_all_statistics() {
         // given
         Statistic.add(Word.createDefaultPureWord("word"));
 

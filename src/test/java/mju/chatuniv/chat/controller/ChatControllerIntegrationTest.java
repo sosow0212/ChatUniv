@@ -1,8 +1,5 @@
 package mju.chatuniv.chat.controller;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.chat.Chat;
@@ -12,15 +9,18 @@ import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class ChatControllerIntegrationTest extends IntegrationTest {
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class ChatControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
     private AuthService authService;
@@ -40,10 +40,8 @@ public class ChatControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        authService.register(new MemberCreateRequest("a@a.com", "1234"));
-        member = memberRepository.findByEmail("a@a.com").get();
-        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
-        token = authService.login(memberLoginReqeust);
+        member = memberRepository.save(createMember());
+        token = authService.login(new MemberLoginRequest(member.getUsername()));
     }
 
     @DisplayName("채팅방을 생성한다.")

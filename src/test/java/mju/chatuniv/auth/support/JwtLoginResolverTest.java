@@ -1,16 +1,10 @@
 package mju.chatuniv.auth.support;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +14,12 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class JwtLoginResolverTest extends IntegrationTest {
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+class JwtLoginResolverTest extends IntegrationTest {
 
     @Autowired
     private JwtLoginResolver jwtLoginResolver;
@@ -39,11 +38,9 @@ public class JwtLoginResolverTest extends IntegrationTest {
         // given
         Member member = mock(Member.class);
         given(member.getId()).willReturn(1L);
-        given(member.getEmail()).willReturn("a@a.com");
-        given(member.getPassword()).willReturn("1234");
+        given(member.getUsername()).willReturn("username");
 
-        jwtAuthService.register(new MemberCreateRequest(member.getEmail(), member.getPassword()));
-        String accessToken = jwtAuthService.login(new MemberLoginReqeust("a@a.com", "1234"));
+        String accessToken = jwtAuthService.login(new MemberLoginRequest("username"));
         String header = "Bearer " + accessToken;
         given(webRequest.getHeader(HttpHeaders.AUTHORIZATION)).willReturn(header);
 

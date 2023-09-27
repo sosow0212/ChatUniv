@@ -1,10 +1,5 @@
 package mju.chatuniv.comment.service.unit;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
-
-import java.util.Optional;
-import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
@@ -23,8 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+
 @ExtendWith(MockitoExtension.class)
-public class BoardCommentServiceUnitTest {
+class BoardCommentServiceUnitTest {
 
     private Member member;
     private Board board;
@@ -37,7 +39,7 @@ public class BoardCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.of("a@a.com", "password");
+        member = createMember();
         board = Board.of("title", "content", member);
     }
 

@@ -35,7 +35,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     public List<MembersCommentResponse> findMembersComment(final Long memberId) {
         return jpaQueryFactory
                 .select(Projections.constructor(MembersCommentResponse.class,
-                        boardComment.member.email,
+                        boardComment.member.username,
                         boardComment.board.id,
                         boardComment.content))
                 .from(boardComment)

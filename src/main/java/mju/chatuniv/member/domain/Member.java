@@ -1,17 +1,14 @@
 package mju.chatuniv.member.domain;
 
-import java.util.Objects;
-import java.util.regex.Pattern;
+import mju.chatuniv.member.exception.exceptions.MemberUsernameInvalidException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
-import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
-import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
-import mju.chatuniv.member.exception.exceptions.MemberPasswordBlankException;
+import java.util.Objects;
 
 @Entity
 @Table(name = "MEMBER")
@@ -22,69 +19,33 @@ public class Member {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 200)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
+    private String username;
 
     protected Member() {
     }
 
-    private Member(final Long id, final String email, final String password) {
+    private Member(final Long id, final String username) {
         this.id = id;
-        this.email = email;
-        this.password = password;
+        this.username = username;
     }
 
-    public static Member of(final String email, final String password) {
-        validateCreateMember(email, password);
-        return new Member(null, email, password);
+    public static Member from(final String username) {
+        validateCreateMember(username);
+        return new Member(null, username);
     }
 
-    private static void validateCreateMember(final String email, final String password) {
-        if (!isEmailFormat(email)) {
-            throw new MemberEmailFormatInvalidException(email);
+    private static void validateCreateMember(final String username) {
+        if (username.isBlank()) {
+            throw new MemberUsernameInvalidException();
         }
-
-        if (isEmpty(password)) {
-            throw new MemberPasswordBlankException();
-        }
-    }
-
-    private static boolean isEmailFormat(final String email) {
-        return Pattern.matches("^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$", email);
-    }
-
-    private static boolean isEmpty(final String password) {
-        return password == null || password.isBlank();
-    }
-
-    public void validatePassword(final String password) {
-        if (!this.password.equals(password)) {
-            throw new AuthorizationInvalidPasswordException(password);
-        }
-    }
-
-    public void validateEmail(final String email) {
-        if (!this.email.equals(email)) {
-            throw new AuthorizationInvalidEmailException(email);
-        }
-    }
-
-    public void changePassword(final String newPassword) {
-        this.password = newPassword;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
     @Override

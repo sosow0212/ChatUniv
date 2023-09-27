@@ -8,13 +8,14 @@ import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.statistic.domain.Statistic;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class StatisticServiceIntegrationTest extends IntegrationTest {
+class StatisticServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private StatisticService statisticService;
@@ -27,8 +28,7 @@ public class StatisticServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setup() {
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-        authService.register(memberCreateRequest);
+        authService.login(new MemberLoginRequest("username"));
     }
 
     @DisplayName("통계를 조회한다.")

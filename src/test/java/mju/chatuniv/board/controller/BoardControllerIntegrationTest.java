@@ -7,18 +7,18 @@ import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.controller.dto.MemberResponse;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class BoardControllerIntegrationTest extends IntegrationTest {
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+
+class BoardControllerIntegrationTest extends IntegrationTest {
 
     private String token;
 
@@ -33,10 +33,8 @@ public class BoardControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberResponse register = MemberResponse.from(authService.register(new MemberCreateRequest("a@a.com", "1234")));
-        Member member = memberRepository.findByEmail(register.getEmail()).get();
-        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
-        this.token = authService.login(memberLoginReqeust);
+        Member member = memberRepository.save(createMember());
+        token = authService.login(new MemberLoginRequest(member.getUsername()));
         boardService.create(member, new BoardRequest("initTitle", "initContent"));
     }
 

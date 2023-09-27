@@ -1,13 +1,5 @@
 package mju.chatuniv.member.service;
 
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import mju.chatuniv.board.controller.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
@@ -19,13 +11,19 @@ import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.service.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MemberServiceIntegrationTest extends IntegrationTest {
 
@@ -45,37 +43,18 @@ class MemberServiceIntegrationTest extends IntegrationTest {
     private CommentRepository commentRepository;
 
     @DisplayName("회원 정보는 입력받은 회원으로 만든다.")
-    @CsvSource({"a@a.com, true", "b@b.com, false"})
-    @ParameterizedTest
-    void get_log_in_members_id_and_email(final String email, final boolean expected) {
+    @Test
+    void get_log_in_members_id_and_username() {
         //given
-        Member member = Member.of("a@a.com", "password");
+        Member member = Member.from("username");
 
         //then
-        assertThat(member.getEmail().equals(email)).isEqualTo(expected);
-    }
-
-    @DisplayName("로그인한 회원의 비밀번호를 수정한다. ")
-    @CsvSource({"1234, 5678, 5678"})
-    @ParameterizedTest
-    void change_current_members_password(final String currentPassword,
-                                         final String newPassword,
-                                         final String newPasswordCheck) {
-        //given
-        Member member = Member.of("a@a.com", "1234");
-
-        //when
-        ChangePasswordRequest changePasswordRequest =
-                new ChangePasswordRequest(currentPassword, newPassword, newPasswordCheck);
-
-        //then
-        memberService.changeMembersPassword(member, changePasswordRequest);
-        assertEquals(newPassword, member.getPassword());
+        assertThat(member.getUsername()).isEqualTo("username");
     }
 
     @DisplayName("회원의 채팅방들을 반환한다.")
     @Test
-    public void find_members_chat_rooms() {
+    void find_members_chat_rooms() {
         //given
         Member member = initializeMember();
         IntStream.range(0, 10)
@@ -90,7 +69,7 @@ class MemberServiceIntegrationTest extends IntegrationTest {
 
     @DisplayName("회원의 게시물들을 반환한다.")
     @Test
-    public void find_members_boards() {
+    void find_members_boards() {
         //given
         Member member = initializeMember();
 
@@ -128,7 +107,7 @@ class MemberServiceIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> IntStream.range(0, 10).forEach(index -> {
                     assertEquals("content" + (9 - index), membersCommentResponses.get(index).getContent());
-                    assertEquals(member.getEmail(), membersCommentResponses.get(index).getEmail());
+                    assertEquals(member.getUsername(), membersCommentResponses.get(index).getUsername());
                     assertEquals(board.getId(), membersCommentResponses.get(index).getBoardId());
                 })
         );
@@ -137,6 +116,6 @@ class MemberServiceIntegrationTest extends IntegrationTest {
     private Member initializeMember() {
         Member member = createMember();
         memberRepository.save(member);
-        return memberRepository.findByEmail(member.getEmail()).get();
+        return memberRepository.findByUsername(member.getUsername()).get();
     }
 }

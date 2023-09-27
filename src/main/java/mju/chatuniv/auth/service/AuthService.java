@@ -1,12 +1,8 @@
 package mju.chatuniv.auth.service;
 
-import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 
 public interface AuthService {
 
-    Member register(MemberCreateRequest memberCreateRequest);
-
-    String login(MemberLoginReqeust memberLoginReqeust);
+    String login(MemberLoginRequest memberLoginRequest);
 }

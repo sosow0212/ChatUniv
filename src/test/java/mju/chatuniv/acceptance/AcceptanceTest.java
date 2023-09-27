@@ -1,23 +1,23 @@
 package mju.chatuniv.acceptance;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.internal.RestAssuredResponseImpl;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 public class AcceptanceTest extends IntegrationTest {
 
     protected String 로그인() {
-        생성요청("/api/auth/sign-up", new MemberLoginReqeust("a@a.com", "1234"));
-        final var login = 생성요청("/api/auth/sign-in", new MemberLoginReqeust("a@a.com", "1234"));
+        생성요청("/api/auth/sign-up", new MemberLoginRequest("username"));
+        final var login = 생성요청("/api/auth/sign-in", new MemberLoginRequest("username"));
         return getJwtAccessToken((RestAssuredResponseImpl) login);
     }
 

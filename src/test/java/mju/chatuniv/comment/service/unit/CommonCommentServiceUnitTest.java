@@ -1,12 +1,5 @@
 package mju.chatuniv.comment.service.unit;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
-import java.util.Optional;
-import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.comment.domain.BoardComment;
@@ -29,8 +22,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
 @ExtendWith(MockitoExtension.class)
-public class CommonCommentServiceUnitTest {
+class CommonCommentServiceUnitTest {
 
     private Member member;
     private Board board;
@@ -44,7 +46,7 @@ public class CommonCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.of("a@a.com", "password");
+        member = Member.from("username");
         board = Board.of("title", "content", member);
         comment = BoardComment.of("content", member, board);
     }
@@ -84,7 +86,7 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_update_comment_with_invalid_member() {
         //given
-        Member others = Member.of("b@b.com", "password");
+        Member others = createMember();
         CommentRequest commentRequest = new CommentRequest("content");
         Comment mockComment = mock(BoardComment.class);
         given(commentRepository.findById(anyLong())).willReturn(Optional.of(mockComment));
@@ -99,7 +101,7 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_delete_comment_with_invalid_member() {
         //given
-        Member others = Member.of("b@b.com", "password");
+        Member others = createMember();
         Comment mockComment = mock(BoardComment.class);
         given(commentRepository.findById(anyLong())).willReturn(Optional.of(mockComment));
         doThrow(MemberNotEqualsException.class).when(mockComment).validateWriter(member);

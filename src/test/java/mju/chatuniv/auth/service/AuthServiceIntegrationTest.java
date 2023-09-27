@@ -8,7 +8,7 @@ import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginReqeust;
+import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,32 +24,17 @@ class AuthServiceIntegrationTest extends IntegrationTest {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @DisplayName("회원가입을 한다.")
-    @Test
-    void register_member() {
-        // given
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-
-        // when
-        Member member = authService.register(memberCreateRequest);
-
-        // then
-        Member result = memberRepository.findById(member.getId()).get();
-        assertThat(result.getEmail()).isEqualTo(member.getEmail());
-    }
-
-    @DisplayName("로그인을 한다.")
+    @DisplayName("로그인 및 회원가입을 한다.")
     @Test
     void login_member() {
         // given
-        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
-        authService.register(memberCreateRequest);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("username");
 
         // when
-        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginRequest("username"));
 
         // then
         assertThat(jwtTokenProvider.getPayload(TokenResponse.from(token).getAccessToken())).isEqualTo(
-                memberCreateRequest.getEmail());
+                memberCreateRequest.getUsername());
     }
 }

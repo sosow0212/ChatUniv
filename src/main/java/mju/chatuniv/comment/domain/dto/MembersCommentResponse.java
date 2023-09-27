@@ -18,6 +18,10 @@ public class MembersCommentResponse {
         this.content = content;
     }
 
+    public static MembersCommentResponse of(final String email, final Long boardId, final String content) {
+        return new MembersCommentResponse(email, boardId, content);
+    }
+
     public String getEmail() {
         return email;
     }

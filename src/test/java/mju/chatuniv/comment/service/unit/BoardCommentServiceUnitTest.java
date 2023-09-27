@@ -1,13 +1,16 @@
 package mju.chatuniv.comment.service.unit;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.BoardCommentService;
-import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
-import mju.chatuniv.fixture.board.BoardFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,12 +22,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardCommentServiceUnitTest {
@@ -40,8 +37,8 @@ public class BoardCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = MemberFixture.createMember();
-        board = BoardFixture.createBoard(member);
+        member = Member.of("a@a.com", "password");
+        board = Board.of("title", "content", member);
     }
 
     @DisplayName("댓글 생성시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")

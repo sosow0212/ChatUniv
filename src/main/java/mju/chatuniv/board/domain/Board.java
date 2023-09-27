@@ -1,12 +1,5 @@
 package mju.chatuniv.board.domain;
 
-import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
-import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
-import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +10,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
+import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
+import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "BOARD")
@@ -48,17 +47,12 @@ public class Board {
         this.member = member;
     }
 
-    public static Board from(final String title, final String content, final Member member) {
-        validationBoard(title, content);
+    public static Board of(final String title, final String content, final Member member) {
+        validateBoard(title, content);
         return new Board(null, title, content, member);
     }
 
-    public static Board from(final Long id, final String title, final String content, final Member member) {
-        validationBoard(title, content);
-        return new Board(id, title, content, member);
-    }
-
-    private static void validationBoard(final String title, final String content) {
+    private static void validateBoard(final String title, final String content) {
         if (isEmpty(title)) {
             throw new BoardTitleBlankException(title);
         }
@@ -79,7 +73,7 @@ public class Board {
     }
 
     public void update(final String title, final String content) {
-        validationBoard(title, content);
+        validateBoard(title, content);
         this.title = title;
         this.content = content;
     }

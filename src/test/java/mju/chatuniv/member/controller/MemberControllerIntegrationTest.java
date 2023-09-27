@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.controller.dto.BoardResponse;
 import mju.chatuniv.board.domain.Board;
@@ -17,21 +20,14 @@ import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
-import mju.chatuniv.member.service.service.MemberService;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
-
-public class MemberControllerIntegrationTest extends IntegrationTest {
+class MemberControllerIntegrationTest extends IntegrationTest {
 
     private static final String BEARER_ = "Bearer ";
 
@@ -50,7 +46,7 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
         // given
         authService.register(new MemberCreateRequest("a@a.com", "1234"));
 
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
 
         // when
         Response response = RestAssured.given()
@@ -73,7 +69,7 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
         // given
         authService.register(new MemberCreateRequest("a@a.com", "1234"));
 
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
 
         ChangePasswordRequest changePasswordRequest =
                 new ChangePasswordRequest("1234", "5678", "5678");
@@ -101,7 +97,7 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
         // given
         Member member = authService.register(new MemberCreateRequest("a@a.com", "1234"));
 
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
         IntStream.range(0, 10).forEach(index -> boardService.create(member, new BoardRequest("title"+index, "content"+index)));
 
         // when
@@ -126,7 +122,7 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
     void find_current_members_comments() {
         // given
         Member member = authService.register(new MemberCreateRequest("a@a.com", "1234"));
-        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
 
         Board board = boardService.create(member, new BoardRequest("title", "content"));
 

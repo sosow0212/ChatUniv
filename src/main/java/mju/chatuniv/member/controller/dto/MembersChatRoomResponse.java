@@ -1,8 +1,7 @@
 package mju.chatuniv.member.controller.dto;
 
-import mju.chatuniv.chat.domain.chat.Chat;
-
 import java.util.List;
+import mju.chatuniv.chat.domain.chat.Chat;
 
 public class MembersChatRoomResponse {
 

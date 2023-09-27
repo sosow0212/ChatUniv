@@ -1,8 +1,7 @@
 package mju.chatuniv.member.controller.dto;
 
-import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
-
 import java.util.List;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 
 public class MembersCommentsResponse {
 

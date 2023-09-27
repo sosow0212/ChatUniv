@@ -1,17 +1,17 @@
 package mju.chatuniv.auth.service;
 
-import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import mju.chatuniv.auth.controller.dto.TokenResponse;
+import mju.chatuniv.auth.infrastructure.JwtTokenProvider;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class AuthServiceIntegrationTest extends IntegrationTest {
 
@@ -44,12 +44,12 @@ class AuthServiceIntegrationTest extends IntegrationTest {
         // given
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
         authService.register(memberCreateRequest);
-        MemberLoginRequest memberLoginRequest = new MemberLoginRequest(memberCreateRequest.getEmail(), memberCreateRequest.getPassword());
 
         // when
-        String token = authService.login(memberLoginRequest);
+        String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
 
         // then
-        assertThat(jwtTokenProvider.getPayload(TokenResponse.from(token).getAccessToken())).isEqualTo(memberCreateRequest.getEmail());
+        assertThat(jwtTokenProvider.getPayload(TokenResponse.from(token).getAccessToken())).isEqualTo(
+                memberCreateRequest.getEmail());
     }
 }

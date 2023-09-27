@@ -1,24 +1,23 @@
 package mju.chatuniv.acceptance;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.internal.RestAssuredResponseImpl;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import mju.chatuniv.helper.integration.IntegrationTest;
-import mju.chatuniv.member.service.dto.MemberCreateRequest;
-import mju.chatuniv.member.service.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 public class AcceptanceTest extends IntegrationTest {
 
     protected String 로그인() {
-        생성요청("/api/auth/sign-up", new MemberCreateRequest("a@a.com", "1234"));
-        final var login = 생성요청("/api/auth/sign-in", new MemberLoginRequest("a@a.com", "1234"));
+        생성요청("/api/auth/sign-up", new MemberLoginReqeust("a@a.com", "1234"));
+        final var login = 생성요청("/api/auth/sign-in", new MemberLoginReqeust("a@a.com", "1234"));
         return getJwtAccessToken((RestAssuredResponseImpl) login);
     }
 
@@ -67,7 +66,8 @@ public class AcceptanceTest extends IntegrationTest {
                 .extract();
     }
 
-    protected <T> ExtractableResponse<Response> 로그인_인증_후_수정요청(final String url, final T body, final String accessToken) {
+    protected <T> ExtractableResponse<Response> 로그인_인증_후_수정요청(final String url, final T body,
+                                                              final String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .body(body)

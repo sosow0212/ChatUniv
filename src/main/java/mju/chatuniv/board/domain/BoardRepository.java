@@ -1,9 +1,8 @@
 package mju.chatuniv.board.domain;
 
+import java.util.List;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
 

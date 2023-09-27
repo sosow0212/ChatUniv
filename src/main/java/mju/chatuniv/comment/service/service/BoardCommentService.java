@@ -4,11 +4,11 @@ import java.util.List;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +28,8 @@ public class BoardCommentService implements CommentService {
     @Transactional
     public Comment create(final Long boardId, final Member member, final CommentRequest commentRequest) {
         Board board = findBoard(boardId);
-
         BoardComment boardComment = BoardComment.of(commentRequest.getContent(), member, board);
         commentRepository.save(boardComment);
-
         return boardComment;
     }
 

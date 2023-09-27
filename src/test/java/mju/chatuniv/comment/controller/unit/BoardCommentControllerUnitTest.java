@@ -4,13 +4,16 @@ import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,15 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.comment.controller.BoardCommentController;
+import mju.chatuniv.comment.domain.BoardComment;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.BoardCommentService;
-import mju.chatuniv.comment.domain.BoardComment;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
-import mju.chatuniv.comment.controller.BoardCommentController;
-import mju.chatuniv.fixture.board.BoardFixture;
-import mju.chatuniv.fixture.comment.CommentFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.member.domain.Member;
@@ -68,13 +69,13 @@ public class BoardCommentControllerUnitTest {
     @Test
     void create_board() throws Exception {
         // given
-        Member member = MemberFixture.createMember();
-        Board board = BoardFixture.createBoard(member);
         CommentRequest commentRequest = new CommentRequest("content");
-        BoardComment boardComment = CommentFixture.createBoardComment(member, board);
+        Comment mockComment = mock(BoardComment.class);
 
-        given(boardCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class)))
-                .willReturn(boardComment);
+        given(boardCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class))).willReturn(
+                mockComment);
+        given(mockComment.getId()).willReturn(1L);
+        given(mockComment.getContent()).willReturn("content");
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndContent(post("/api/boards/1/comments"), commentRequest)
@@ -118,6 +119,32 @@ public class BoardCommentControllerUnitTest {
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
                                 fieldWithPath("commentResponse[0].content").description(
                                         "게시판의 id로 댓글 전체 조회 후 반환된 댓글의 내용")
+                        )
+                )).andReturn();
+    }
+
+    @DisplayName("게시판의 댓글을 작성할 때 게시판이 존재하지 않으면 예외가 발생한다.")
+    @Test
+    void fail_to_create_board_comment_with_not_exist_board() throws Exception {
+        // given
+        Long boardId = 1L;
+        CommentRequest commentRequest = new CommentRequest("content");
+        given(boardCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(
+                new BoardNotFoundException(2L));
+
+        //when
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/boards/{boardId}/comments", boardId)),
+                        commentRequest)
+                .andExpect(status().isNotFound())
+                .andDo(customDocument("fail_to_create_board_comment_with_not_exist_board",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글의 내용")
+                        ),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시판 ID")
                         )
                 )).andReturn();
     }

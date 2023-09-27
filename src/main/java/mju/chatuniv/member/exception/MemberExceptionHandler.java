@@ -1,7 +1,9 @@
 package mju.chatuniv.member.exception;
 
+import java.util.Objects;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
+import mju.chatuniv.member.exception.exceptions.EmailAlreadyExistsException;
 import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
@@ -14,29 +16,32 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Objects;
-
 @RestControllerAdvice
 public class MemberExceptionHandler {
 
     @ExceptionHandler(AuthorizationInvalidEmailException.class)
-    public ResponseEntity<String> handlerAuthorizationInvalidEmailException(final AuthorizationInvalidEmailException exception) {
+    public ResponseEntity<String> handlerAuthorizationInvalidEmailException(
+            final AuthorizationInvalidEmailException exception) {
         return getForbiddenResponse(exception.getMessage());
     }
 
     @ExceptionHandler(AuthorizationInvalidPasswordException.class)
-    public ResponseEntity<String> handlerAuthorizationInvalidPasswordException(final AuthorizationInvalidPasswordException exception) {
+    public ResponseEntity<String> handlerAuthorizationInvalidPasswordException(
+            final AuthorizationInvalidPasswordException exception) {
         return getForbiddenResponse(exception.getMessage());
     }
 
     @ExceptionHandler(MemberEmailFormatInvalidException.class)
-    public ResponseEntity<String> handlerMemberEmailFormatInvalidException(final MemberEmailFormatInvalidException exception) {
+    public ResponseEntity<String> handlerMemberEmailFormatInvalidException(
+            final MemberEmailFormatInvalidException exception) {
         return getBadRequestResponse(exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        return getBadRequestResponse(Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage());
+    public ResponseEntity<String> handleMethodArgumentNotValidException(
+            final MethodArgumentNotValidException exception) {
+        return getBadRequestResponse(
+                Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage());
     }
 
     @ExceptionHandler(MemberPasswordBlankException.class)
@@ -55,13 +60,19 @@ public class MemberExceptionHandler {
     }
 
     @ExceptionHandler(NewPasswordsNotMatchingException.class)
-    public ResponseEntity<String> handlerNewPasswordsNotMatchingException(final NewPasswordsNotMatchingException exception) {
+    public ResponseEntity<String> handlerNewPasswordsNotMatchingException(
+            final NewPasswordsNotMatchingException exception) {
         return getBadRequestResponse(exception.getMessage());
     }
 
     @ExceptionHandler(NotCurrentPasswordException.class)
     public ResponseEntity<String> handlerNotCurrentPasswordException(final NotCurrentPasswordException exception) {
         return getBadRequestResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<String> handlerEmailAlreadyExistsException(final EmailAlreadyExistsException exception) {
+        return getForbiddenResponse(exception.getMessage());
     }
 
     private ResponseEntity<String> getBadRequestResponse(final String message) {

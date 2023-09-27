@@ -1,10 +1,5 @@
 package mju.chatuniv.chat.domain.chat;
 
-import mju.chatuniv.global.domain.BaseEntity;
-import mju.chatuniv.member.domain.Member;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
+import mju.chatuniv.global.domain.BaseEntity;
+import mju.chatuniv.member.domain.Member;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "CHAT")
@@ -37,6 +37,12 @@ public class Chat extends BaseEntity {
 
     public static Chat createDefault(final Member member) {
         return new Chat(null, member);
+    }
+
+    public void validateOwner(final Member member) {
+        if (!member.equals(this.member)) {
+            throw new OwnerInvalidException();
+        }
     }
 
     public Long getId() {

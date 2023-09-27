@@ -23,26 +23,30 @@ public class MockTestHelper {
         this.mockMvc = mockMvc;
     }
 
-    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder) throws Exception {
+    public ResultActions createMockRequestWithTokenAndWithoutContent(final MockHttpServletRequestBuilder uriBuilder)
+            throws Exception {
         return mockMvc.perform(uriBuilder
-                        .header(HttpHeaders.AUTHORIZATION, createTestToken())
-                        .contentType(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, createTestToken())
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
-    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder, final Object object) throws Exception {
+    public ResultActions createMockRequestWithTokenAndContent(final MockHttpServletRequestBuilder uriBuilder,
+                                                              final Object object) throws Exception {
         return mockMvc.perform(uriBuilder
-                        .header(HttpHeaders.AUTHORIZATION, createTestToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(makeJson(object)));
+                .header(HttpHeaders.AUTHORIZATION, createTestToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(makeJson(object)));
     }
 
-    public ResultActions createMockRequestWithoutTokenAndWithContent(final MockHttpServletRequestBuilder uriBuilder, final Object object) throws Exception {
+    public ResultActions createMockRequestWithoutTokenAndWithContent(final MockHttpServletRequestBuilder uriBuilder,
+                                                                     final Object object) throws Exception {
         return mockMvc.perform(uriBuilder
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(makeJson(object)));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(makeJson(object)));
     }
 
-    public ResultActions createMockRequestWithoutTokenAndContent(final MockHttpServletRequestBuilder uriBuilder) throws Exception {
+    public ResultActions createMockRequestWithoutTokenAndContent(final MockHttpServletRequestBuilder uriBuilder)
+            throws Exception {
         return mockMvc.perform(uriBuilder);
     }
 

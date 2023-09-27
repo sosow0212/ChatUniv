@@ -1,21 +1,20 @@
 package mju.chatuniv.comment.service.unit;
 
-import static mju.chatuniv.fixture.member.MemberFixture.otherMember;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
+import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
-import mju.chatuniv.fixture.board.BoardFixture;
-import mju.chatuniv.fixture.comment.CommentFixture;
-import mju.chatuniv.fixture.member.MemberFixture;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.assertj.core.api.Assertions;
@@ -34,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class CommonCommentServiceUnitTest {
 
     private Member member;
+    private Board board;
     private Comment comment;
 
     @InjectMocks
@@ -44,13 +44,9 @@ public class CommonCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = MemberFixture.createMember();
-        createBoardAndComment();
-    }
-
-    private void createBoardAndComment() {
-        Board board = BoardFixture.createBoard(member);
-        comment = CommentFixture.createBoardComment(member, board);
+        member = Member.of("a@a.com", "password");
+        board = Board.of("title", "content", member);
+        comment = BoardComment.of("content", member, board);
     }
 
     @DisplayName("댓글 수정시 댓글 기능을 가지는 도메인의 id가 존재하지 않는다면 예외를 발생한다.")
@@ -88,10 +84,11 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_update_comment_with_invalid_member() {
         //given
-        Member others = otherMember();
+        Member others = Member.of("b@b.com", "password");
         CommentRequest commentRequest = new CommentRequest("content");
-
-        given(commentRepository.findById(anyLong())).willReturn(Optional.of(comment));
+        Comment mockComment = mock(BoardComment.class);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(mockComment));
+        doThrow(MemberNotEqualsException.class).when(mockComment).validateWriter(member);
 
         //when & then
         Assertions.assertThatThrownBy(() -> commonCommentService.update(anyLong(), others, commentRequest))
@@ -102,8 +99,10 @@ public class CommonCommentServiceUnitTest {
     @Test
     void throws_exception_when_delete_comment_with_invalid_member() {
         //given
-        Member others = otherMember();
-        given(commentRepository.findById(anyLong())).willReturn(Optional.of(comment));
+        Member others = Member.of("b@b.com", "password");
+        Comment mockComment = mock(BoardComment.class);
+        given(commentRepository.findById(anyLong())).willReturn(Optional.of(mockComment));
+        doThrow(MemberNotEqualsException.class).when(mockComment).validateWriter(member);
 
         //when & then
         Assertions.assertThatThrownBy(() -> commonCommentService.delete(anyLong(), others))

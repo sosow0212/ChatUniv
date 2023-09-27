@@ -30,3 +30,84 @@ include::{snippets}/auth-controller-unit-test/login/request-fields.adoc[]
 
 include::{snippets}/auth-controller-unit-test/login/http-response.adoc[]
 include::{snippets}/auth-controller-unit-test/login/response-fields.adoc[]
+
+=== exception
+
+=== 이미 존재하는 이메일로 회원가입 시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-response.adoc[]
+
+=== 이미 존재하는 이메일로 회원가입 시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-response.adoc[]
+
+=== 잘못된 이메일형식으로 로그인시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_wrong_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_wrong_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_wrong_email/http-response.adoc[]
+
+=== 비어있는 이메일로 회원가입시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_email/http-response.adoc[]
+
+=== 비어있는 비밀번호로 회원가입시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_password/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_empty_password/http-response.adoc[]
+
+=== 잘못된 이메일로 로그인 진행시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_not_exist_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_not_exist_email/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_not_exist_email/http-response.adoc[]
+
+
+=== 잘못된 비밀번호로 로그인시도시 예외
+
+==== 요청
+
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/http-request.adoc[]
+
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/http-response.adoc[]

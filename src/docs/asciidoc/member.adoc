@@ -31,3 +31,80 @@ include::{snippets}/member-controller-unit-test/change_member_password/request-f
 
 include::{snippets}/member-controller-unit-test/change_member_password/http-response.adoc[]
 include::{snippets}/member-controller-unit-test/change_member_password/response-fields.adoc[]
+
+
+=== 토큰이 없을 경우 401에러와 함께 비밀번호 변경을 실패한다.
+
+==== 요정
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Unauthorized/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Unauthorized/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Unauthorized/http-response.adoc[]
+
+
+=== 입력한 현재 비밀번호가 기존과 다르면 400에러와 메시지를 반환하며 비밀번호 변경을 실패한다.
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Not_Current_Password/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Not_Current_Password/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Not_Current_Password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_Not_Current_Password/http-response.adoc[]
+
+
+=== 입력한 새로운 비밀번호와 이를 확인하는 비밀번호가 다르면 400에러와 메시지를 반환하며 비밀번호 변경을 실패한다."
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_New_Password_Unmatched/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_New_Password_Unmatched/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_New_Password_Unmatched/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_New_Password_Unmatched/http-response.adoc[]
+
+=== 비밀 번호를 변경할 때 현재 비밀번호가 공백이면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_current_password/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_current_password/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_current_password/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_current_password/http-response.adoc[]
+
+
+=== 비밀 번호를 변경할 때 새로운 비밀번호가 공백이면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password/http-response.adoc[]
+
+=== 비밀 번호를 변경할 때 새로운 비밀번호를 검증하는 입력이 공백이면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password_check/http-request.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password_check/request-headers.adoc[]
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password_check/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/member-controller-unit-test/fail_to_change_password_with_empty_new_password_check/http-response.adoc[]
+
+

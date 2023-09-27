@@ -3,12 +3,12 @@ package mju.chatuniv.board.controller;
 import java.util.List;
 import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.board.service.BoardService;
-import mju.chatuniv.board.service.dto.BoardRequest;
-import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 import mju.chatuniv.board.controller.dto.BoardAllResponse;
 import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
+import mju.chatuniv.board.service.BoardService;
+import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +49,7 @@ public class BoardController {
     @GetMapping("/all/{pageSize}/{boardId}")
     public ResponseEntity<BoardAllResponse> findAllBoards(@PathVariable("pageSize") final Long pageSize,
                                                           @PathVariable("boardId") final Long boardId) {
-
         List<BoardPagingResponse> allBoards = boardService.findAllBoards(pageSize, boardId);
-
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(allBoards));
     }

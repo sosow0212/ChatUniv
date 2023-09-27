@@ -17,8 +17,10 @@ import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
 import mju.chatuniv.statistic.service.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -30,7 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @WebMvcTest(StatisticController.class)
 @AutoConfigureRestDocs
-public class StatisticControllerUnitTest {
+class StatisticControllerUnitTest {
 
     private MockTestHelper mockTestHelper;
 
@@ -54,8 +56,9 @@ public class StatisticControllerUnitTest {
         mockTestHelper = new MockTestHelper(mockMvc);
     }
 
+    @DisplayName("가장 인기있는 검색어 10개를 가져온다.")
     @Test
-    public void find_all_statistics() throws Exception {
+    void find_statistics() throws Exception {
         // given
         List<Word> list = new ArrayList<>();
         list.add(Word.createDefaultPureWord("chat"));
@@ -78,6 +81,22 @@ public class StatisticControllerUnitTest {
                         responseFields(
                                 fieldWithPath("statistics[0].word").description("실시간 통계 전체 조회 후 반환된 단어"),
                                 fieldWithPath("statistics[0].frequency").description("실시간 통계 전체 조회 후 반환된 검색 횟수")
+                        )
+                )).andReturn();
+    }
+
+    @DisplayName("가장 인기있는 검색어가 없는 경우 예외가 발생한다.")
+    @Test
+    void fail_to_find_statistics_with_not_exist_word() throws Exception {
+        // given
+        given(statisticService.findStatistics()).willThrow(new StatisticNotFoundException());
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/statistics"))
+                .andExpect(status().isNotFound())
+                .andDo(customDocument("fail_to_find_statistics_with_not_exist_word",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         )
                 )).andReturn();
     }

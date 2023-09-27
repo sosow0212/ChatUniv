@@ -1,12 +1,5 @@
 package mju.chatuniv.comment.domain;
 
-import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
-import mju.chatuniv.global.domain.BaseEntity;
-import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -19,6 +12,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
+import mju.chatuniv.global.domain.BaseEntity;
+import mju.chatuniv.member.domain.Member;
+import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -59,7 +58,7 @@ public abstract class Comment extends BaseEntity {
         return content == null || content.isBlank();
     }
 
-    public void validateCorrectWriter(final Member member) {
+    public void validateWriter(final Member member) {
         if (!this.member.equals(member)) {
             throw new MemberNotEqualsException();
         }

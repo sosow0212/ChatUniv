@@ -18,6 +18,7 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 configurations {
@@ -116,4 +117,7 @@ dependencies {
     // flyway
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
+
+    // komoran
+    implementation group: 'com.github.shin285', name: 'KOMORAN', version: '3.3.4'
 }

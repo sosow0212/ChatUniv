@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
@@ -30,6 +31,20 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<MembersCommentResponse> findMembersComment(final Long memberId) {
+        return jpaQueryFactory
+                .select(Projections.constructor(MembersCommentResponse.class,
+                        boardComment.member.email,
+                        boardComment.board.id,
+                        boardComment.content))
+                .from(boardComment)
+                .where(checkMemberId(memberId))
+                .orderBy(boardComment.createdAt.desc())
+                .fetch();
+    }
+
+
     private BooleanExpression checkBoardId(final Long boardId) {
         return boardComment.board.id.eq(boardId);
     }
@@ -39,5 +54,9 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
             return null;
         }
         return boardComment.id.lt(commentId);
+    }
+
+    private BooleanExpression checkMemberId(final Long memberId) {
+        return boardComment.member.id.eq(memberId);
     }
 }

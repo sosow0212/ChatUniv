@@ -5,7 +5,8 @@ import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.EmailAlreadyExistsException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,19 +22,19 @@ public class JwtAuthService implements AuthService {
     }
 
     @Transactional
-    public Member register(final MemberRequest memberRequest) {
-        validateEmail(memberRequest);
-        return memberRepository.save(Member.of(memberRequest.getEmail(),
-                memberRequest.getPassword()));
+    public Member register(final MemberCreateRequest memberCreateRequest) {
+        validateEmail(memberCreateRequest.getEmail());
+        return memberRepository.save(Member.of(memberCreateRequest.getEmail(),
+                memberCreateRequest.getPassword()));
     }
 
     @Transactional(readOnly = true)
-    public String login(final MemberRequest memberRequest) {
-        Member member = memberRepository.findByEmail(memberRequest.getEmail())
+    public String login(final MemberLoginReqeust memberLoginReqeust) {
+        Member member = memberRepository.findByEmail(memberLoginReqeust.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
-        member.validateEmail(memberRequest.getEmail());
-        member.validatePassword(memberRequest.getPassword());
-        return jwtTokenProvider.createAccessToken(memberRequest.getEmail());
+        member.validateEmail(memberLoginReqeust.getEmail());
+        member.validatePassword(memberLoginReqeust.getPassword());
+        return jwtTokenProvider.createAccessToken(memberLoginReqeust.getEmail());
     }
 
     @Transactional(readOnly = true)
@@ -43,9 +44,9 @@ public class JwtAuthService implements AuthService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    private void validateEmail(final MemberRequest memberRequest) {
-        if (memberRepository.existsByEmail(memberRequest.getEmail())) {
-            throw new EmailAlreadyExistsException(memberRequest.getEmail());
+    private void validateEmail(final String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
         }
     }
 }

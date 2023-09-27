@@ -2,7 +2,7 @@ package mju.chatuniv.member.service.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class MemberRequest {
+public class MemberCreateRequest {
 
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
@@ -10,10 +10,10 @@ public class MemberRequest {
     @NotBlank(message = "패스워드를 입력해주세요.")
     private String password;
 
-    private MemberRequest() {
+    private MemberCreateRequest() {
     }
 
-    public MemberRequest(final String email, final String password) {
+    public MemberCreateRequest(final String email, final String password) {
         this.email = email;
         this.password = password;
     }

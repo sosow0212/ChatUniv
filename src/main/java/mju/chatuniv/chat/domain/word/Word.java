@@ -1,22 +1,22 @@
 package mju.chatuniv.chat.domain.word;
 
-import mju.chatuniv.global.domain.BaseEntity;
-
+import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.List;
-import java.util.Objects;
+import mju.chatuniv.global.domain.BaseEntity;
 
 @Entity
 @Table(name = "WORD")
 public class Word extends BaseEntity {
 
     private static final int DEFAULT_FREQUENCY = 1;
-    private static final List<String> specialLetters = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$", "%", "^", "*", "(", ")", "-", "_", "+", "=");
+    private static final List<String> specialLetters = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$",
+            "%", "^", "*", "(", ")", "-", "_", "+", "=");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,8 +83,12 @@ public class Word extends BaseEntity {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Word)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Word)) {
+            return false;
+        }
         Word word1 = (Word) o;
         return Objects.equals(word, word1.word);
     }

@@ -2,11 +2,10 @@ package mju.chatuniv.global.config;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
-import org.springframework.web.client.RestTemplate;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.client.RestTemplate;
 
 public class SlackLoggingConfig extends AppenderBase<ILoggingEvent> {
 
@@ -31,7 +30,8 @@ public class SlackLoggingConfig extends AppenderBase<ILoggingEvent> {
                                 "text", message,
                                 "fields",
                                 List.of(
-                                        Map.of("title", "로그 레벨", "value", eventObject.getLevel().levelStr, "short", false),
+                                        Map.of("title", "로그 레벨", "value", eventObject.getLevel().levelStr, "short",
+                                                false),
                                         "ts", eventObject.getTimeStamp()))));
     }
 

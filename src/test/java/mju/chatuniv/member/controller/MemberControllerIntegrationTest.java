@@ -7,13 +7,18 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
 import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import mju.chatuniv.member.service.dto.MemberLoginRequest;
+import mju.chatuniv.member.service.service.MemberService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +37,9 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private BoardCommentService boardCommentService;
 
     @Autowired
     private BoardService boardService;
@@ -109,6 +117,36 @@ public class MemberControllerIntegrationTest extends IntegrationTest {
                     .statusCode(HttpStatus.OK.value());
             List<BoardResponse> responses = new ArrayList<>(response.body().jsonPath().get("boardResponses"));
             Assertions.assertEquals(ArrayList.class, response.body().jsonPath().get("boardResponses").getClass());
+            Assertions.assertEquals(10, responses.size());
+        });
+    }
+
+    @DisplayName("토큰을 가지고 회원의 댓글들을 요청하면 List로 반환된다.")
+    @Test
+    void find_current_members_comments() {
+        // given
+        Member member = authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        String token = authService.login(new MemberLoginRequest("a@a.com", "1234"));
+
+        Board board = boardService.create(member, new BoardRequest("title", "content"));
+
+        IntStream.range(0, 10).forEach(index -> boardCommentService
+                .create(board.getId(), member, new CommentRequest("comment"+index)));
+
+        // when
+        Response response = RestAssured.given()
+                .header("Authorization", BEARER_ + token)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/api/members/me/comments");
+
+        // then
+        System.out.println(response.body().jsonPath());
+        Assertions.assertAll(() -> {
+            response.then()
+                    .statusCode(HttpStatus.OK.value());
+            List<MembersCommentResponse> responses = new ArrayList<>(response.body().jsonPath().get("membersCommentResponses"));
+            Assertions.assertEquals(ArrayList.class, response.body().jsonPath().get("membersCommentResponses").getClass());
             Assertions.assertEquals(10, responses.size());
         });
     }

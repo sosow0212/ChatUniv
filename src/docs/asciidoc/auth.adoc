@@ -42,18 +42,18 @@ include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_em
 
 ==== 응답
 
-include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-response.adoc[]
 
 === 이미 존재하는 이메일로 회원가입 시도시 예외
 
 ==== 요청
 
-include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/http-request.adoc[]
-include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/request-fields.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/request-fields.adoc[]
 
 ==== 응답
 
-include::{snippets}/auth-controller-unit-test/fail_to_register_member_with_duplicated_email/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_sign_up_with_duplicated_email/http-response.adoc[]
 
 === 잘못된 이메일형식으로 로그인시도시 예외
 
@@ -104,10 +104,10 @@ include::{snippets}/auth-controller-unit-test/fail_to_login_with_not_exist_email
 
 ==== 요청
 
-include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/http-request.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/http-request.adoc[]
 
-include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/request-fields.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/request-fields.adoc[]
 
 ==== 응답
 
-include::{snippets}/auth-controller-unit-test/fail_to_with_wrong_password_login/http-response.adoc[]
+include::{snippets}/auth-controller-unit-test/fail_to_login_with_wrong_password/http-response.adoc[]

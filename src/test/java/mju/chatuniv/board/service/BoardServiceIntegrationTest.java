@@ -13,7 +13,7 @@ import mju.chatuniv.board.service.dto.BoardRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +37,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
-        authService.register(memberRequest);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
+        authService.register(memberCreateRequest);
         member = memberRepository.findByEmail("a@a.com").get();
         BoardRequest boardRequest = new BoardRequest("initTitle", "initContent");
         boardService.create(member, boardRequest);
@@ -56,8 +56,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         //then
         Board result = boardRepository.findById(board.getId()).get();
         assertAll(
-            () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
-            () -> assertThat(result.getContent()).isEqualTo(board.getContent())
+                () -> assertThat(result.getTitle()).isEqualTo(board.getTitle()),
+                () -> assertThat(result.getContent()).isEqualTo(board.getContent())
         );
     }
 
@@ -72,8 +72,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("initContent")
+                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -83,17 +83,17 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         //given
 
         LongStream.range(1, 100)
-            .forEach(index -> {
-                boardRepository.save(Board.of("title" + index, "content" + index, member));
-            });
+                .forEach(index -> {
+                    boardRepository.save(Board.of("title" + index, "content" + index, member));
+                });
 
         //when
         List<BoardPagingResponse> boards = boardService.findAllBoards(10L, 50L);
 
         //then
         assertAll(
-            () -> assertThat(boards.size()).isEqualTo(10),
-            () -> assertThat(boards.get(0).getBoardId()).isEqualTo(49L)
+                () -> assertThat(boards.size()).isEqualTo(10),
+                () -> assertThat(boards.get(0).getBoardId()).isEqualTo(49L)
         );
     }
 
@@ -109,8 +109,8 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
 
         //then
         assertAll(
-            () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
-            () -> assertThat(board.getContent()).isEqualTo("updateContent")
+                () -> assertThat(board.getTitle()).isEqualTo("updateTitle"),
+                () -> assertThat(board.getContent()).isEqualTo("updateContent")
         );
     }
 

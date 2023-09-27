@@ -9,7 +9,8 @@ import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,8 +42,8 @@ public class JwtLoginResolverTest extends IntegrationTest {
         given(member.getEmail()).willReturn("a@a.com");
         given(member.getPassword()).willReturn("1234");
 
-        jwtAuthService.register(new MemberRequest(member.getEmail(), member.getPassword()));
-        String accessToken = jwtAuthService.login(new MemberRequest("a@a.com", "1234"));
+        jwtAuthService.register(new MemberCreateRequest(member.getEmail(), member.getPassword()));
+        String accessToken = jwtAuthService.login(new MemberLoginReqeust("a@a.com", "1234"));
         String header = "Bearer " + accessToken;
         given(webRequest.getHeader(HttpHeaders.AUTHORIZATION)).willReturn(header);
 

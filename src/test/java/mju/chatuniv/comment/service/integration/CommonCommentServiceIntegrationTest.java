@@ -20,7 +20,7 @@ import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -48,9 +48,9 @@ public class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        MemberRequest memberRequest = new MemberRequest("a@naver.com", "1234");
-        authService.register(memberRequest);
-        member = memberRepository.findByEmail(memberRequest.getEmail()).get();
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@naver.com", "1234");
+        authService.register(memberCreateRequest);
+        member = memberRepository.findByEmail(memberCreateRequest.getEmail()).get();
         createBoard();
     }
 

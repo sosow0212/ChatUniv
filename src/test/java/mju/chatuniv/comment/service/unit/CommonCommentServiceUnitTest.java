@@ -45,7 +45,7 @@ public class CommonCommentServiceUnitTest {
     @BeforeEach
     void init() {
         member = Member.of("a@a.com", "password");
-        board = Board.of( "title","content", member);
+        board = Board.of("title", "content", member);
         comment = BoardComment.of("content", member, board);
     }
 

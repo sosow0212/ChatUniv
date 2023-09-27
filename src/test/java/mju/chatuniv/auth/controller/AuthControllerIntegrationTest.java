@@ -6,7 +6,8 @@ import io.restassured.response.Response;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,12 @@ public class AuthControllerIntegrationTest extends IntegrationTest {
     @Test
     void register_member() {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
 
         // when
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(memberRequest)
+                .body(memberLoginReqeust)
                 .when()
                 .post("/api/auth/sign-up");
 
@@ -42,13 +43,13 @@ public class AuthControllerIntegrationTest extends IntegrationTest {
     @Test
     void login_member() {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
-        authService.register(memberRequest);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
+        authService.register(memberCreateRequest);
 
         // when
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(memberRequest)
+                .body(memberCreateRequest)
                 .when()
                 .post("/api/auth/sign-in");
 

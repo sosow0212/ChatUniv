@@ -133,7 +133,6 @@ public class BoardServiceUnitTest {
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
         doThrow(new MemberNotEqualsException()).when(mockBoard).checkWriter(member);
 
-
         //when & then
         assertThatThrownBy(() -> boardService.delete(anyLong(), other))
                 .isInstanceOf(MemberNotEqualsException.class);

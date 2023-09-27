@@ -32,8 +32,8 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
     @CsvSource({"1234, 5678, 5678"})
     @ParameterizedTest
     void change_current_members_password(final String currentPassword,
-                                                final String newPassword,
-                                                final String newPasswordCheck) {
+                                         final String newPassword,
+                                         final String newPasswordCheck) {
         //given
         Member member = Member.of("a@a.com", "1234");
 

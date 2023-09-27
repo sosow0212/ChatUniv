@@ -7,7 +7,8 @@ import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.MemberRepository;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import mju.chatuniv.statistic.domain.Statistic;
 import mju.chatuniv.statistic.service.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +32,9 @@ public class StatisticControllerIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setup() {
-        authService.register(new MemberRequest("a@a.com", "1234"));
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
-        this.token = authService.login(memberRequest);
+        authService.register(new MemberCreateRequest("a@a.com", "1234"));
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
+        this.token = authService.login(memberLoginReqeust);
     }
 
     @DisplayName("통계 조회를 한다.")

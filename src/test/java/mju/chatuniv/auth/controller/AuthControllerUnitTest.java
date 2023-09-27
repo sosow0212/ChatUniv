@@ -18,11 +18,11 @@ import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordExce
 import mju.chatuniv.member.exception.exceptions.EmailAlreadyExistsException;
 import mju.chatuniv.member.exception.exceptions.MemberEmailFormatInvalidException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberCreateRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -50,18 +50,18 @@ public class AuthControllerUnitTest {
     @Test
     void sign_up() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
-        given(jwtAuthService.register(Mockito.any(MemberRequest.class))).willReturn(member);
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
+        given(jwtAuthService.register(any(MemberCreateRequest.class))).willReturn(member);
         given(member.getId()).willReturn(1L);
-        given(member.getEmail()).willReturn(memberRequest.getEmail());
+        given(member.getEmail()).willReturn(memberCreateRequest.getEmail());
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.memberId").value(1L))
-                .andExpect(jsonPath("$.email").value(memberRequest.getEmail()))
+                .andExpect(jsonPath("$.email").value(memberCreateRequest.getEmail()))
                 .andDo(customDocument("register_member",
                         requestFields(
                                 fieldWithPath(".email").description("회원가입할 이메일 주소"),
@@ -78,15 +78,15 @@ public class AuthControllerUnitTest {
     @Test
     void login() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
         TokenResponse tokenResponse = TokenResponse.from("accessToken");
 
-        given(jwtAuthService.login(any(MemberRequest.class))).willReturn("accessToken");
+        given(jwtAuthService.login(any(MemberLoginReqeust.class))).willReturn("accessToken");
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberLoginReqeust))
                 ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value(tokenResponse.getAccessToken()))
                 .andDo(customDocument("login",
@@ -104,15 +104,15 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_sign_up_with_duplicated_email() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
 
-        given(jwtAuthService.register(Mockito.any(MemberRequest.class))).willThrow(
-                new EmailAlreadyExistsException(memberRequest.getEmail()));
+        given(jwtAuthService.register(any(MemberCreateRequest.class))).willThrow(
+                new EmailAlreadyExistsException(memberCreateRequest.getEmail()));
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isForbidden())
                 .andDo(customDocument("fail_to_sign_up_with_duplicated_email",
                         requestFields(
@@ -126,15 +126,15 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_sign_up_wrong_email() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("sscom", "1234");
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("sscom", "1234");
 
-        given(jwtAuthService.register(Mockito.any(MemberRequest.class))).willThrow(
-                new MemberEmailFormatInvalidException(memberRequest.getEmail()));
+        given(jwtAuthService.register(any(MemberCreateRequest.class))).willThrow(
+                new MemberEmailFormatInvalidException(memberCreateRequest.getEmail()));
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_wrong_email",
                         requestFields(
@@ -148,12 +148,12 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_sign_up_empty_email() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("", "1234");
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("", "1234");
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_empty_email",
                         requestFields(
@@ -167,12 +167,12 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_sign_up_empty_password() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("as21d@as.com", "");
+        MemberCreateRequest memberCreateRequest = new MemberCreateRequest("as21d@as.com", "");
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberCreateRequest))
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_empty_password",
                         requestFields(
@@ -186,14 +186,14 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_login_with_not_exist_email() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
 
-        given(jwtAuthService.login(any(MemberRequest.class))).willThrow(new MemberNotFoundException());
+        given(jwtAuthService.login(any(MemberLoginReqeust.class))).willThrow(new MemberNotFoundException());
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberLoginReqeust))
                 ).andExpect(status().isNotFound())
                 .andDo(customDocument("fail_to_login_with_not_exist_email",
                         requestFields(
@@ -207,15 +207,15 @@ public class AuthControllerUnitTest {
     @Test
     void fail_to_login_with_wrong_password() throws Exception {
         // given
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
 
-        given(jwtAuthService.login(any(MemberRequest.class))).willThrow(
+        given(jwtAuthService.login(any(MemberLoginReqeust.class))).willThrow(
                 new AuthorizationInvalidPasswordException("1234"));
 
         // when & then
         mockMvc.perform(post("/api/auth/sign-in")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberRequest))
+                        .content(objectMapper.writeValueAsString(memberLoginReqeust))
                 ).andExpect(status().isForbidden())
                 .andDo(customDocument("fail_to_login_with_wrong_password",
                         requestFields(

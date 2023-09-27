@@ -79,7 +79,7 @@ public class BoardControllerUnitTest {
         // given
         Member member = Member.of("a@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("title", "content");
-        Board board = Board.of( "title","content", member);
+        Board board = Board.of("title", "content", member);
 
         given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(board);
 
@@ -111,7 +111,7 @@ public class BoardControllerUnitTest {
     void find_board() throws Exception {
         // given
         Member member = Member.of("a@a.com", "password");
-        Board board = Board.of( "title","content", member);
+        Board board = Board.of("title", "content", member);
 
         given(boardService.findBoard(any(Long.class))).willReturn(board);
 
@@ -217,7 +217,7 @@ public class BoardControllerUnitTest {
     void fail_to_create_board_with_blank_title(String text, BoardRequest boardRequest) throws Exception {
         // given
         Member member = Member.of("a@a.com", "password");
-        Board board = Board.of( "title","content", member);
+        Board board = Board.of("title", "content", member);
 
         given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(board);
 
@@ -242,7 +242,7 @@ public class BoardControllerUnitTest {
     void fail_to_create_board_with_blank_content(String text, BoardRequest boardRequest) throws Exception {
         // given
         Member member = Member.of("a@a.com", "password");
-        Board board = Board.of( "title","content", member);
+        Board board = Board.of("title", "content", member);
 
         given(boardService.create(any(Member.class), any(BoardRequest.class))).willReturn(board);
 
@@ -267,7 +267,7 @@ public class BoardControllerUnitTest {
         // given
         Member member = Member.of("a@a.com", "password");
         BoardRequest boardRequest = new BoardRequest("title", "content");
-        Board.of( "title","content", member);
+        Board.of("title", "content", member);
 
         given(boardService.update(any(Long.class), any(Member.class), any(BoardRequest.class))).willThrow(
                 new MemberNotEqualsException());
@@ -292,7 +292,7 @@ public class BoardControllerUnitTest {
     public void fail_to_find_board_with_wrong_board_id() throws Exception {
         // given
         Member member = Member.of("a@a.com", "password");
-        Board board = Board.of( "title","content", member);
+        Board board = Board.of("title", "content", member);
 
         given(boardService.findBoard(any(Long.class))).willThrow(new BoardNotFoundException(board.getId()));
 

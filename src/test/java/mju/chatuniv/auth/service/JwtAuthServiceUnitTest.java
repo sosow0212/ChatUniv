@@ -10,7 +10,7 @@ import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.exceptions.MemberNotFoundException;
-import mju.chatuniv.member.service.dto.MemberRequest;
+import mju.chatuniv.member.service.dto.MemberLoginReqeust;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,10 +34,10 @@ public class JwtAuthServiceUnitTest {
     @Test
     void throws_exception_when_login_with_invalid_member() {
         // given
-        MemberRequest memberRequest = new MemberRequest("b@b.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("b@b.com", "1234");
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberLoginReqeust))
                 .isInstanceOf(MemberNotFoundException.class);
     }
 
@@ -46,11 +46,11 @@ public class JwtAuthServiceUnitTest {
     void throws_exception_when_login_with_invalid_email() {
         // given
         Member member = Member.of("a@a.com", "password");
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "1234");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberLoginReqeust))
                 .isInstanceOf(AuthorizationInvalidPasswordException.class);
     }
 
@@ -59,11 +59,11 @@ public class JwtAuthServiceUnitTest {
     void throws_exception_when_login_with_invalid_password() {
         // given
         Member member = Member.of("a@a.com", "password");
-        MemberRequest memberRequest = new MemberRequest("a@a.com", "12345");
+        MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "12345");
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(member));
 
         // when & then
-        assertThatThrownBy(() -> jwtAuthService.login(memberRequest))
+        assertThatThrownBy(() -> jwtAuthService.login(memberLoginReqeust))
                 .isInstanceOf(AuthorizationInvalidPasswordException.class);
     }
 

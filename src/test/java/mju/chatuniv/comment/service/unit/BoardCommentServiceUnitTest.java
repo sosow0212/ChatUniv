@@ -38,7 +38,7 @@ public class BoardCommentServiceUnitTest {
     @BeforeEach
     void init() {
         member = Member.of("a@a.com", "password");
-        board = Board.of( "title","content", member);
+        board = Board.of("title", "content", member);
     }
 
     @DisplayName("댓글 생성시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")

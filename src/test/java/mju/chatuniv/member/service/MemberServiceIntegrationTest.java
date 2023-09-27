@@ -5,6 +5,9 @@ import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
+import mju.chatuniv.comment.domain.BoardComment;
+import mju.chatuniv.comment.domain.CommentRepository;
+import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.MemberRepository;
 import mju.chatuniv.member.service.dto.ChangePasswordRequest;
@@ -37,6 +40,9 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @DisplayName("회원 정보는 입력받은 회원으로 만든다.")
     @CsvSource({"1, a@a.com, true", "2, b@b.com, false"})
@@ -106,6 +112,29 @@ public class MemberServiceIntegrationTest extends IntegrationTest {
                                 .map(BoardResponse::getContent).collect(Collectors.toList()),
                                 List.of("content9", "content8", "content7", "content6", "content5", "content4", "content3", "content2", "content1", "content0"))
         );
+    }
+
+    @DisplayName("회원의 댓글을 반환한다.")
+    @Test
+    void find_members_comments() {
+        // given
+        Member member = initializeMember();
+        Board board = boardRepository.save(Board.from("title", "content", member));
+
+        // when
+        IntStream.range(0, 10).forEach(each -> commentRepository.save(BoardComment.of("content"+each, member, board)));
+
+        // then
+        List<MembersCommentResponse> membersCommentResponses =  memberService.findMembersComment(member);
+        assertAll(
+                () -> IntStream.range(0, 10).forEach(index -> {
+                    assertEquals("content" + (9-index), membersCommentResponses.get(index).getContent());
+                    assertEquals(member.getEmail(), membersCommentResponses.get(index).getEmail());
+                    assertEquals(board.getId(), membersCommentResponses.get(index).getBoardId());
+                })
+        );
+
+
     }
 
     private Member initializeMember() {

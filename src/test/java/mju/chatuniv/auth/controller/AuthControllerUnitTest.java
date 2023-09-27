@@ -64,8 +64,8 @@ public class AuthControllerUnitTest {
                 .andExpect(jsonPath("$.email").value(memberCreateRequest.getEmail()))
                 .andDo(customDocument("register_member",
                         requestFields(
-                                fieldWithPath(".email").description("회원가입할 이메일 주소"),
-                                fieldWithPath(".password").description("사용할 패스워드")
+                                fieldWithPath("email").description("회원가입할 이메일 주소"),
+                                fieldWithPath("password").description("사용할 패스워드")
                         ),
                         responseFields(
                                 fieldWithPath("memberId").description("회원가입 후 반환된 Member의 ID"),
@@ -91,11 +91,11 @@ public class AuthControllerUnitTest {
                 .andExpect(jsonPath("$.accessToken").value(tokenResponse.getAccessToken()))
                 .andDo(customDocument("login",
                         requestFields(
-                                fieldWithPath(".email").description("로그인 이메일 주소"),
-                                fieldWithPath(".password").description("로그인 패스워드")
+                                fieldWithPath("email").description("로그인 이메일 주소"),
+                                fieldWithPath("password").description("로그인 패스워드")
                         ),
                         responseFields(
-                                fieldWithPath(".accessToken").description("Jwt AccessToken 값")
+                                fieldWithPath("accessToken").description("Jwt AccessToken 값")
                         )
                 ));
     }
@@ -116,8 +116,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isForbidden())
                 .andDo(customDocument("fail_to_sign_up_with_duplicated_email",
                         requestFields(
-                                fieldWithPath(".email").description("회원가입할 이메일 주소"),
-                                fieldWithPath(".password").description("사용할 패스워드")
+                                fieldWithPath("email").description("회원가입할 이메일 주소"),
+                                fieldWithPath("password").description("사용할 패스워드")
                         )
                 ));
     }
@@ -138,8 +138,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_wrong_email",
                         requestFields(
-                                fieldWithPath(".email").description("회원가입할 이메일 주소"),
-                                fieldWithPath(".password").description("사용할 패스워드")
+                                fieldWithPath("email").description("회원가입할 이메일 주소"),
+                                fieldWithPath("password").description("사용할 패스워드")
                         )
                 ));
     }
@@ -157,8 +157,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_empty_email",
                         requestFields(
-                                fieldWithPath(".email").description("회원가입할 이메일 주소"),
-                                fieldWithPath(".password").description("사용할 패스워드")
+                                fieldWithPath("email").description("회원가입할 이메일 주소"),
+                                fieldWithPath("password").description("사용할 패스워드")
                         )
                 ));
     }
@@ -176,8 +176,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_sign_up_empty_password",
                         requestFields(
-                                fieldWithPath(".email").description("회원가입할 이메일 주소"),
-                                fieldWithPath(".password").description("사용할 패스워드")
+                                fieldWithPath("email").description("회원가입할 이메일 주소"),
+                                fieldWithPath("password").description("사용할 패스워드")
                         )
                 ));
     }
@@ -197,8 +197,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isNotFound())
                 .andDo(customDocument("fail_to_login_with_not_exist_email",
                         requestFields(
-                                fieldWithPath(".email").description("로그인 이메일 주소"),
-                                fieldWithPath(".password").description("로그인 패스워드")
+                                fieldWithPath("email").description("로그인 이메일 주소"),
+                                fieldWithPath("password").description("로그인 패스워드")
                         )
                 )).andReturn();
     }
@@ -219,8 +219,8 @@ public class AuthControllerUnitTest {
                 ).andExpect(status().isForbidden())
                 .andDo(customDocument("fail_to_login_with_wrong_password",
                         requestFields(
-                                fieldWithPath(".email").description("로그인 이메일 주소"),
-                                fieldWithPath(".password").description("로그인 패스워드")
+                                fieldWithPath("email").description("로그인 이메일 주소"),
+                                fieldWithPath("password").description("로그인 패스워드")
                         )
                 )).andReturn();
     }

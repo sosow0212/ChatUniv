@@ -189,12 +189,12 @@ public class BoardControllerUnitTest {
                         ),
                         requestFields(
                                 fieldWithPath(".title").description("게시판의 제목"),
-                                fieldWithPath(".content").description("게시판의 내용")
+                                fieldWithPath("content").description("게시판의 내용")
                         ),
                         responseFields(
-                                fieldWithPath(".boardId").description("게시판 생성 후 반환된 board의 ID"),
-                                fieldWithPath(".title").description("게시판 생성 후 반환된 board의 제목"),
-                                fieldWithPath(".content").description("게시판 생성 후 반환된 board의 내용")
+                                fieldWithPath("boardId").description("게시판 생성 후 반환된 board의 ID"),
+                                fieldWithPath("title").description("게시판 생성 후 반환된 board의 제목"),
+                                fieldWithPath("content").description("게시판 생성 후 반환된 board의 내용")
                         )
                 ));
     }
@@ -281,8 +281,8 @@ public class BoardControllerUnitTest {
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         requestFields(
-                                fieldWithPath(".title").description("게시판의 제목"),
-                                fieldWithPath(".content").description("게시판의 내용")
+                                fieldWithPath("title").description("게시판의 제목"),
+                                fieldWithPath("content").description("게시판의 내용")
                         )
                 )).andReturn();
     }

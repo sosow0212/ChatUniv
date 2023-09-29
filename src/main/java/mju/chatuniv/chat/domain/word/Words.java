@@ -1,5 +1,7 @@
 package mju.chatuniv.chat.domain.word;
 
+import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
+import kr.co.shineware.nlp.komoran.core.Komoran;
 import mju.chatuniv.statistic.domain.Statistic;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 public class Words {
 
     private static final int LIMIT_WORD_LENGTH = 10;
-    private static final String WORD_SEPARATOR = " ";
+    private static final Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 
     private List<Word> words;
 
@@ -31,7 +33,7 @@ public class Words {
     }
 
     private static List<String> separateFromSentenceToWords(final String prompt) {
-        return Arrays.stream(prompt.split(WORD_SEPARATOR))
+        return analysePrompt(prompt).stream()
                 .filter(word -> word.length() < LIMIT_WORD_LENGTH)
                 .collect(Collectors.toList());
     }
@@ -55,6 +57,10 @@ public class Words {
         return words.stream()
                 .filter(word -> !this.words.contains(word))
                 .collect(Collectors.toList());
+    }
+
+    private static List<String> analysePrompt(final String prompt) {
+        return komoran.analyze(prompt).getNouns();
     }
 
     public void update(final List<Word> words) {

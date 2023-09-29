@@ -15,8 +15,6 @@ import mju.chatuniv.global.domain.BaseEntity;
 public class Word extends BaseEntity {
 
     private static final int DEFAULT_FREQUENCY = 1;
-    private static final List<String> specialLetters = List.of(",", ".", "?", "!", "~", ";", "'", "/", "@", "#", "$",
-            "%", "^", "*", "(", ")", "-", "_", "+", "=");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,21 +41,7 @@ public class Word extends BaseEntity {
     }
 
     public static Word createDefaultPureWord(final String word) {
-        return new Word(makePureWord(word));
-    }
-
-    private static String makePureWord(final String word) {
-        return removeSpecialLetters(word);
-    }
-
-    private static String removeSpecialLetters(final String word) {
-        String result = word;
-
-        for (String specialLetter : specialLetters) {
-            result = result.replace(specialLetter, "");
-        }
-
-        return result;
+        return new Word(word);
     }
 
     public void updateFrequency() {

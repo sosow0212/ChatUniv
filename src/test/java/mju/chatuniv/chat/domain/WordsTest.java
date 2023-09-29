@@ -14,7 +14,7 @@ class WordsTest {
 
     @DisplayName("특수 문자를 제외한 단어를 반환한다.")
     @Test
-    void returns_pure_words() {
+    void returns_pure_nouns() {
         // given
         Words words = Words.fromRawPrompt("나는 명지대학교~! 학생인가요.?!@");
 
@@ -23,10 +23,9 @@ class WordsTest {
 
         // then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0).getWord()).isEqualTo("나는"),
-                () -> assertThat(result.get(1).getWord()).isEqualTo("명지대학교"),
-                () -> assertThat(result.get(2).getWord()).isEqualTo("학생인가요")
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getWord()).isEqualTo("명지대학교"),
+                () -> assertThat(result.get(1).getWord()).isEqualTo("학생")
         );
     }
 
@@ -41,10 +40,9 @@ class WordsTest {
 
         // then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(3),
-                () -> assertThat(result.get(0).getWord()).isEqualTo("나는"),
-                () -> assertThat(result.get(1).getWord()).isEqualTo("명지대"),
-                () -> assertThat(result.get(2).getWord()).isEqualTo("학생인가요")
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getWord()).isEqualTo("명지대"),
+                () -> assertThat(result.get(1).getWord()).isEqualTo("학생")
         );
     }
 
@@ -52,7 +50,7 @@ class WordsTest {
     @Test
     void update_all_words_frequency() {
         // given
-        Words words = Words.fromRawPrompt("가 나 다");
+        Words words = Words.fromRawPrompt("나는 명지대! 명지대? 명지대~ 학생인가요? 나는 학생인가요!");
 
         // when
         words.updateFrequencyCount();
@@ -62,8 +60,7 @@ class WordsTest {
 
         assertAll(
                 () -> assertThat(result.get(0).getFrequency()).isEqualTo(2),
-                () -> assertThat(result.get(1).getFrequency()).isEqualTo(2),
-                () -> assertThat(result.get(2).getFrequency()).isEqualTo(2)
+                () -> assertThat(result.get(1).getFrequency()).isEqualTo(2)
         );
     }
 
@@ -71,8 +68,8 @@ class WordsTest {
     @Test
     void find_not_contains_words_of_other_words() {
         // given
-        Words words = Words.fromRawPrompt("가 나 다");
-        List<Word> otherWords = Words.fromRawPrompt("다 라 마").getWords();
+        Words words = Words.fromRawPrompt("나는 명지대! 명지대? 명지대~ 학생인가요? 나는 학생인가요!");
+        List<Word> otherWords = Words.fromRawPrompt("나는 경희대 교수입니다").getWords();
 
         // when
         List<Word> result = words.findNotContainsWordsFromOthers(otherWords);
@@ -80,8 +77,8 @@ class WordsTest {
         // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0).getWord()).isEqualTo("라"),
-                () -> assertThat(result.get(1).getWord()).isEqualTo("마")
+                () -> assertThat(result.get(0).getWord()).isEqualTo("경희대"),
+                () -> assertThat(result.get(1).getWord()).isEqualTo("교수")
         );
     }
 }

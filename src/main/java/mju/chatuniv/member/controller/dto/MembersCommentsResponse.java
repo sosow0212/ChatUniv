@@ -1,16 +1,17 @@
 package mju.chatuniv.member.controller.dto;
 
-import java.util.List;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
+
+import java.util.List;
 
 public class MembersCommentsResponse {
 
     private List<MembersCommentResponse> membersCommentResponses;
 
-    private MembersCommentsResponse(){
+    private MembersCommentsResponse() {
     }
 
-    private MembersCommentsResponse(final List<MembersCommentResponse>membersCommentResponses) {
+    private MembersCommentsResponse(final List<MembersCommentResponse> membersCommentResponses) {
         this.membersCommentResponses = membersCommentResponses;
     }
 

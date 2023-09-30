@@ -20,10 +20,8 @@ public class MemberExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(
-            final MethodArgumentNotValidException exception) {
-        return getBadRequestResponse(
-                Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage());
+    public ResponseEntity<String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
+        return getBadRequestResponse(Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage());
     }
 
     @ExceptionHandler(MemberNotFoundException.class)

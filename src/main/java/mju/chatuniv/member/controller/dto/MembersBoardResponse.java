@@ -1,13 +1,14 @@
 package mju.chatuniv.member.controller.dto;
 
-import java.util.List;
 import mju.chatuniv.board.controller.dto.BoardResponse;
+
+import java.util.List;
 
 public class MembersBoardResponse {
 
     private List<BoardResponse> boardResponses;
 
-    private MembersBoardResponse(){
+    private MembersBoardResponse() {
     }
 
     private MembersBoardResponse(final List<BoardResponse> boardResponses) {

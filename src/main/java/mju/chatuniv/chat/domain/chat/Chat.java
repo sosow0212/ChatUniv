@@ -47,11 +47,7 @@ public class Chat extends BaseEntity {
     }
 
     public boolean isSameOwner(final Member member) {
-        if (this.member.equals(member)) {
-            return true;
-        }
-
-        return false;
+        return this.member.equals(member);
     }
 
     public Long getId() {

@@ -1,7 +1,5 @@
 package mju.chatuniv.board.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.board.controller.dto.BoardAllResponse;
 import mju.chatuniv.board.controller.dto.BoardResponse;
@@ -20,6 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/boards")
 @RestController

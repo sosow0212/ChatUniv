@@ -36,8 +36,9 @@ public class ChatController {
     }
 
     @GetMapping("/{chatId}")
-    public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@PathVariable final Long chatId) {
-        return ResponseEntity.ok(chatService.joinChattingRoom(chatId));
+    public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@JwtLogin final Member member,
+                                                                    @PathVariable final Long chatId) {
+        return ResponseEntity.ok(chatService.joinChattingRoom(chatId, member));
     }
 
     @PostMapping("/{chatId}/mild")

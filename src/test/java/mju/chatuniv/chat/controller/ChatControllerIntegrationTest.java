@@ -1,8 +1,5 @@
 package mju.chatuniv.chat.controller;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import io.restassured.RestAssured;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.chat.Chat;
@@ -20,7 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class ChatControllerIntegrationTest extends IntegrationTest {
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class ChatControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
     private AuthService authService;
@@ -53,7 +53,7 @@ public class ChatControllerIntegrationTest extends IntegrationTest {
         var result = RestAssured.given().log().all()
                 .auth().preemptive().oauth2(token)
                 .when()
-                .post("/chats")
+                .post("/api/chats")
                 .then().log().all()
                 .extract();
 
@@ -76,7 +76,7 @@ public class ChatControllerIntegrationTest extends IntegrationTest {
         var result = RestAssured.given().log().all()
                 .auth().preemptive().oauth2(token)
                 .when()
-                .get("/chats/1")
+                .get("/api/chats/1")
                 .then().log().all()
                 .extract();
 

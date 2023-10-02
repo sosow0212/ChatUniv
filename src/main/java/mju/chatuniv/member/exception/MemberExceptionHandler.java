@@ -1,6 +1,5 @@
 package mju.chatuniv.member.exception;
 
-import java.util.Objects;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidEmailException;
 import mju.chatuniv.member.exception.exceptions.AuthorizationInvalidPasswordException;
 import mju.chatuniv.member.exception.exceptions.EmailAlreadyExistsException;
@@ -15,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
 
 @RestControllerAdvice
 public class MemberExceptionHandler {
@@ -38,8 +39,7 @@ public class MemberExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(
-            final MethodArgumentNotValidException exception) {
+    public ResponseEntity<String> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         return getBadRequestResponse(
                 Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage());
     }

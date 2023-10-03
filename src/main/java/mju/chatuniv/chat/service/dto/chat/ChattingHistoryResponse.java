@@ -1,19 +1,21 @@
 package mju.chatuniv.chat.service.dto.chat;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import mju.chatuniv.chat.controller.dto.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ChattingHistoryResponse {
 
-    private final Long chatId;
-    private final List<ConversationResponse> conversations;
-    private final Boolean isOwner;
-    private final LocalDateTime createdAt;
+    private Long chatId;
+    private List<ConversationResponse> conversations;
+    private Boolean isOwner;
+    private LocalDateTime createdAt;
+
+    private ChattingHistoryResponse() {
+    }
 
     private ChattingHistoryResponse(final Long chatId,
                                     final List<ConversationResponse> conversations,

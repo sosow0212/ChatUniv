@@ -1,8 +1,15 @@
 package mju.chatuniv.chat.controller;
 
+import java.net.URI;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import mju.chatuniv.auth.support.JwtLogin;
+import mju.chatuniv.chat.controller.dto.ConversationAllResponse;
 import mju.chatuniv.chat.controller.dto.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
+import mju.chatuniv.chat.service.ChatQueryService;
 import mju.chatuniv.chat.service.ChatService;
 import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
@@ -15,17 +22,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-
 @RequestMapping("/api/chats")
 @RestController
 public class ChatController {
 
     private final ChatService chatService;
+    private final ChatQueryService chatQueryService;
 
-    public ChatController(final ChatService chatService) {
+    public ChatController(ChatService chatService, ChatQueryService chatQueryService) {
         this.chatService = chatService;
+        this.chatQueryService = chatQueryService;
     }
 
     @PostMapping
@@ -38,7 +44,13 @@ public class ChatController {
     @GetMapping("/{chatId}")
     public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@JwtLogin final Member member,
                                                                     @PathVariable final Long chatId) {
-        return ResponseEntity.ok(chatService.joinChattingRoom(chatId, member));
+        return ResponseEntity.ok(chatQueryService.joinChattingRoom(chatId, member));
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<ConversationAllResponse> searchChattingRoom(@PathVariable @NotBlank String keyword) {
+        List<ConversationSimpleResponse> conversationResponses = chatQueryService.searchChattingRoom(keyword);
+        return ResponseEntity.ok(ConversationAllResponse.from(conversationResponses));
     }
 
     @PostMapping("/{chatId}/mild")

@@ -1,6 +1,5 @@
 package mju.chatuniv.auth.support;
 
-import java.util.Objects;
 import mju.chatuniv.auth.exception.exceptions.BearerTokenNotFoundException;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.member.domain.Member;
@@ -10,6 +9,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import java.util.Objects;
 
 public class JwtLoginResolver implements HandlerMethodArgumentResolver {
 
@@ -29,9 +30,10 @@ public class JwtLoginResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Member resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
-                                  final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory)
-            throws Exception {
+    public Member resolveArgument(final MethodParameter parameter,
+                                  final ModelAndViewContainer mavContainer,
+                                  final NativeWebRequest webRequest,
+                                  final WebDataBinderFactory binderFactory) {
         String authorizationHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
         validateAuthorization(authorizationHeader);
 

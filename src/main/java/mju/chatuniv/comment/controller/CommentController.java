@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     private final CommonCommentService commonCommentService;
@@ -26,7 +26,7 @@ public class CommentController {
         this.commonCommentService = commonCommentService;
     }
 
-    @PatchMapping("/comments/{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") final Long commentId,
                                                          @JwtLogin final Member member,
                                                          @RequestBody @Valid final CommentRequest commentRequest) {
@@ -34,7 +34,7 @@ public class CommentController {
         return ResponseEntity.ok(CommentResponse.from(comment));
     }
 
-    @DeleteMapping("/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") final Long commentId,
                                               @JwtLogin final Member member) {
         commonCommentService.delete(commentId, member);

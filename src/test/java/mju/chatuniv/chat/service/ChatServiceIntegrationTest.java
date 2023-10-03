@@ -1,7 +1,5 @@
 package mju.chatuniv.chat.service;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -14,6 +12,8 @@ import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ChatServiceIntegrationTest extends IntegrationTest {
 
@@ -55,7 +55,7 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
         conversationRepository.save(Conversation.of("ask2", "answer2", chat));
 
         // when
-        ChattingHistoryResponse result = chatService.joinChattingRoom(chat.getId());
+        ChattingHistoryResponse result = chatService.joinChattingRoom(chat.getId(), member);
 
         // then
         assertThat(result.getConversations().size()).isEqualTo(2);

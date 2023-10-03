@@ -11,6 +11,7 @@
 
 ==== 요청
 
+include::{snippets}/statistic-controller-unit-test/find_all_statistics/http-request.adoc[]
 include::{snippets}/statistic-controller-unit-test/find_all_statistics/request-headers.adoc[]
 
 ==== 응답

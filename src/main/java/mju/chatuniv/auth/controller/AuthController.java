@@ -1,6 +1,5 @@
 package mju.chatuniv.auth.controller;
 
-import javax.validation.Valid;
 import mju.chatuniv.auth.controller.dto.TokenResponse;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.member.controller.dto.MemberResponse;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RequestMapping("/api/auth")
 @RestController

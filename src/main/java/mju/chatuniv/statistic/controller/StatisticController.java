@@ -1,7 +1,7 @@
 package mju.chatuniv.statistic.controller;
 
-import mju.chatuniv.statistic.service.StatisticService;
 import mju.chatuniv.statistic.controller.dto.StatisticsResponse;
+import mju.chatuniv.statistic.service.StatisticService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

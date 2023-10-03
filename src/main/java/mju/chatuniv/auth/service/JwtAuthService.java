@@ -28,13 +28,22 @@ public class JwtAuthService implements AuthService {
                 memberCreateRequest.getPassword()));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public String login(final MemberLoginReqeust memberLoginReqeust) {
+        registerIfMemberNotExist(memberLoginReqeust);
+
         Member member = memberRepository.findByEmail(memberLoginReqeust.getEmail())
                 .orElseThrow(MemberNotFoundException::new);
+
         member.validateEmail(memberLoginReqeust.getEmail());
         member.validatePassword(memberLoginReqeust.getPassword());
         return jwtTokenProvider.createAccessToken(memberLoginReqeust.getEmail());
+    }
+
+    private void registerIfMemberNotExist(final MemberLoginReqeust memberLoginReqeust) {
+        if (!memberRepository.existsByEmail(memberLoginReqeust.getEmail())) {
+            memberRepository.saveAndFlush(Member.of(memberLoginReqeust.getEmail(), memberLoginReqeust.getPassword()));
+        }
     }
 
     @Transactional(readOnly = true)

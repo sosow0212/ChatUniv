@@ -1,25 +1,6 @@
 package mju.chatuniv.chat.controller;
 
-import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -40,6 +21,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+
+import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ChatController.class)
 @AutoConfigureRestDocs
@@ -72,7 +73,7 @@ class ChatControllerUnitTest {
         when(chatService.createNewChattingRoom(member)).thenReturn(1L);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(post("/chats"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(post("/api/chats"))
                 .andExpect(status().isCreated())
                 .andDo(customDocument(
                         "create_new_chatting_room",
@@ -93,13 +94,15 @@ class ChatControllerUnitTest {
         Member member = Member.of("a@a.com", "password");
 
         ChattingHistoryResponse response = ChattingHistoryResponse.of(
-                Chat.createDefault(member), List.of(createConversation())
+                Chat.createDefault(member),
+                List.of(createConversation()),
+                true
         );
 
-        when(chatService.joinChattingRoom(chatId)).thenReturn(response);
+        when(chatService.joinChattingRoom(any(), any())).thenReturn(response);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/chats/{chatId}", chatId))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/{chatId}", chatId))
                 .andExpect(status().isOk())
                 .andDo(customDocument("join_being_chatting_room",
                         requestHeaders(
@@ -114,6 +117,7 @@ class ChatControllerUnitTest {
                                 fieldWithPath("conversations[0].content").description("사용자 질문 내용"),
                                 fieldWithPath("conversations[0].answer").description("챗봇 답변 내용"),
                                 fieldWithPath("conversations[0].createdAt").description("대화 날짜"),
+                                fieldWithPath("isOwner").description("채팅 생성자인지 확인하는 필드"),
                                 fieldWithPath("createdAt").description("채팅방 생성 날짜")
                         )
                 ));
@@ -131,7 +135,7 @@ class ChatControllerUnitTest {
         when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenReturn(response);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/raw", chatId)), request)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/raw", chatId)), request)
                 .andExpect(status().isOk())
                 .andDo(customDocument("use_raw_chat_bot",
                         requestHeaders(
@@ -161,7 +165,7 @@ class ChatControllerUnitTest {
         when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenReturn(conversation);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), request)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), request)
                 .andExpect(status().isOk())
                 .andDo(customDocument("use_mild_chat_bot",
                         requestHeaders(
@@ -192,7 +196,7 @@ class ChatControllerUnitTest {
                 new OwnerInvalidException());
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), request)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), request)
                 .andExpect(status().isUnauthorized())
                 .andDo(customDocument("fail_to_use_with_different_member",
                         requestHeaders(
@@ -217,7 +221,7 @@ class ChatControllerUnitTest {
                 new ChattingRoomNotFoundException(2L));
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), request)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), request)
                 .andExpect(status().isNotFound())
                 .andDo(customDocument("fail_to_use_with_not_exist_chat_room",
                         requestHeaders(
@@ -238,11 +242,10 @@ class ChatControllerUnitTest {
         Conversation conversation = createConversation(member);
         ChatPromptRequest request = new ChatPromptRequest(conversation.getAsk());
 
-        when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenThrow(
-                new OpenAIErrorException());
+        when(chatService.useChatBot(anyString(), anyLong(), anyBoolean(), any())).thenThrow(new OpenAIErrorException());
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), request)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), request)
                 .andExpect(status().is5xxServerError())
                 .andDo(customDocument("fail_to_use_with_wrong_gpt_server",
                         requestHeaders(
@@ -262,7 +265,7 @@ class ChatControllerUnitTest {
         Long chatId = 1L;
 
         //when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/chats/{chatId}/mild", chatId)), chatPromptRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), chatPromptRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_use_chat_bot_empty_prompt",
                         requestHeaders(

@@ -1,13 +1,14 @@
 package mju.chatuniv.member.controller.dto;
 
-import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
+
+import java.util.List;
 
 public class MembersChatRoomResponse {
 
     private List<Chat> myChats;
 
-    private MembersChatRoomResponse(){
+    private MembersChatRoomResponse() {
     }
 
     private MembersChatRoomResponse(final List<Chat> myChats) {

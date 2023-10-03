@@ -1,14 +1,12 @@
 package mju.chatuniv.comment.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.BoardCommentService;
-import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 import mju.chatuniv.comment.controller.dto.CommentAllResponse;
 import mju.chatuniv.comment.controller.dto.CommentResponse;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api")
+import javax.validation.Valid;
+import java.util.List;
+
+@RequestMapping("/api/boards")
 @RestController
 public class BoardCommentController {
 
@@ -29,7 +30,7 @@ public class BoardCommentController {
         this.boardCommentService = boardCommentService;
     }
 
-    @PostMapping("/boards/{boardId}/comments")
+    @PostMapping("/{boardId}/comments")
     public ResponseEntity<CommentResponse> createBoardComment(@PathVariable("boardId") final Long boardId,
                                                               @JwtLogin final Member member,
                                                               @RequestBody @Valid final CommentRequest commentRequest) {
@@ -38,7 +39,7 @@ public class BoardCommentController {
                 .body(CommentResponse.from(comment));
     }
 
-    @GetMapping("/boards/{pageSize}/{boardId}/{commentId}")
+    @GetMapping("/{pageSize}/{boardId}/{commentId}")
     public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("pageSize") final Long pageSize,
                                                                   @PathVariable("boardId") final Long boardId,
                                                                   @PathVariable("commentId") final Long commentId) {

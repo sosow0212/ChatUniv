@@ -1,7 +1,5 @@
 package mju.chatuniv.chat.controller;
 
-import java.net.URI;
-import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.chat.controller.dto.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -17,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/chats")
+import javax.validation.Valid;
+import java.net.URI;
+
+@RequestMapping("/api/chats")
 @RestController
 public class ChatController {
 
@@ -35,8 +36,9 @@ public class ChatController {
     }
 
     @GetMapping("/{chatId}")
-    public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@PathVariable final Long chatId) {
-        return ResponseEntity.ok(chatService.joinChattingRoom(chatId));
+    public ResponseEntity<ChattingHistoryResponse> joinChattingRoom(@JwtLogin final Member member,
+                                                                    @PathVariable final Long chatId) {
+        return ResponseEntity.ok(chatService.joinChattingRoom(chatId, member));
     }
 
     @PostMapping("/{chatId}/mild")

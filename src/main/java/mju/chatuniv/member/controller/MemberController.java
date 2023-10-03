@@ -1,7 +1,5 @@
 package mju.chatuniv.member.controller;
 
-import java.util.List;
-import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.board.controller.dto.BoardResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
@@ -21,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RequestMapping("/api/members")
 @RestController
 public class MemberController {
@@ -38,21 +39,21 @@ public class MemberController {
     }
 
     @GetMapping("/me/chats")
-    public ResponseEntity<MembersChatRoomResponse> findMembersChatRooms (@JwtLogin final Member member) {
+    public ResponseEntity<MembersChatRoomResponse> findMembersChatRooms(@JwtLogin final Member member) {
         List<Chat> membersChat = memberService.findMembersChat(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersChatRoomResponse.from(membersChat));
     }
 
     @GetMapping("/me/boards")
-    public ResponseEntity<MembersBoardResponse> findMembersBoards (@JwtLogin final Member member) {
+    public ResponseEntity<MembersBoardResponse> findMembersBoards(@JwtLogin final Member member) {
         List<BoardResponse> membersBoards = memberService.findMembersBoard(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersBoardResponse.from(membersBoards));
     }
 
     @GetMapping("/me/comments")
-    public ResponseEntity<MembersCommentsResponse> findMembersComments (@JwtLogin final Member member) {
+    public ResponseEntity<MembersCommentsResponse> findMembersComments(@JwtLogin final Member member) {
         List<MembersCommentResponse> membersComments = memberService.findMembersComment(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersCommentsResponse.from(membersComments));

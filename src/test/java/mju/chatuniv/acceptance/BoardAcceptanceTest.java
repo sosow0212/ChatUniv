@@ -2,7 +2,8 @@ package mju.chatuniv.acceptance;
 
 import java.util.stream.IntStream;
 import mju.chatuniv.board.controller.dto.BoardAllResponse;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -36,7 +37,7 @@ class BoardAcceptanceTest extends AcceptanceTest {
 
         //when
         var 게시글_조회_응답 = 로그인_인증_후_조회요청("/api/boards/1", 로그인_토큰);
-        var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardResponse.class);
+        var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardSearchResponse.class);
 
         //then
         단일_검증(게시글_조회_결과.getBoardId(), 1L);
@@ -46,12 +47,12 @@ class BoardAcceptanceTest extends AcceptanceTest {
     void 게시글을_전체_조회한다() {
         //given
         var 로그인_토큰 = 로그인();
-        IntStream.range(1, 100)
+        IntStream.range(1, 30)
                 .forEach(i -> {
                     로그인_인증_후_생성요청("/api/boards", new BoardCreateRequest("title:" + i, "content" + i), 로그인_토큰);
                 });
         //when
-        var 게시글_조회_응답 = 로그인_인증_후_조회요청("/api/boards/all/10/50", 로그인_토큰);
+        var 게시글_조회_응답 = 로그인_인증_후_조회요청("/api/boards/all?pageSize=10&boardId=20", 로그인_토큰);
         var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardAllResponse.class);
 
         //then
@@ -62,18 +63,16 @@ class BoardAcceptanceTest extends AcceptanceTest {
     void 게시글을_검색어로_조회한다() {
         //given
         var 로그인_토큰 = 로그인();
-        IntStream.range(1, 10)
+        IntStream.range(1, 30)
                 .forEach(i -> {
                     로그인_인증_후_생성요청("/api/boards", new BoardCreateRequest("title:" + i, "content" + i), 로그인_토큰);
-                    로그인_인증_후_생성요청("/api/boards", new BoardCreateRequest("제목:" + i, "내용" + i), 로그인_토큰);
-                    로그인_인증_후_생성요청("/api/boards", new BoardCreateRequest("T:" + i, "C" + i), 로그인_토큰);
                 });
         //when
-        var 게시글_조회_응답 = 로그인_인증_후_조회요청("/api/boards/search/TITLE/제목/10/15", 로그인_토큰);
+        var 게시글_조회_응답 = 로그인_인증_후_조회요청("/api/boards/search?searchType=TITLE&text=1&pageSize=10&boardId=15", 로그인_토큰);
         var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardAllResponse.class);
 
         //then
-        단일_검증(게시글_조회_결과.getBoards().size(), 5L);
+        단일_검증(게시글_조회_결과.getBoards().size(), 6L);
     }
 
     @Test

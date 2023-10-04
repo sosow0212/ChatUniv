@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;

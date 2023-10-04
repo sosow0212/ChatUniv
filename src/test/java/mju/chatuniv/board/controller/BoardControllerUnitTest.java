@@ -17,6 +17,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,15 +28,18 @@ import java.util.List;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import mju.chatuniv.auth.service.JwtAuthService;
+import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.SearchType;
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
-import mju.chatuniv.board.domain.dto.BoardResponse;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.service.BoardQueryService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
+import mju.chatuniv.comment.controller.dto.CommentAllResponse;
+import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.helper.RestDocsHelper;
@@ -52,6 +56,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -121,16 +126,23 @@ class BoardControllerUnitTest {
     @Test
     void find_board() throws Exception {
         // given
-        BoardResponse boardResponse = new BoardResponse(1L, "title", "content");
+        List<CommentPagingResponse> commentPagingResponses = new ArrayList<>();
+        LongStream.range(1, 5)
+                .forEach(i -> {
+                    commentPagingResponses.add(new CommentPagingResponse(i, "content" + i));
+                });
+        CommentAllResponse commentAllResponse = CommentAllResponse.from(commentPagingResponses);
 
-        given(boardQueryService.findBoard(any(Long.class))).willReturn(boardResponse);
+        BoardSearchResponse boardSearchResponse = new BoardSearchResponse(1L, "title", "content", commentAllResponse);
+
+        given(boardQueryService.findBoard(any(Long.class))).willReturn(boardSearchResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/{boardId}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.boardId").value(boardResponse.getBoardId()))
-                .andExpect(jsonPath("$.title").value(boardResponse.getTitle()))
-                .andExpect(jsonPath("$.content").value(boardResponse.getContent()))
+                .andExpect(jsonPath("$.boardId").value(boardSearchResponse.getBoardId()))
+                .andExpect(jsonPath("$.title").value(boardSearchResponse.getTitle()))
+                .andExpect(jsonPath("$.content").value(boardSearchResponse.getContent()))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_board",
                         requestHeaders(
@@ -142,7 +154,11 @@ class BoardControllerUnitTest {
                         responseFields(
                                 fieldWithPath("boardId").description("게시판 조회 후 반환된 board의 ID"),
                                 fieldWithPath("title").description("게시판 조회 후 반환된 board의 제목"),
-                                fieldWithPath("content").description("게시판 조회 후 반환된 board의 내용")
+                                fieldWithPath("content").description("게시판 조회 후 반환된 board의 내용"),
+                                fieldWithPath("content").description("게시판 조회 후 반환된 board의 내용"),
+                                fieldWithPath("commentAllResponse.commentResponse").description("조회된 게시판의 댓글들"),
+                                fieldWithPath("commentAllResponse.commentResponse[].commentId").type(JsonFieldType.NUMBER).description("조회된 게시판의 댓글의 id"),
+                                fieldWithPath("commentAllResponse.commentResponse[].content").type(JsonFieldType.STRING).description("조회된 게시판의 댓글의 내용")
                         )
                 )).andReturn();
     }
@@ -156,7 +172,7 @@ class BoardControllerUnitTest {
         given(boardQueryService.findAllBoards(any(Long.class), any(Long.class))).willReturn(boardPagingResponses);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/all/{pageSize}/{boardId}", 3, 4))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/all?boardId=3&pageSize=4"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.boards").isArray())
                 .andExpect(jsonPath("$.boards", hasSize(3)))
@@ -171,7 +187,7 @@ class BoardControllerUnitTest {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
-                        pathParameters(
+                        requestParameters(
                                 parameterWithName("pageSize").description("한 페이지에 보이게 되는 데이터 크기"),
                                 parameterWithName("boardId").description("해당 id를 기준으로 조회 대상으로 설정")
                         ),
@@ -193,8 +209,7 @@ class BoardControllerUnitTest {
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/boards/search/{searchType}/{text}/{pageSize}/{boardId}",
-                                SearchType.TITLE, "test", 3, 4))
+                        get("/api/boards/search?searchType=TITLE&text=test&pageSize=3&boardId=4"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.boards").isArray())
                 .andExpect(jsonPath("$.boards", hasSize(3)))
@@ -209,7 +224,7 @@ class BoardControllerUnitTest {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
-                        pathParameters(
+                        requestParameters(
                                 parameterWithName("searchType").description("제목, 내용, 전체(제목 + 내용)로 검색 범위를 지정하는 타입"),
                                 parameterWithName("text").description("사용자가 게시판을 조회하기 위해 작성한 검색어"),
                                 parameterWithName("pageSize").description("한 페이지에 보이게 되는 데이터 크기"),
@@ -373,11 +388,9 @@ class BoardControllerUnitTest {
     @DisplayName("게시판을 단건 조회할때 게시판 아이디가 올바르지 않으면 예외가 발생한다.")
     @Test
     void fail_to_search_board_with_blank_keywords() throws Exception {
-
-        String blank = " ";
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/boards/search/{searchType}/{text}/{pageSize}/{boardId}", SearchType.ALL, blank, 3L, 4L))
+                        get("/api/boards/search/?searchType=ALL&text=&pageSize=3&boardId=4"))
                 .andExpect(status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("fail_to_search_board_with_blank_keywords",

@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
+import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.BoardQueryRepository;
-import mju.chatuniv.board.domain.BoardRepository;
-import mju.chatuniv.board.domain.SearchType;
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
+import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
+import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.board.service.BoardQueryService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
@@ -80,13 +80,13 @@ class BoardServiceIntegrationTest extends IntegrationTest {
         Long boardId = 1L;
 
         //when
-        BoardResponse boardResponse = boardQueryService.findBoard(boardId);
+        BoardSearchResponse boardSearchResponse = boardQueryService.findBoard(boardId);
 
         //then
         assertAll(
-                () -> assertThat(boardResponse.getBoardId()).isEqualTo(boardId),
-                () -> assertThat(boardResponse.getTitle()).isEqualTo("initTitle"),
-                () -> assertThat(boardResponse.getContent()).isEqualTo("initContent")
+                () -> assertThat(boardSearchResponse.getBoardId()).isEqualTo(boardId),
+                () -> assertThat(boardSearchResponse.getTitle()).isEqualTo("initTitle"),
+                () -> assertThat(boardSearchResponse.getContent()).isEqualTo("initContent")
         );
     }
 

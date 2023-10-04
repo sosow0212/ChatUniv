@@ -8,11 +8,11 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.BoardQueryRepository;
-import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
+import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
+import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.board.service.BoardQueryService;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;

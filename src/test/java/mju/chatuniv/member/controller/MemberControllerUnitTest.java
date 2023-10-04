@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.global.config.ArgumentResolverConfig;

@@ -1,8 +1,8 @@
 package mju.chatuniv.board.service;
 
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.member.domain.Member;

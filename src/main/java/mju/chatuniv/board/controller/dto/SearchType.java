@@ -1,4 +1,4 @@
-package mju.chatuniv.board.domain;
+package mju.chatuniv.board.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

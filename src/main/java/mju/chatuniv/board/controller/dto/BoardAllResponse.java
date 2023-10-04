@@ -1,7 +1,7 @@
 package mju.chatuniv.board.controller.dto;
 
 import java.util.List;
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
 
 public class BoardAllResponse {
 

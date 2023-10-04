@@ -1,7 +1,7 @@
 package mju.chatuniv.member.controller.dto;
 
 import java.util.List;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 
 public class MembersBoardResponse {
 

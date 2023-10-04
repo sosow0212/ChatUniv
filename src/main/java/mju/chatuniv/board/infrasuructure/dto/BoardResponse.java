@@ -1,4 +1,4 @@
-package mju.chatuniv.board.domain.dto;
+package mju.chatuniv.board.infrasuructure.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import mju.chatuniv.board.domain.Board;

@@ -3,7 +3,7 @@ package mju.chatuniv.member.controller;
 import java.util.List;
 import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.board.domain.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.member.controller.dto.MemberResponse;

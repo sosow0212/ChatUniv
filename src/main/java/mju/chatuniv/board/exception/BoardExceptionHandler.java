@@ -28,7 +28,7 @@ public class BoardExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleMethodArgumentNotValidException(final ConstraintViolationException exception) {
+    public ResponseEntity<String> handlerBoardContentBlankException(final ConstraintViolationException exception) {
         return getBadRequestResponse(exception.getConstraintViolations().iterator().next().getMessage());
     }
 

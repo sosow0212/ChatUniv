@@ -20,17 +20,20 @@ include::{snippets}/board-controller-unit-test/create_board/request-fields.adoc[
 include::{snippets}/board-controller-unit-test/create_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/create_board/response-fields.adoc[]
 
+
 === 게시판 단건 조회
 
 ==== 요청
 
 include::{snippets}/board-controller-unit-test/find_board/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/find_board/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/find_board/path-parameters.adoc[]
 
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/find_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/find_board/response-fields.adoc[]
+
 
 === 게시판 전체 조회
 
@@ -38,11 +41,27 @@ include::{snippets}/board-controller-unit-test/find_board/response-fields.adoc[]
 
 include::{snippets}/board-controller-unit-test/find_all_boards/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/find_all_boards/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/find_all_boards/path-parameters.adoc[]
 
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/find_all_boards/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/find_all_boards/response-fields.adoc[]
+
+
+=== 게시판 검색 조회
+
+==== 요청
+
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/http-response.adoc[]
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/response-fields.adoc[]
+
 
 === 게시판 수정
 
@@ -51,11 +70,13 @@ include::{snippets}/board-controller-unit-test/find_all_boards/response-fields.a
 include::{snippets}/board-controller-unit-test/update_board/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/update_board/request-headers.adoc[]
 include::{snippets}/board-controller-unit-test/update_board/request-fields.adoc[]
+include::{snippets}/board-controller-unit-test/update_board/path-parameters.adoc[]
 
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/update_board/http-response.adoc[]
 include::{snippets}/board-controller-unit-test/update_board/response-fields.adoc[]
+
 
 === 게시판 삭제
 
@@ -63,12 +84,16 @@ include::{snippets}/board-controller-unit-test/update_board/response-fields.adoc
 
 include::{snippets}/board-controller-unit-test/delete_board/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/delete_board/request-headers.adoc[]
+include::{snippets}/board-controller-unit-test/delete_board/path-parameters.adoc[]
 
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/delete_board/http-response.adoc[]
 
+
+
 == Exception
+
 
 === 게시판의 제목이 비었을때 예외
 
@@ -106,7 +131,6 @@ include::{snippets}/board-controller-unit-test/fail_to_update_board_with_differe
 include::{snippets}/board-controller-unit-test/fail_to_update_board_with_different_member/http-response.adoc[]
 
 
-
 === 게시판이 존재하지 않으면 예외
 
 ==== 요청
@@ -117,3 +141,15 @@ include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_boa
 ==== 응답
 
 include::{snippets}/board-controller-unit-test/fail_to_find_board_with_wrong_board_id/http-response.adoc[]
+
+
+=== 검색어를 입력하지 않으면 예외
+
+==== 요청
+include::{snippets}/board-controller-unit-test/fail_to_search_board_with_blank_keywords/http-request.adoc[]
+include::{snippets}/board-controller-unit-test/fail_to_search_board_with_blank_keywords/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/board-controller-unit-test/fail_to_search_board_with_blank_keywords/http-response.adoc[]
+
+

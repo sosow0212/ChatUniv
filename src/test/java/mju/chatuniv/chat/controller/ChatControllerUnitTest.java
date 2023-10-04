@@ -134,19 +134,19 @@ class ChatControllerUnitTest {
     void search_chatting_room() throws Exception {
         // given
         String keyword = "ask";
+        Integer pageSize = 10;
+        Long conversationId = 4L;
         List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
 
-        when(chatQueryService.searchChattingRoom(keyword)).thenReturn(conversationSimpleResponses);
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/search/{keyword}", keyword))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(
+                        get("/api/chats/search?keyword=ask&conversationId=4"))
                 .andExpect(status().isOk())
                 .andDo(customDocument("search_chatting_room",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("keyword").description("검색어")
                         ),
                         responseFields(
                                 fieldWithPath("conversations[0].conversationId").description("대화 Id"),
@@ -319,19 +319,18 @@ class ChatControllerUnitTest {
     void fail_search_chatting_room_empty_condition() throws Exception {
         // given
         String keyword = null;
+        Integer pageSize = 10;
+        Long conversationId = 4L;
         List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
 
-        when(chatQueryService.searchChattingRoom(keyword)).thenReturn(conversationSimpleResponses);
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/search/{keyword}", keyword))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/search?conversationId=4"))
                 .andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_search_chatting_room_empty_condition",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
-                        ),
-                        pathParameters(
-                                parameterWithName("keyword").description("검색어")
                         )
                 ));
     }

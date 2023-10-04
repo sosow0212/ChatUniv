@@ -75,9 +75,11 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
         conversationRepository.save(Conversation.of("i love spring", "answer", chat));
         conversationRepository.save(Conversation.of("ask", "answer2", chat));
         String keyword = "love";
+        Integer pageSize = 10;
+        Long conversationId = 3L;
 
         // when
-        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword);
+        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword,pageSize,conversationId);
 
         // then
         assertThat(result.size()).isEqualTo(1);

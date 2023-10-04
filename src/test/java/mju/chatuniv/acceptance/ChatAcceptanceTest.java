@@ -59,7 +59,7 @@ class ChatAcceptanceTest extends AcceptanceTest {
         conversationRepository.save(Conversation.of("hello", "world", 채팅방));
 
         // when
-        var 채팅방_검색_응답 = 로그인_인증_후_조회요청("/api/chats/search/hello", 로그인_토큰);
+        var 채팅방_검색_응답 = 로그인_인증_후_조회요청("/api/chats/search?keyword=hello", 로그인_토큰);
         var 채팅방_검색_결과 = 채팅방_검색_응답.body().as(ConversationAllResponse.class);
 
         // then

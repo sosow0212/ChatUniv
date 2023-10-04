@@ -9,7 +9,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.service.dto.MemberLoginReqeust;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -17,6 +16,11 @@ public class AcceptanceTest extends IntegrationTest {
 
     protected String 로그인() {
         생성요청("/api/auth/sign-up", new MemberLoginReqeust("a@a.com", "1234"));
+        final var login = 생성요청("/api/auth/sign-in", new MemberLoginReqeust("a@a.com", "1234"));
+        return getJwtAccessToken((RestAssuredResponseImpl) login);
+    }
+
+    protected String 토큰으로_(final String token) {
         final var login = 생성요청("/api/auth/sign-in", new MemberLoginReqeust("a@a.com", "1234"));
         return getJwtAccessToken((RestAssuredResponseImpl) login);
     }
@@ -39,6 +43,16 @@ public class AcceptanceTest extends IntegrationTest {
     protected <T> ExtractableResponse 로그인_인증_후_생성요청(final String url, final T request, final String accessToken) {
         return RestAssured.given().log().all()
                 .body(request)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(accessToken)
+                .when()
+                .post(url)
+                .then().log().all()
+                .extract();
+    }
+
+    protected <T> ExtractableResponse 로그인_인증_후_생성요청(final String url, final String accessToken) {
+        return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .auth().oauth2(accessToken)
                 .when()
@@ -88,11 +102,15 @@ public class AcceptanceTest extends IntegrationTest {
                 .extract();
     }
 
-    protected <T> Executable 단일_검증(final T actual, final T expected) {
-        return () -> assertThat(actual).isEqualTo(expected);
+    protected static <T> void 단일_검증(final T actual, final T expected) {
+        assertThat(actual).isEqualTo(expected);
     }
 
-    protected static Executable 정상_응답코드(final ExtractableResponse<Response> response) {
-        return () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    protected static <T> void 정상_응답코드(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    protected static <T> void 생성_응답코드(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

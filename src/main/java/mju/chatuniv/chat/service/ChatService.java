@@ -1,5 +1,6 @@
 package mju.chatuniv.chat.service;
 
+import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -9,13 +10,11 @@ import mju.chatuniv.chat.domain.word.WordRepository;
 import mju.chatuniv.chat.domain.word.Words;
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
 import mju.chatuniv.chat.infrastructure.ChatBot;
-import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@Transactional
 @Service
 public class ChatService {
 
@@ -34,20 +33,11 @@ public class ChatService {
         this.chatBot = chatBot;
     }
 
-    @Transactional
     public Long createNewChattingRoom(final Member member) {
         Chat chat = chatRepository.save(Chat.createDefault(member));
         return chat.getId();
     }
 
-    @Transactional(readOnly = true)
-    public ChattingHistoryResponse joinChattingRoom(final Long chatId, final Member member) {
-        Chat chat = findChat(chatId);
-        List<Conversation> conversationsHistory = conversationRepository.findAllByChat(chat);
-        return ChattingHistoryResponse.of(chat, conversationsHistory, chat.isSameOwner(member));
-    }
-
-    @Transactional
     public Conversation useChatBot(final String prompt,
                                    final Long chatId,
                                    final boolean isMild,

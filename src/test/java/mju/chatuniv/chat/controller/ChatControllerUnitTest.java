@@ -1,29 +1,5 @@
 package mju.chatuniv.chat.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.chat.domain.chat.Chat;
-import mju.chatuniv.chat.domain.chat.Conversation;
-import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
-import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
-import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
-import mju.chatuniv.chat.service.ChatService;
-import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
-import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.helper.MockTestHelper;
-import mju.chatuniv.member.domain.Member;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-
 import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +16,35 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
+import mju.chatuniv.auth.service.JwtAuthService;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
+import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
+import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
+import mju.chatuniv.chat.service.ChatQueryService;
+import mju.chatuniv.chat.service.ChatService;
+import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
+import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
+import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ChatController.class)
 @AutoConfigureRestDocs
@@ -50,6 +54,9 @@ class ChatControllerUnitTest {
 
     @MockBean
     private ChatService chatService;
+
+    @MockBean
+    private ChatQueryService chatQueryService;
 
     @MockBean
     private JwtAuthService jwtAuthService;
@@ -99,7 +106,7 @@ class ChatControllerUnitTest {
                 true
         );
 
-        when(chatService.joinChattingRoom(any(), any())).thenReturn(response);
+        when(chatQueryService.joinChattingRoom(any(), any())).thenReturn(response);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/{chatId}", chatId))
@@ -119,6 +126,41 @@ class ChatControllerUnitTest {
                                 fieldWithPath("conversations[0].createdAt").description("대화 날짜"),
                                 fieldWithPath("isOwner").description("채팅 생성자인지 확인하는 필드"),
                                 fieldWithPath("createdAt").description("채팅방 생성 날짜")
+                        )
+                ));
+    }
+
+    @DisplayName("질문과 답변으로 채팅방을 검색한다.")
+    @Test
+    void search_chatting_room() throws Exception {
+        // given
+        String keyword = "ask";
+        Integer pageSize = 10;
+        Long conversationId = 4L;
+        List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
+
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(
+                        get("/api/chats/search?keyword=ask&pageSize=10&conversationId=4"))
+                .andExpect(status().isOk())
+                .andDo(customDocument("search_chatting_room",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("keyword").description("검색 키워드"),
+                                parameterWithName("pageSize").description("페이지 크기"),
+                                parameterWithName("conversationId").description("대화 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("conversations[0].conversationId").description("대화 Id"),
+                                fieldWithPath("conversations[0].ask").description("사용자 질문 내용"),
+                                fieldWithPath("conversations[0].answer").description("챗봇 답변 내용"),
+                                fieldWithPath("conversations[1].conversationId").description("대화 Id2"),
+                                fieldWithPath("conversations[1].ask").description("사용자 질문 내용2"),
+                                fieldWithPath("conversations[1].answer").description("챗봇 답변 내용2")
                         )
                 ));
     }
@@ -265,7 +307,8 @@ class ChatControllerUnitTest {
         Long chatId = 1L;
 
         //when & then
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)), chatPromptRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/chats/{chatId}/mild", chatId)),
+                        chatPromptRequest)
                 .andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_to_use_chat_bot_empty_prompt",
                         requestHeaders(
@@ -275,5 +318,39 @@ class ChatControllerUnitTest {
                                 parameterWithName("chatId").description("채팅방 ID")
                         )
                 ));
+    }
+
+    @DisplayName("검색어가 없이 검색하면 예외가 발생한다.")
+    @Test
+    void fail_search_chatting_room_empty_condition() throws Exception {
+        // given
+        String keyword = null;
+        Integer pageSize = 10;
+        Long conversationId = 4L;
+        List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
+
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/search?pageSize=10&conversationId=4"))
+                .andExpect(status().isBadRequest())
+                .andDo(customDocument("fail_search_chatting_room_empty_condition",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        ),
+                        requestParameters(
+                                parameterWithName("pageSize").description("페이지 크기"),
+                                parameterWithName("conversationId").description("대화 Id")
+                        )
+                ));
+    }
+
+    private List<ConversationSimpleResponse> getConversationAllResponse() {
+        List<ConversationSimpleResponse> conversations = new ArrayList<>();
+        LongStream.rangeClosed(1, 2)
+                .forEach(index -> {
+                    conversations.add(new ConversationSimpleResponse(index, "ask" + index, "answer" + index));
+                });
+        return conversations;
     }
 }

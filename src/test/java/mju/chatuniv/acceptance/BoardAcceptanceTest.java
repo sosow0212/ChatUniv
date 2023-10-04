@@ -56,7 +56,7 @@ class BoardAcceptanceTest extends AcceptanceTest {
         var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardAllResponse.class);
 
         //then
-        단일_검증(게시글_조회_결과.getBoards().size(), 10L);
+        단일_검증(게시글_조회_결과.getBoards().size(), 10);
     }
 
     @Test
@@ -72,7 +72,7 @@ class BoardAcceptanceTest extends AcceptanceTest {
         var 게시글_조회_결과 = 게시글_조회_응답.body().as(BoardAllResponse.class);
 
         //then
-        단일_검증(게시글_조회_결과.getBoards().size(), 6L);
+        단일_검증(게시글_조회_결과.getBoards().size(), 6);
     }
 
     @Test
@@ -101,6 +101,6 @@ class BoardAcceptanceTest extends AcceptanceTest {
         var 게시글_삭제_후_상태코드 = 게시글_삭제_응답.statusCode();
 
         //then
-        단일_검증(게시글_삭제_후_상태코드, HttpStatus.NO_CONTENT);
+        단일_검증(게시글_삭제_후_상태코드, HttpStatus.NO_CONTENT.value());
     }
 }

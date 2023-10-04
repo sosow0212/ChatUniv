@@ -30,6 +30,20 @@ include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-requ
 include::{snippets}/chat-controller-unit-test/join_being_chatting_room/http-response.adoc[]
 include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-fields.adoc[]
 
+=== 채팅방 검색
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/search_chatting_room/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/search_chatting_room/http-request.adoc[]
+include::{snippets}/chat-controller-unit-test/search_chatting_room/request-parameters.adoc[]
+
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/search_chatting_room/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/search_chatting_room/response-fields.adoc[]
+
 === 매운맛 챗봇 사용
 
 ==== 요청
@@ -103,6 +117,18 @@ include::{snippets}/chat-controller-unit-test/fail_to_use_chat_bot_empty_prompt/
 ==== 응답
 
 include::{snippets}/chat-controller-unit-test/fail_to_use_chat_bot_empty_prompt/http-response.adoc[]
+
+=== 채팅방을 검색할때 검색어가 비어있으면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/http-request.adoc[]
+include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/request-headers.adoc[]
+include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/request-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/http-response.adoc[]
 
 
 

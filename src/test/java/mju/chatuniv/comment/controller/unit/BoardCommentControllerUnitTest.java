@@ -44,7 +44,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = BoardCommentController.class)
 @AutoConfigureRestDocs
-public class BoardCommentControllerUnitTest {
+class BoardCommentControllerUnitTest {
 
     private MockTestHelper mockTestHelper;
 

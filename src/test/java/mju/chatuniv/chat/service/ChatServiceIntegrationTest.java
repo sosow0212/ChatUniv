@@ -5,6 +5,7 @@ import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.chat.domain.word.WordRepository;
+import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
 import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
@@ -16,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static mju.chatuniv.fixture.chat.ChatFixture.createChat;
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-public class ChatServiceIntegrationTest extends IntegrationTest {
+class ChatServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private ChatService chatService;
@@ -37,6 +41,25 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @DisplayName("모든 채팅방을 조회한다")
+    @Test
+    void find_all_chat_rooms() {
+        // given
+        Member member = memberRepository.save(createMember());
+        Chat chat = chatRepository.save(createChat(member));
+        Conversation conversation = conversationRepository.save(Conversation.of("질문", "대답", chat));
+
+        // when
+        List<ChatRoomSimpleResponse> result = chatQueryService.findAllChatRooms();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(result).hasSize(1);
+            softly.assertThat(result.get(0).getChatId()).isEqualTo(chat.getId());
+            softly.assertThat(result.get(0).getTitle().startsWith(conversation.getAsk())).isTrue();
+        });
+    }
 
     @DisplayName("새로운 채팅방을 만든다.")
     @Test
@@ -80,7 +103,7 @@ public class ChatServiceIntegrationTest extends IntegrationTest {
         Long conversationId = 3L;
 
         // when
-        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword,pageSize,conversationId);
+        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword, pageSize, conversationId);
 
         // then
         assertThat(result.size()).isEqualTo(1);

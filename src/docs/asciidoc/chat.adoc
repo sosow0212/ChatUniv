@@ -36,6 +36,8 @@ include::{snippets}/chat-controller-unit-test/join_being_chatting_room/response-
 
 include::{snippets}/chat-controller-unit-test/search_chatting_room/request-headers.adoc[]
 include::{snippets}/chat-controller-unit-test/search_chatting_room/http-request.adoc[]
+include::{snippets}/chat-controller-unit-test/search_chatting_room/request-parameters.adoc[]
+
 
 ==== 응답
 
@@ -122,7 +124,7 @@ include::{snippets}/chat-controller-unit-test/fail_to_use_chat_bot_empty_prompt/
 
 include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/http-request.adoc[]
 include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/request-headers.adoc[]
-include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/path-parameters.adoc[]
+include::{snippets}/chat-controller-unit-test/fail_search_chatting_room_empty_condition/request-parameters.adoc[]
 
 ==== 응답
 

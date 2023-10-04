@@ -9,5 +9,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     @Query("SELECT w FROM Word w WHERE w.word IN :promptWords")
     List<Word> findAllByWords(@Param("promptWords") final List<String> promptWords);
+
+    List<Word> findTop10ByOrderByFrequencyDesc();
 }
 

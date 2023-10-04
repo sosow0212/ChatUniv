@@ -41,14 +41,16 @@ public class ChatQueryRepository {
                 .where(chat.id.eq(chatId))
                 .fetch();
 
-        if (conversations.isEmpty()){
+        if (conversations.isEmpty()) {
             return Collections.emptyList();
         }
 
         return conversations;
     }
 
-    public List<ConversationSimpleResponse> findConversationByKeyword(final String keyword) {
+    public List<ConversationSimpleResponse> findConversationByKeyword(final String keyword,
+                                                                      final Integer pageSize,
+                                                                      final Long conversationId) {
         if (keyword == null) {
             return Collections.emptyList();
         }
@@ -59,13 +61,21 @@ public class ChatQueryRepository {
                         conversation.ask,
                         conversation.answer))
                 .from(conversation)
-                .where(likeAskOrAnswer(keyword))
+                .where(likeAskOrAnswer(keyword), ltConversationId(conversationId))
                 .orderBy(conversation.id.desc())
+                .limit(pageSize)
                 .fetch();
     }
 
     private BooleanExpression likeAskOrAnswer(final String keyword) {
         return conversation.ask.like(ANY + keyword + ANY)
                 .or(conversation.answer.like(ANY + keyword + ANY));
+    }
+
+    private BooleanExpression ltConversationId(final Long conversationId) {
+        if (conversationId == null) {
+            return null;
+        }
+        return conversation.id.lt(conversationId);
     }
 }

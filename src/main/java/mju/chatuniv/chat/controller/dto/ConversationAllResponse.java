@@ -10,7 +10,7 @@ public class ConversationAllResponse {
     private ConversationAllResponse() {
     }
 
-    private ConversationAllResponse(List<ConversationSimpleResponse> conversations) {
+    private ConversationAllResponse(final List<ConversationSimpleResponse> conversations) {
         this.conversations = conversations;
     }
 

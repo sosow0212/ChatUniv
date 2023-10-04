@@ -27,8 +27,10 @@ public class ChatQueryService {
         return ChattingHistoryResponse.of(chat, conversations, chat.isSameOwner(member));
     }
 
-    public List<ConversationSimpleResponse> searchChattingRoom(final String keyword) {
-        return chatQueryRepository.findConversationByKeyword(keyword);
+    public List<ConversationSimpleResponse> searchChattingRoom(final String keyword,
+                                                               final Integer pageSize,
+                                                               final Long conversationId) {
+        return chatQueryRepository.findConversationByKeyword(keyword, pageSize, conversationId);
     }
 
     private Chat findChat(final Long chatId) {

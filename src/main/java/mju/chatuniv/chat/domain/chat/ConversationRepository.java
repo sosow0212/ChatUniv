@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ConversationRepository extends JpaRepository<Conversation, Long> {
+public interface ConversationRepository extends JpaRepository<Conversation, Long>, ConversationRepositoryCustom {
 
     List<Conversation> findAllByChat(Chat chat);
 }

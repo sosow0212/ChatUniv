@@ -1,4 +1,4 @@
-package mju.chatuniv.chat.infrastructure.dto;
+package mju.chatuniv.chat.infrastructure.repository.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 

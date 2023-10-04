@@ -1,7 +1,8 @@
 package mju.chatuniv.chat.controller.dto;
 
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
+
 import java.util.List;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
 
 public class ConversationAllResponse {
 

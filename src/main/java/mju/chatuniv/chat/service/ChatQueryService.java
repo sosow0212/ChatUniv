@@ -1,15 +1,17 @@
 package mju.chatuniv.chat.service;
 
-import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
 import mju.chatuniv.chat.infrastructure.repository.ChatQueryRepository;
+import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 @Service
@@ -19,6 +21,10 @@ public class ChatQueryService {
 
     public ChatQueryService(ChatQueryRepository chatQueryRepository) {
         this.chatQueryRepository = chatQueryRepository;
+    }
+
+    public List<ChatRoomSimpleResponse> findAllChatRooms() {
+        return chatQueryRepository.findAllChatRooms();
     }
 
     public ChattingHistoryResponse joinChattingRoom(final Long chatId, final Member member) {

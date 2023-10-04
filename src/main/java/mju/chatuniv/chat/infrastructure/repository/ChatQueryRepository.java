@@ -1,28 +1,55 @@
 package mju.chatuniv.chat.infrastructure.repository;
 
-import static mju.chatuniv.chat.domain.chat.QChat.chat;
-import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
-
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
+import org.springframework.stereotype.Repository;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import mju.chatuniv.chat.domain.chat.Chat;
-import mju.chatuniv.chat.domain.chat.Conversation;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
-import org.springframework.stereotype.Repository;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.Projections.constructor;
+import static mju.chatuniv.chat.domain.chat.QChat.chat;
+import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
 
 @Repository
 public class ChatQueryRepository {
 
     private static final String ANY = "%";
+    private static final int SHORTCUT_LIMIT_OF_ASK = 10;
+    private static final int SHORTCUT_LIMIT_OF_ANSWER = 15;
+    private static final String SHORTCUT_JOINER = "...";
 
     private final JPAQueryFactory jpaQueryFactory;
 
     public ChatQueryRepository(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
+    }
+
+    public List<ChatRoomSimpleResponse> findAllChatRooms() {
+        return jpaQueryFactory.selectFrom(conversation)
+                .leftJoin(conversation.chat, chat)
+                .orderBy(conversation.chat.id.desc())
+                .transform(
+                        groupBy(chat.id)
+                                .list(constructor(ChatRoomSimpleResponse.class,
+                                        chat.id,
+                                        conversation.ask
+                                                .substring(0, SHORTCUT_LIMIT_OF_ASK)
+                                                .append(SHORTCUT_JOINER)
+                                                .as("ask"),
+                                        conversation.answer
+                                                .substring(0, SHORTCUT_LIMIT_OF_ANSWER)
+                                                .append(SHORTCUT_JOINER)
+                                                .as("answer"),
+                                        chat.createdAt
+                                ))
+                );
     }
 
     public Optional<Chat> findChat(final Long chatId) {
@@ -56,7 +83,7 @@ public class ChatQueryRepository {
         }
 
         return jpaQueryFactory
-                .select(Projections.constructor(ConversationSimpleResponse.class,
+                .select(constructor(ConversationSimpleResponse.class,
                         conversation.id.as("conversationId"),
                         conversation.ask,
                         conversation.answer))

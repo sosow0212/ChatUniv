@@ -7,6 +7,18 @@
 
 == Chat
 
+=== 모든 채팅방 조회
+
+==== 요청
+
+include::{snippets}/chat-controller-unit-test/find_all_chat_rooms/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/chat-controller-unit-test/find_all_chat_rooms/response-fields.adoc[]
+include::{snippets}/chat-controller-unit-test/find_all_chat_rooms/http-response.adoc[]
+
+
 === 새로운 채팅방 생성
 
 ==== 요청

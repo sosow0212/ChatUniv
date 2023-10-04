@@ -48,7 +48,7 @@ public class ChatController {
     }
 
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<ConversationAllResponse> searchChattingRoom(@PathVariable @NotBlank String keyword) {
+    public ResponseEntity<ConversationAllResponse> searchChattingRoom(@PathVariable @NotBlank@NotBlank(message = "검색어를 입력해주세요.") String keyword) {
         List<ConversationSimpleResponse> conversationResponses = chatQueryService.searchChattingRoom(keyword);
         return ResponseEntity.ok(ConversationAllResponse.from(conversationResponses));
     }

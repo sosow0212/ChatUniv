@@ -2,7 +2,7 @@ package mju.chatuniv.board.service.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class BoardRequest {
+public class BoardCreateRequest {
 
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
@@ -10,10 +10,10 @@ public class BoardRequest {
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    private BoardRequest() {
+    private BoardCreateRequest() {
     }
 
-    public BoardRequest(final String title, final String content) {
+    public BoardCreateRequest(final String title, final String content) {
         this.title = title;
         this.content = content;
     }

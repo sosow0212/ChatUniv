@@ -3,6 +3,7 @@ package mju.chatuniv.statistic.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.helper.integration.IntegrationTest;

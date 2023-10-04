@@ -1,4 +1,4 @@
-package mju.chatuniv.board.service;
+package mju.chatuniv.board.service.boardService;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -8,11 +8,15 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import mju.chatuniv.board.domain.Board;
+import mju.chatuniv.board.domain.BoardQueryRepository;
 import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
-import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.board.service.BoardQueryService;
+import mju.chatuniv.board.service.BoardService;
+import mju.chatuniv.board.service.dto.BoardCreateRequest;
+import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardServiceUnitTest {
+class BoardServiceUnitTest {
 
     private Member member;
     private Board board;
@@ -32,8 +36,14 @@ public class BoardServiceUnitTest {
     @InjectMocks
     private BoardService boardService;
 
+    @InjectMocks
+    private BoardQueryService boardQueryService;
+
     @Mock
     private BoardRepository boardRepository;
+
+    @Mock
+    private BoardQueryRepository boardQueryRepository;
 
     @BeforeEach
     void init() {
@@ -45,10 +55,10 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_create_board_with_empty_title() {
         //given
-        BoardRequest boardRequest = new BoardRequest("", "updateContent");
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("", "updateContent");
 
         //when & then
-        assertThatThrownBy(() -> boardService.create(member, boardRequest))
+        assertThatThrownBy(() -> boardService.create(member, boardCreateRequest))
                 .isInstanceOf(BoardTitleBlankException.class);
     }
 
@@ -56,10 +66,10 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_create_board_with_empty_content() {
         //given
-        BoardRequest boardRequest = new BoardRequest("updateTitle", "");
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("updateTitle", "");
 
         //when & then
-        assertThatThrownBy(() -> boardService.create(member, boardRequest))
+        assertThatThrownBy(() -> boardService.create(member, boardCreateRequest))
                 .isInstanceOf(BoardContentBlankException.class);
     }
 
@@ -67,10 +77,11 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_find_board_with_invalid_board_id() {
         //given
-        Long wrongBoardId = 2L;
+        Long boardId = 1L;
+        given(boardQueryRepository.findBoard(boardId)).willReturn(null);
 
         //when & then
-        assertThatThrownBy(() -> boardService.findBoard(wrongBoardId))
+        assertThatThrownBy(() -> boardQueryService.findBoard(boardId))
                 .isInstanceOf(BoardNotFoundException.class);
     }
 
@@ -79,13 +90,13 @@ public class BoardServiceUnitTest {
     void throws_exception_when_update_board_with_invalid_member() {
         //given
         Member other = Member.of("aaaa@a.com", "password");
-        BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("updateTitle", "updateContent");
         Board mockBoard = mock(Board.class);
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(mockBoard));
         doThrow(new MemberNotEqualsException()).when(mockBoard).checkWriter(member);
 
         //when & then
-        assertThatThrownBy(() -> boardService.update(anyLong(), other, boardRequest))
+        assertThatThrownBy(() -> boardService.update(anyLong(), other, boardUpdateRequest))
                 .isInstanceOf(MemberNotEqualsException.class);
     }
 
@@ -93,11 +104,11 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_update_board_with_empty_title() {
         //given
-        BoardRequest boardRequest = new BoardRequest("", "updateContent");
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("", "updateContent");
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(board));
 
         //when & then
-        assertThatThrownBy(() -> boardService.update(anyLong(), member, boardRequest))
+        assertThatThrownBy(() -> boardService.update(anyLong(), member, boardUpdateRequest))
                 .isInstanceOf(BoardTitleBlankException.class);
     }
 
@@ -105,11 +116,11 @@ public class BoardServiceUnitTest {
     @Test
     void throws_exception_when_update_board_with_empty_content() {
         //given
-        BoardRequest boardRequest = new BoardRequest("updateTitle", "");
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("updateTitle", "");
         given(boardRepository.findById(anyLong())).willReturn(Optional.ofNullable(board));
 
         //when & then
-        assertThatThrownBy(() -> boardService.update(anyLong(), member, boardRequest))
+        assertThatThrownBy(() -> boardService.update(anyLong(), member, boardUpdateRequest))
                 .isInstanceOf(BoardContentBlankException.class);
     }
 

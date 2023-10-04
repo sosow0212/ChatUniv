@@ -1,4 +1,4 @@
-package mju.chatuniv.board.service;
+package mju.chatuniv.board.service.boardService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,10 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
+import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.BoardRepository;
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
-import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
+import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
+import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
+import mju.chatuniv.board.service.BoardQueryService;
+import mju.chatuniv.board.service.BoardService;
+import mju.chatuniv.board.service.dto.BoardCreateRequest;
+import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
@@ -19,12 +25,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BoardServiceIntegrationTest extends IntegrationTest {
+class BoardServiceIntegrationTest extends IntegrationTest {
 
     private Member member;
 
     @Autowired
     private BoardService boardService;
+
+    @Autowired
+    private BoardQueryService boardQueryService;
+
+    @Autowired
+    private BoardQueryRepository boardQueryRepository;
 
     @Autowired
     private BoardRepository boardRepository;
@@ -40,18 +52,18 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         MemberCreateRequest memberCreateRequest = new MemberCreateRequest("a@a.com", "1234");
         authService.register(memberCreateRequest);
         member = memberRepository.findByEmail("a@a.com").get();
-        BoardRequest boardRequest = new BoardRequest("initTitle", "initContent");
-        boardService.create(member, boardRequest);
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("initTitle", "initContent");
+        boardService.create(member, boardCreateRequest);
     }
 
     @DisplayName("게시판을 생성한다.")
     @Test
     void create_board() {
         //given
-        BoardRequest boardRequest = new BoardRequest("title", "content");
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("title", "content");
 
         //when
-        Board board = boardService.create(member, boardRequest);
+        Board board = boardService.create(member, boardCreateRequest);
 
         //then
         Board result = boardRepository.findById(board.getId()).get();
@@ -68,12 +80,13 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
         Long boardId = 1L;
 
         //when
-        Board board = boardService.findBoard(boardId);
+        BoardSearchResponse boardSearchResponse = boardQueryService.findBoard(boardId);
 
         //then
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo("initTitle"),
-                () -> assertThat(board.getContent()).isEqualTo("initContent")
+                () -> assertThat(boardSearchResponse.getBoardId()).isEqualTo(boardId),
+                () -> assertThat(boardSearchResponse.getTitle()).isEqualTo("initTitle"),
+                () -> assertThat(boardSearchResponse.getContent()).isEqualTo("initContent")
         );
     }
 
@@ -81,19 +94,39 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
     @Test
     void find_all_boards() {
         //given
-
         LongStream.range(1, 100)
                 .forEach(index -> {
                     boardRepository.save(Board.of("title" + index, "content" + index, member));
                 });
 
         //when
-        List<BoardPagingResponse> boards = boardService.findAllBoards(10L, 50L);
+        List<BoardPagingResponse> boards = boardQueryService.findAllBoards(10L, 50L);
 
         //then
         assertAll(
-                () -> assertThat(boards.size()).isEqualTo(10),
+                () -> assertThat(boards).hasSize(10),
                 () -> assertThat(boards.get(0).getBoardId()).isEqualTo(49L)
+        );
+    }
+
+    @DisplayName("게시판을 전체 조회한다")
+    @Test
+    void find_boards_by_search_type() {
+        //given
+        LongStream.range(1, 10)
+                .forEach(index -> {
+                    boardRepository.save(Board.of("title" + index, "content" + index, member));
+                    boardRepository.save(Board.of("제목" + index, "내용" + index, member));
+                    boardRepository.save(Board.of("T" + index, "C" + index, member));
+                });
+
+        //when
+        List<BoardPagingResponse> boards = boardQueryService.findBoardsBySearchType(SearchType.TITLE, "제목", 10L, 25L);
+
+        //then
+        assertAll(
+                () -> assertThat(boards).hasSize(8),
+                () -> assertThat(boards.get(0).getBoardId()).isEqualTo(24L)
         );
     }
 
@@ -102,10 +135,10 @@ public class BoardServiceIntegrationTest extends IntegrationTest {
     void update_board() {
         //given
         Long boardId = 1L;
-        BoardRequest boardRequest = new BoardRequest("updateTitle", "updateContent");
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("updateTitle", "updateContent");
 
         //when
-        Board board = boardService.update(boardId, member, boardRequest);
+        Board board = boardService.update(boardId, member, boardUpdateRequest);
 
         //then
         assertAll(

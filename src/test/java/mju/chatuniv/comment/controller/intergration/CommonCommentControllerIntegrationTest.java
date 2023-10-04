@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.service.BoardService;
-import mju.chatuniv.board.service.dto.BoardRequest;
+import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.comment.service.service.CommentService;
@@ -178,7 +178,7 @@ public class CommonCommentControllerIntegrationTest extends IntegrationTest {
     }
 
     private void createBoard() {
-        boardService.create(member, new BoardRequest("board", "content"));
+        boardService.create(member, new BoardCreateRequest("board", "content"));
     }
 
     private String getClassName(final CommentService commentService) {

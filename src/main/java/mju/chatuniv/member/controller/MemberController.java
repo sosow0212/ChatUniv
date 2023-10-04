@@ -1,7 +1,9 @@
 package mju.chatuniv.member.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.board.controller.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.member.controller.dto.MemberResponse;
@@ -18,9 +20,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/members")
 @RestController

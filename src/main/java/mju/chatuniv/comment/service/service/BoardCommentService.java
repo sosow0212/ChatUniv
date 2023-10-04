@@ -2,8 +2,8 @@ package mju.chatuniv.comment.service.service;
 
 import java.util.List;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.domain.BoardRepository;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;

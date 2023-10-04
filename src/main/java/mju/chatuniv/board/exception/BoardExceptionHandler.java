@@ -1,5 +1,6 @@
 package mju.chatuniv.board.exception;
 
+import javax.validation.ConstraintViolationException;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
@@ -24,6 +25,11 @@ public class BoardExceptionHandler {
     @ExceptionHandler(BoardContentBlankException.class)
     public ResponseEntity<String> handlerBoardContentBlankException(final BoardContentBlankException exception) {
         return getBadRequestResponse(exception.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handlerBoardContentBlankException(final ConstraintViolationException exception) {
+        return getBadRequestResponse(exception.getConstraintViolations().iterator().next().getMessage());
     }
 
     private ResponseEntity<String> getBadRequestResponse(final String message) {

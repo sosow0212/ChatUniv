@@ -69,8 +69,3 @@ public class ChatQueryRepository {
                 .or(conversation.answer.like(ANY + keyword + ANY));
     }
 }
-
-
-
-
-

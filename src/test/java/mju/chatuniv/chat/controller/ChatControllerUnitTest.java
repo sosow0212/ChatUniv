@@ -1,5 +1,35 @@
 package mju.chatuniv.chat.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mju.chatuniv.auth.service.JwtAuthService;
+import mju.chatuniv.chat.domain.chat.Chat;
+import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
+import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
+import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
+import mju.chatuniv.chat.service.ChatQueryService;
+import mju.chatuniv.chat.service.ChatService;
+import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
+import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
+import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.member.domain.Member;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
+
 import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,33 +48,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.LongStream;
-import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.chat.domain.chat.Chat;
-import mju.chatuniv.chat.domain.chat.Conversation;
-import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
-import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
-import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
-import mju.chatuniv.chat.service.ChatQueryService;
-import mju.chatuniv.chat.service.ChatService;
-import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
-import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
-import mju.chatuniv.helper.MockTestHelper;
-import mju.chatuniv.member.domain.Member;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(ChatController.class)
 @AutoConfigureRestDocs
@@ -70,6 +73,34 @@ class ChatControllerUnitTest {
     @BeforeEach
     void init() {
         mockTestHelper = new MockTestHelper(mockMvc);
+    }
+
+    @DisplayName("모든 채팅방의 내역을 간단 조회한다")
+    @Test
+    void find_all_chatting_rooms_shortcut() throws Exception {
+        // given
+        List<ChatRoomSimpleResponse> response = List.of(
+                new ChatRoomSimpleResponse(2L, "누가 우리학...", "문의하신 내용은 다...", LocalDateTime.of(2023, 10, 4, 10, 15)),
+                new ChatRoomSimpleResponse(1L, "명지대학교 김승...", "해당 학생은 학교에서 충...", LocalDateTime.of(2023, 10, 4, 10, 15))
+        );
+
+        when(chatQueryService.findAllChatRooms()).thenReturn(response);
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats"))
+                .andExpect(status().isOk())
+                .andDo(customDocument("find_all_chat_rooms",
+                        responseFields(
+                                fieldWithPath("chats[0].chatId").description("채팅방 id"),
+                                fieldWithPath("chats[0].title").description("채팅방 첫 질문 숏컷"),
+                                fieldWithPath("chats[0].content").description("채팅방 첫 응답 숏컷"),
+                                fieldWithPath("chats[0].createdAt").description("채팅방 생성 날짜"),
+                                fieldWithPath("chats[1].chatId").description("채팅방 id"),
+                                fieldWithPath("chats[1].title").description("채팅방 첫 질문 숏컷"),
+                                fieldWithPath("chats[1].content").description("채팅방 첫 응답 숏컷"),
+                                fieldWithPath("chats[1].createdAt").description("채팅방 생성 날짜")
+                        )
+                ));
     }
 
     @DisplayName("새로운 채팅방을 만든다.")

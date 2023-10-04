@@ -1,13 +1,12 @@
 package mju.chatuniv.chat.controller;
 
-import java.net.URI;
-import java.util.List;
-import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
+import mju.chatuniv.chat.controller.dto.ChatRoomsSimpleResponse;
 import mju.chatuniv.chat.controller.dto.ConversationAllResponse;
 import mju.chatuniv.chat.controller.dto.ConversationResponse;
 import mju.chatuniv.chat.domain.chat.Conversation;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import mju.chatuniv.chat.service.ChatQueryService;
 import mju.chatuniv.chat.service.ChatService;
 import mju.chatuniv.chat.service.dto.chat.ChatPromptRequest;
@@ -22,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
 @RequestMapping("/api/chats")
 @RestController
 public class ChatController {
@@ -34,6 +37,12 @@ public class ChatController {
     public ChatController(ChatService chatService, ChatQueryService chatQueryService) {
         this.chatService = chatService;
         this.chatQueryService = chatQueryService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ChatRoomsSimpleResponse> findAllChatRooms() {
+        List<ChatRoomSimpleResponse> chatRooms = chatQueryService.findAllChatRooms();
+        return ResponseEntity.ok(ChatRoomsSimpleResponse.from(chatRooms));
     }
 
     @PostMapping

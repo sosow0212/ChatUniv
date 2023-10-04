@@ -1,14 +1,11 @@
 package mju.chatuniv.chat.service;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
-import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.chat.domain.word.WordRepository;
-import mju.chatuniv.chat.infrastructure.dto.ConversationSimpleResponse;
+import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import mju.chatuniv.chat.service.dto.chat.ChattingHistoryResponse;
 import mju.chatuniv.helper.integration.IntegrationTest;
 import mju.chatuniv.member.domain.Member;
@@ -16,6 +13,10 @@ import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class ChatServiceIntegrationTest extends IntegrationTest {
 

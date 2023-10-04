@@ -1,12 +1,14 @@
 package mju.chatuniv.board.controller.dto;
 
-import mju.chatuniv.board.domain.dto.BoardPagingResponse;
-
 import java.util.List;
+import mju.chatuniv.board.domain.dto.BoardPagingResponse;
 
 public class BoardAllResponse {
 
-    private final List<BoardPagingResponse> boards;
+    private List<BoardPagingResponse> boards;
+
+    private BoardAllResponse() {
+    }
 
     private BoardAllResponse(final List<BoardPagingResponse> boards) {
         this.boards = boards;

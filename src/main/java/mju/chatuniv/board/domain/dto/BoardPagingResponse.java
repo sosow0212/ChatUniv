@@ -4,13 +4,16 @@ import com.querydsl.core.annotations.QueryProjection;
 
 public class BoardPagingResponse {
 
-    private final Long boardId;
-    private final String title;
+    private Long boardId;
+    private String title;
 
     @QueryProjection
     public BoardPagingResponse(final Long boardId, final String title) {
         this.boardId = boardId;
         this.title = title;
+    }
+
+    private BoardPagingResponse() {
     }
 
     public Long getBoardId() {

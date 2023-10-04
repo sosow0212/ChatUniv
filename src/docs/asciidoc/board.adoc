@@ -41,7 +41,7 @@ include::{snippets}/board-controller-unit-test/find_board/response-fields.adoc[]
 
 include::{snippets}/board-controller-unit-test/find_all_boards/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/find_all_boards/request-headers.adoc[]
-include::{snippets}/board-controller-unit-test/find_all_boards/path-parameters.adoc[]
+include::{snippets}/board-controller-unit-test/find_all_boards/request-parameters.adoc[]
 
 ==== 응답
 
@@ -55,7 +55,7 @@ include::{snippets}/board-controller-unit-test/find_all_boards/response-fields.a
 
 include::{snippets}/board-controller-unit-test/find_boards_by_search_type/http-request.adoc[]
 include::{snippets}/board-controller-unit-test/find_boards_by_search_type/request-headers.adoc[]
-include::{snippets}/board-controller-unit-test/find_boards_by_search_type/path-parameters.adoc[]
+include::{snippets}/board-controller-unit-test/find_boards_by_search_type/request-parameters.adoc[]
 
 ==== 응답
 

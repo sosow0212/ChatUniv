@@ -24,9 +24,19 @@ configurations {
     asciidoctorExt
 }
 
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
 asciidoctor {
     dependsOn test
     configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
 }
 
 tasks.register('copyApiDocument', Copy) {
@@ -38,22 +48,12 @@ tasks.register('copyApiDocument', Copy) {
     into file("src/main/resources/static/docs")
 }
 
-build {
+bootJar {
     dependsOn copyApiDocument
 }
 
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
-
-test {
-    useJUnitPlatform()
-    outputs.dir snippetsDir
-}
-
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
+build {
+    dependsOn copyApiDocument
 }
 
 
@@ -79,41 +79,41 @@ configurations {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    // jpa
+// jpa  
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // jwt
+// jwt  
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-    // validation
+// validation  
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // db
+// db  
     runtimeOnly 'mysql:mysql-connector-java:8.0.28'
     runtimeOnly 'com.h2database:h2'
 
-    // test(rest docs)
+// test(rest docs)  
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'io.rest-assured:rest-assured:4.4.0'
 
-    // jasypt
+// jasypt  
     implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3"
 
-    // slf4j
+// slf4j  
     implementation 'org.slf4j:slf4j-api:1.7.31'
 
-    // logback-slack-appender
+// logback-slack-appender  
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 
-    // querydsl
+// querydsl  
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-    // flyway
+// flyway  
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
 }

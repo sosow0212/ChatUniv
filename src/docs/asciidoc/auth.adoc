@@ -7,19 +7,7 @@
 
 == Auth
 
-=== 회원 가입
-
-==== 요청
-
-include::{snippets}/auth-controller-unit-test/register_member/http-request.adoc[]
-include::{snippets}/auth-controller-unit-test/register_member/request-fields.adoc[]
-
-==== 응답
-
-include::{snippets}/auth-controller-unit-test/register_member/http-response.adoc[]
-include::{snippets}/auth-controller-unit-test/register_member/response-fields.adoc[]
-
-=== 로그인
+=== 회원가입 및 로그인
 
 ==== 요청
 

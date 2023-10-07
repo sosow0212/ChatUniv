@@ -9,8 +9,8 @@ import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
+import mju.chatuniv.comment.service.BoardCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardCommentServiceUnitTest {
+class BoardCommentServiceUnitTest {
 
     private Member member;
     private Board board;

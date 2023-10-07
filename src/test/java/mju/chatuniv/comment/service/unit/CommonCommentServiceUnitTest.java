@@ -13,8 +13,8 @@ import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
+import mju.chatuniv.comment.service.CommonCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.assertj.core.api.Assertions;
@@ -30,7 +30,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CommonCommentServiceUnitTest {
+class CommonCommentServiceUnitTest {
 
     private Member member;
     private Board board;

@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.comment.controller.BoardCommentController;
+import mju.chatuniv.chat.exception.exceptions.ConversationNotFoundException;
+import mju.chatuniv.comment.controller.ConversationCommentController;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
-import mju.chatuniv.comment.service.BoardCommentQueryService;
-import mju.chatuniv.comment.service.BoardCommentService;
+import mju.chatuniv.comment.service.ConversationCommentQueryService;
+import mju.chatuniv.comment.service.ConversationCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
@@ -45,9 +45,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = BoardCommentController.class)
+@WebMvcTest(controllers = ConversationCommentController.class)
 @AutoConfigureRestDocs
-class BoardCommentControllerUnitTest {
+class ConversationCommentControllerUnitTest {
 
     private MockTestHelper mockTestHelper;
 
@@ -58,10 +58,10 @@ class BoardCommentControllerUnitTest {
     private ArgumentResolverConfig argumentResolverConfig;
 
     @MockBean
-    private BoardCommentService boardCommentService;
+    private ConversationCommentService conversationCommentService;
 
     @MockBean
-    private BoardCommentQueryService boardCommentQueryService;
+    private ConversationCommentQueryService conversationCommentQueryService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,25 +71,24 @@ class BoardCommentControllerUnitTest {
         mockTestHelper = new MockTestHelper(mockMvc);
     }
 
-    @DisplayName("게시글의 댓글을 생성한다.")
+    @DisplayName("채팅 질문의 댓글을 생성한다.")
     @Test
-    void create_board() throws Exception {
+    void create_conversation() throws Exception {
         // given
         CommentRequest commentRequest = new CommentRequest("content");
         Comment mockComment = mock(BoardComment.class);
 
-        given(boardCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class))).willReturn(
-                mockComment);
+        given(conversationCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class))).willReturn(mockComment);
         given(mockComment.getId()).willReturn(1L);
         given(mockComment.getContent()).willReturn("content");
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(post("/api/boards/1/comments"), commentRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(post("/api/conversations/1/comments"), commentRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.commentId").value(1L))
                 .andExpect(jsonPath("$.content").value("content"))
                 .andDo(print())
-                .andDo(customDocument("create_board",
+                .andDo(customDocument("create_conversation",
                         requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         requestFields(fieldWithPath("content").description("댓글 내용")
@@ -100,55 +99,54 @@ class BoardCommentControllerUnitTest {
                         )
                 )).andReturn();
     }
-    
-   
-    @DisplayName("게시글의 id로 페이징 처리된 댓글을 조회한다.")
+
+    @DisplayName("채팅방 질문의 id로 페이징 처리된 댓글을 조회한다.")
     @Test
-    void find_comments_by_board_id() throws Exception {
+    void find_comments_by_conversation_id() throws Exception {
         // given
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(boardCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(commentAllResponse);
+        given(conversationCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(
+                commentAllResponse);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/comments/?pageSize=1&boardId=2&commentId=3",
-                        "1", "2", "3"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(
+                        get("/api/conversations/comments/?pageSize=1&conversationId=2&commentId=3", "1", "2", "3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.commentResponse[0].commentId").value(1))
                 .andExpect(jsonPath("$.commentResponse[0].content").value("content1"))
                 .andExpect(jsonPath("$.commentResponse.length()").value(2))
                 .andDo(print())
-                .andDo(customDocument("find_comments_by_board_id",
+                .andDo(customDocument("find_comments_by_conversation_id",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         requestParameters(
                                 parameterWithName("pageSize").description("페이징해서 가져올 사이즈"),
-                                parameterWithName("boardId").description("게시판 id"),
+                                parameterWithName("conversationId").description("채팅방 질문 id"),
                                 parameterWithName("commentId").description("해당 id 기준으로 조회대상 설정")
                         ),
                         responseFields(
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
-                                fieldWithPath("commentResponse[0].content").description(
-                                        "게시판의 id로 댓글 전체 조회 후 반환된 댓글의 내용")
+                                fieldWithPath("commentResponse[0].content").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용")
                         )
                 )).andReturn();
     }
 
-    @DisplayName("게시글 댓글을 조회할때 id값이 안넘어오면 예외.")
+    @DisplayName("채팅방 댓글을 조회할때 id값이 안넘어오면 예외.")
     @Test
-    void fail_to_find_comments_with_not_board_id() throws Exception {
+    void fail_to_find_comments_with_not_conversation_id() throws Exception {
         // given
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(boardCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(commentAllResponse);
+        given(conversationCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(commentAllResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/boards/comments/?pageSize=1&commentId=3"))
+                        get("/api/conversations/comments/?pageSize=1&commentId=3"))
                 .andExpect(status().isBadRequest())
                 .andDo(print())
-                .andDo(customDocument("fail_to_find_comments_with_not_board_id",
+                .andDo(customDocument("fail_to_find_comments_with_not_conversation_id",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
@@ -159,20 +157,19 @@ class BoardCommentControllerUnitTest {
                 )).andReturn();
     }
 
-    @DisplayName("게시판의 댓글을 작성할 때 게시판이 존재하지 않으면 예외가 발생한다.")
+    @DisplayName("채팅방의 댓글을 작성할 때 채팅방의 대화가 존재하지 않으면 예외가 발생한다.")
     @Test
-    void fail_to_create_board_comment_with_not_exist_board() throws Exception {
+    void fail_to_create_conversation_comment_with_not_exist_conversation() throws Exception {
         // given
-        Long boardId = 1L;
+        Long conversationsId = 1L;
         CommentRequest commentRequest = new CommentRequest("content");
-        given(boardCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(
-                new BoardNotFoundException(2L));
+        given(conversationCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(new ConversationNotFoundException(2L));
 
         //when
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/boards/{boardId}/comments", boardId)),
+        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/conversations/{conversationsId}/comments", conversationsId)),
                         commentRequest)
                 .andExpect(status().isNotFound())
-                .andDo(customDocument("fail_to_create_board_comment_with_not_exist_board",
+                .andDo(customDocument("fail_to_create_conversation_comment_with_not_exist_conversation",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
@@ -180,7 +177,7 @@ class BoardCommentControllerUnitTest {
                                 fieldWithPath("content").description("댓글의 내용")
                         ),
                         pathParameters(
-                                parameterWithName("boardId").description("게시판 ID")
+                                parameterWithName("conversationsId").description("채팅방의 질문 ID")
                         )
                 )).andReturn();
     }

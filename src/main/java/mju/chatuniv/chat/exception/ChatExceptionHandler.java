@@ -1,6 +1,7 @@
 package mju.chatuniv.chat.exception;
 
 import mju.chatuniv.chat.exception.exceptions.ChattingRoomNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.ConversationNotFoundException;
 import mju.chatuniv.chat.exception.exceptions.OpenAIErrorException;
 import mju.chatuniv.chat.exception.exceptions.OwnerInvalidException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,11 @@ public class ChatExceptionHandler {
     @ExceptionHandler(OwnerInvalidException.class)
     public ResponseEntity<String> handleOwnerInvalidException(final OwnerInvalidException exception) {
         return getInvalidException(exception.getMessage());
+    }
+
+    @ExceptionHandler(ConversationNotFoundException.class)
+    public ResponseEntity<String> handleConversationNotFoundException(final ConversationNotFoundException exception) {
+        return getNotFoundResponse(exception.getMessage());
     }
 
     private ResponseEntity<String> getNotFoundResponse(final String message) {

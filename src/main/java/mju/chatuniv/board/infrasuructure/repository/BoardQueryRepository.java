@@ -14,7 +14,7 @@ import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.comment.controller.dto.CommentAllResponse;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import org.springframework.stereotype.Repository;
 
 @Repository

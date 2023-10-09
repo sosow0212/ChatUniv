@@ -12,7 +12,7 @@ public class BoardResponse {
     private LocalDateTime createAt;
 
     @QueryProjection
-    public BoardResponse(Long boardId, String title, String content, LocalDateTime createAt) {
+    public BoardResponse(final Long boardId, final String title, final String content, final LocalDateTime createAt) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;

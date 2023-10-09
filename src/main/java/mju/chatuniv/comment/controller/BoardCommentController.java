@@ -1,12 +1,15 @@
 package mju.chatuniv.comment.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.comment.controller.dto.CommentAllResponse;
 import mju.chatuniv.comment.controller.dto.CommentResponse;
 import mju.chatuniv.comment.domain.Comment;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
+import mju.chatuniv.comment.service.BoardCommentQueryService;
+import mju.chatuniv.comment.service.BoardCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.BoardCommentService;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +18,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/boards")
 @RestController
 public class BoardCommentController {
 
-    private final BoardCommentService boardCommentService;
+    private static final String DEFAULT_PAGE = "10";
 
-    public BoardCommentController(final BoardCommentService boardCommentService) {
+    private final BoardCommentService boardCommentService;
+    private final BoardCommentQueryService boardCommentQueryService;
+
+    public BoardCommentController(BoardCommentService boardCommentService,
+                                  BoardCommentQueryService boardCommentQueryService) {
         this.boardCommentService = boardCommentService;
+        this.boardCommentQueryService = boardCommentQueryService;
     }
 
     @PostMapping("/{boardId}/comments")
@@ -39,11 +45,11 @@ public class BoardCommentController {
                 .body(CommentResponse.from(comment));
     }
 
-    @GetMapping("/{pageSize}/{boardId}/{commentId}")
-    public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("pageSize") final Long pageSize,
-                                                                  @PathVariable("boardId") final Long boardId,
-                                                                  @PathVariable("commentId") final Long commentId) {
-        List<CommentPagingResponse> comments = boardCommentService.findComments(pageSize, boardId, commentId);
+    @GetMapping("/{boardId}/comments")
+    public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId,
+                                                                  @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
+                                                                  @RequestParam(required = false) final Long commentId) {
+        List<CommentPagingResponse> comments = boardCommentQueryService.findComments(boardId, pageSize, commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }
 }

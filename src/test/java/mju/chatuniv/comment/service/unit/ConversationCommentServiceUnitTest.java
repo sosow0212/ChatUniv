@@ -5,13 +5,13 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
+import mju.chatuniv.chat.domain.chat.Conversation;
+import mju.chatuniv.chat.domain.chat.ConversationRepository;
+import mju.chatuniv.chat.exception.exceptions.ConversationNotFoundException;
 import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
-import mju.chatuniv.comment.service.BoardCommentService;
+import mju.chatuniv.comment.service.ConversationCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.fixture.board.BoardFixture;
+import mju.chatuniv.fixture.chat.ConversationFixture;
 import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,35 +26,35 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class BoardCommentServiceUnitTest {
+class ConversationCommentServiceUnitTest {
 
     private Member member;
-    private Board board;
+    private Conversation conversation;
 
     @InjectMocks
-    private BoardCommentService boardCommentService;
+    private ConversationCommentService conversationCommentService;
 
     @Mock
-    private BoardRepository boardRepository;
+    private ConversationRepository conversationRepository;
 
     @BeforeEach
     void init() {
         member = MemberFixture.createMember();
-        board = BoardFixture.createBoard(member);
+        conversation = ConversationFixture.createConversation(member);
     }
 
-    @DisplayName("댓글 생성시 게시판 아이디가 존재하지 않는다면 예외를 발생한다.")
+    @DisplayName("댓글 생성시 채팅방 질문 아이디가 존재하지 않는다면 예외를 발생한다.")
     @Test
-    void throws_exception_when_create_comment_with_invalid_board_id() {
+    void throws_exception_when_create_comment_with_invalid_conversation_id() {
         //given
-        Long wrongBoardId = 2L;
+        Long wrongConversationId = 2L;
         CommentRequest commentRequest = new CommentRequest("content");
 
-        given(boardRepository.findById(wrongBoardId)).willThrow(BoardNotFoundException.class);
+        given(conversationRepository.findById(wrongConversationId)).willThrow(ConversationNotFoundException.class);
 
         //when & then
-        assertThatThrownBy(() -> boardCommentService.create(wrongBoardId, member, commentRequest))
-                .isInstanceOf(BoardNotFoundException.class);
+        assertThatThrownBy(() -> conversationCommentService.create(wrongConversationId, member, commentRequest))
+                .isInstanceOf(ConversationNotFoundException.class);
     }
 
     @DisplayName("댓글 생성시 내용이 비어있으면 예외가 발생한다.")
@@ -62,12 +62,12 @@ class BoardCommentServiceUnitTest {
     @MethodSource("commentRequestProvider")
     void throws_exception_when_create_comment_with_blank(final String text, final CommentRequest commentRequest) {
         //given
-        Long boardId = 2L;
+        Long conversationId = 2L;
 
-        given(boardRepository.findById(boardId)).willReturn(Optional.of(board));
+        given(conversationRepository.findById(conversationId)).willReturn(Optional.of(conversation));
 
         //when & then
-        assertThatThrownBy(() -> boardCommentService.create(boardId, member, commentRequest))
+        assertThatThrownBy(() -> conversationCommentService.create(conversationId, member, commentRequest))
                 .isInstanceOf(CommentContentBlankException.class);
     }
 

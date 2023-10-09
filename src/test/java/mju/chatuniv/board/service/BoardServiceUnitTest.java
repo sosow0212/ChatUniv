@@ -1,4 +1,4 @@
-package mju.chatuniv.board.service.boardService;
+package mju.chatuniv.board.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -13,8 +13,6 @@ import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
 import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
-import mju.chatuniv.board.service.BoardQueryService;
-import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.member.domain.Member;

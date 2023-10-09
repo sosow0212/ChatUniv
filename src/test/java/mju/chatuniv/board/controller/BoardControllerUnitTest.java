@@ -40,7 +40,7 @@ import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.comment.controller.dto.CommentAllResponse;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
 import mju.chatuniv.helper.RestDocsHelper;

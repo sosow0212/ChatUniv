@@ -1,7 +1,7 @@
 package mju.chatuniv.comment.controller.dto;
 
 import java.util.List;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 
 public class CommentAllResponse {
 

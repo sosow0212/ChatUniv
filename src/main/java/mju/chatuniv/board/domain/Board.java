@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
 import mju.chatuniv.board.exception.exceptions.BoardTitleBlankException;
+import mju.chatuniv.global.domain.BaseEntity;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.hibernate.annotations.OnDelete;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "BOARD")
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

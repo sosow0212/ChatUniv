@@ -7,7 +7,6 @@ import mju.chatuniv.auth.support.JwtLogin;
 import mju.chatuniv.board.controller.dto.BoardAllResponse;
 import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.service.BoardQueryService;
@@ -58,11 +57,9 @@ public class BoardController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<BoardAllResponse> findAllBoards(
-            @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Long pageSize,
-            @RequestParam(required = false) final Long boardId) {
-
-        List<BoardPagingResponse> allBoards = boardQueryService.findAllBoards(pageSize, boardId);
+    public ResponseEntity<BoardAllResponse> findAllBoards(@RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
+                                                          @RequestParam(required = false) final Long boardId) {
+        List<BoardResponse> allBoards = boardQueryService.findAllBoards(pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(allBoards));
     }
@@ -70,11 +67,9 @@ public class BoardController {
     @GetMapping("/search")
     public ResponseEntity<BoardAllResponse> findBoardsBySearchType(@RequestParam(required = false) final SearchType searchType,
                                                                    @RequestParam(required = false) @NotBlank(message = "검색어를 다시 입력해주세요.") final String text,
-                                                                   @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Long pageSize,
+                                                                   @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                    @RequestParam(required = false) final Long boardId) {
-        List<BoardPagingResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(searchType, text,
-                pageSize, boardId);
-
+        List<BoardResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(searchType, text, pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(boardsBySearchType));
     }

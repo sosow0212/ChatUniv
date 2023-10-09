@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -15,12 +16,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.JwtAuthService;
@@ -78,20 +79,27 @@ class ConversationCommentControllerUnitTest {
         CommentRequest commentRequest = new CommentRequest("content");
         Comment mockComment = mock(BoardComment.class);
 
-        given(conversationCommentService.create(any(Long.class), any(Member.class), any(CommentRequest.class))).willReturn(mockComment);
+        given(conversationCommentService.create(any(Long.class), any(Member.class),
+                any(CommentRequest.class))).willReturn(mockComment);
         given(mockComment.getId()).willReturn(1L);
         given(mockComment.getContent()).willReturn("content");
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(post("/api/conversations/1/comments"), commentRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(post("/api/conversations/{conversationId}/comments", 1L),
+                        commentRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.commentId").value(1L))
                 .andExpect(jsonPath("$.content").value("content"))
                 .andDo(print())
                 .andDo(customDocument("create_conversation",
-                        requestHeaders(headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
-                        requestFields(fieldWithPath("content").description("댓글 내용")
+                        pathParameters(
+                                parameterWithName("conversationId").description("채팅방 질문 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글 내용")
                         ),
                         responseFields(
                                 fieldWithPath("commentId").description("작성한 댓글의 id"),
@@ -106,29 +114,33 @@ class ConversationCommentControllerUnitTest {
         // given
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(conversationCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(
+        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(
                 commentAllResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/conversations/comments/?pageSize=1&conversationId=2&commentId=3", "1", "2", "3"))
+                        get("/api/conversations/{conversationId}/comments?pageSize=2&commentId=3"
+                                , 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.commentResponse[0].commentId").value(1))
-                .andExpect(jsonPath("$.commentResponse[0].content").value("content1"))
+                .andExpect(jsonPath("$.commentResponse[0].commentId").value(2))
+                .andExpect(jsonPath("$.commentResponse[0].content").value("content2"))
                 .andExpect(jsonPath("$.commentResponse.length()").value(2))
                 .andDo(print())
                 .andDo(customDocument("find_comments_by_conversation_id",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
+                        pathParameters(
+                                parameterWithName("conversationId").description("채팅방 질문 id")
+                        ),
                         requestParameters(
                                 parameterWithName("pageSize").description("페이징해서 가져올 사이즈"),
-                                parameterWithName("conversationId").description("채팅방 질문 id"),
                                 parameterWithName("commentId").description("해당 id 기준으로 조회대상 설정")
                         ),
                         responseFields(
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
-                                fieldWithPath("commentResponse[0].content").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용")
+                                fieldWithPath("commentResponse[0].content").description(
+                                        "채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용")
                         )
                 )).andReturn();
     }
@@ -137,14 +149,16 @@ class ConversationCommentControllerUnitTest {
     @Test
     void fail_to_find_comments_with_not_conversation_id() throws Exception {
         // given
+        Long conversationId = null;
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(conversationCommentQueryService.findComments(anyInt(), anyLong(), anyLong())).willReturn(commentAllResponse);
+        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(
+                commentAllResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/conversations/comments/?pageSize=1&commentId=3"))
-                .andExpect(status().isBadRequest())
+                        get("/api/conversations/{conversationId}/comments?pageSize=2&commentId=3", conversationId))
+                .andExpect(status().isNotFound())
                 .andDo(print())
                 .andDo(customDocument("fail_to_find_comments_with_not_conversation_id",
                         requestHeaders(
@@ -163,21 +177,23 @@ class ConversationCommentControllerUnitTest {
         // given
         Long conversationsId = 1L;
         CommentRequest commentRequest = new CommentRequest("content");
-        given(conversationCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(new ConversationNotFoundException(2L));
+        given(conversationCommentService.create(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(
+                new ConversationNotFoundException(2L));
 
         //when
-        mockTestHelper.createMockRequestWithTokenAndContent((post("/api/conversations/{conversationsId}/comments", conversationsId)),
+        mockTestHelper.createMockRequestWithTokenAndContent(
+                        (post("/api/conversations/{conversationsId}/comments", conversationsId)),
                         commentRequest)
                 .andExpect(status().isNotFound())
                 .andDo(customDocument("fail_to_create_conversation_comment_with_not_exist_conversation",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
-                        requestFields(
-                                fieldWithPath("content").description("댓글의 내용")
-                        ),
                         pathParameters(
                                 parameterWithName("conversationsId").description("채팅방의 질문 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글의 내용")
                         )
                 )).andReturn();
     }
@@ -188,6 +204,7 @@ class ConversationCommentControllerUnitTest {
                 .forEach(i -> {
                     comments.add(new CommentPagingResponse(i, "content" + i));
                 });
+        comments.sort(Comparator.comparingLong(CommentPagingResponse::getCommentId).reversed());
         return comments;
     }
 }

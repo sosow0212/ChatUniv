@@ -14,7 +14,6 @@ import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.comment.domain.CommentRepository;
-import mju.chatuniv.comment.service.CommentService;
 import mju.chatuniv.comment.service.CommentWriteService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;
@@ -30,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-class CommonCommentControllerIntegrationTest extends IntegrationTest {
+class CommentControllerIntegrationTest extends IntegrationTest {
 
     private String token;
 
@@ -62,7 +61,7 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
         authService.register(new MemberCreateRequest("a@a.com", "1234"));
         member = memberRepository.findByEmail("a@a.com").orElseThrow();
         MemberLoginReqeust memberLoginReqeust = new MemberLoginReqeust("a@a.com", "1234");
-        this.token = authService.login(memberLoginReqeust);
+        token = authService.login(memberLoginReqeust);
         createBoard();
         createConversation();
     }
@@ -73,11 +72,11 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
         List<CommentWriteService> commentServices = BeanUtils.getBeansOfCommentWriteServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
         List<String> urlPaths = uriProvider();
-
         IntStream.range(0, commentServices.size()).forEach(index -> {
-            CommentService commentService = commentServices.get(index);
+            CommentWriteService commentService = commentServices.get(index);
             dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 // given
+                String urlPath = urlPaths.get(index);
                 CommentRequest commentRequest = new CommentRequest("comment");
 
                 // when
@@ -86,7 +85,7 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
                         .auth().preemptive().oauth2(token)
                         .body(commentRequest)
                         .when()
-                        .post(urlPaths.get(index));
+                        .post(urlPath);
 
                 // then
                 response.then()
@@ -101,11 +100,12 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
     List<DynamicTest> find_comment_by_id() {
         List<CommentWriteService> commentServices = BeanUtils.getBeansOfCommentWriteServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        List<String> urlPaths = uriProvider(10, 1L, 5L);
+        List<String> urlPaths = uriProvider(10, 5L);
         IntStream.range(0, commentServices.size()).forEach(index -> {
             CommentWriteService commentService = commentServices.get(index);
             dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
                 // given
+                String urlPath = urlPaths.get(index);
                 IntStream.range(1, 15).forEach(i -> {
                     CommentRequest commentRequest = new CommentRequest("comment" + i);
                     commentService.create(1L, member, commentRequest);
@@ -116,7 +116,7 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
                         .contentType(ContentType.JSON)
                         .auth().preemptive().oauth2(token)
                         .when()
-                        .get(urlPaths.get(index));
+                        .get(urlPath, 1L);
 
                 // then
                 response.then()
@@ -144,7 +144,7 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
                         .auth().preemptive().oauth2(token)
                         .body(commentRequest)
                         .when()
-                        .patch("/api/comments/1");
+                        .patch("/api/comments/{commentId}", 1L);
 
                 //then
                 response.then()
@@ -170,7 +170,7 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
                         .contentType(ContentType.JSON)
                         .auth().preemptive().oauth2(token)
                         .when()
-                        .delete("/api/comments/1");
+                        .delete("/api/comments/{commentId}", 1L);
 
                 //then
                 response.then()
@@ -181,10 +181,10 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
         return dynamicTestList;
     }
 
-    private List<String> uriProvider(final Integer pageSize, final Long targetId, final Long commentId) {
+    private List<String> uriProvider(final Integer pageSize, final Long commentId) {
         List<String> urlPaths = new ArrayList<>();
-        urlPaths.add("/api/boards/comments?pageSize=" + pageSize + "&boardId=" + targetId + "&commentId=" + commentId);
-        urlPaths.add("/api/conversations/comments?pageSize=" + pageSize + "&conversationId=" + targetId + "&commentId=" + commentId);
+        urlPaths.add("/api/boards/{boardId}/comments?pageSize=" + pageSize + "&commentId=" + commentId);
+        urlPaths.add("/api/conversations/{conversationId}/comments?pageSize=" + pageSize + "&commentId=" + commentId);
 
         return urlPaths;
     }
@@ -206,8 +206,8 @@ class CommonCommentControllerIntegrationTest extends IntegrationTest {
         conversationRepository.save(Conversation.of("hi", "hello", chat));
     }
 
-    private String getClassName(final CommentService commentService) {
-        return commentService.getClass().getSimpleName().split("\\$\\$")[0];
+    private String getClassName(final CommentWriteService commentWriteService) {
+        return commentWriteService.getClass().getSimpleName().split("\\$\\$")[0];
     }
 
     private void truncateAllTables() {

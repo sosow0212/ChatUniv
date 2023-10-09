@@ -23,6 +23,8 @@ import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.comment.controller.CommentController;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.domain.ConversationComment;
+import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
 import mju.chatuniv.comment.service.CommonCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
@@ -44,21 +46,21 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = CommentController.class)
 @AutoConfigureRestDocs
-public class CommonCommentControllerUnitTest {
+class CommonCommentControllerUnitTest {
 
     private MockTestHelper mockTestHelper;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private CommonCommentService commonCommentService;
 
     @MockBean
     private JwtAuthService jwtAuthService;
 
     @MockBean
     private ArgumentResolverConfig argumentResolverConfig;
+
+    @MockBean
+    private CommonCommentService commonCommentService;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @BeforeEach
     void init() {
@@ -110,6 +112,7 @@ public class CommonCommentControllerUnitTest {
                 )).andReturn();
     }
 
+
     @DisplayName("댓글의 내용이 비었을 경우 예외를 발생시킨다.")
     @Test
     void fail_to_update_comment_with_empty_content() throws Exception {
@@ -125,13 +128,41 @@ public class CommonCommentControllerUnitTest {
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
+                        pathParameters(
+                                parameterWithName("commentId").description("댓글 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("content").description("댓글의 내용")
+                        )
+                )).andReturn();
+    }
+
+    @DisplayName("존재하지 않는 댓글을 변경할 경우 예외가 발생한다.")
+    @Test
+    void fail_to_update_comment_with_no_comment() throws Exception {
+        // given
+        Long commentId = 1L;
+        CommentRequest commentRequest = new CommentRequest("content");
+        given(commonCommentService.update(anyLong(), any(Member.class), any(CommentRequest.class))).willThrow(
+                new CommentNotFoundException(commentId));
+
+        // when & then
+        mockTestHelper.createMockRequestWithTokenAndContent((patch("/api/comments/{commentId}", commentId)),
+                        commentRequest)
+                .andExpect(status().isNotFound())
+                .andDo(customDocument("fail_to_update_comment_with_not_equals_member",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         pathParameters(
                                 parameterWithName("commentId").description("댓글 ID")
-                        ))).andReturn();
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글의 내용")
+                        )
+                )).andReturn();
     }
+
 
     @DisplayName("댓글을 변경할 때 댓글의 작성자가 아닌 경우 예외가 발생한다.")
     @Test
@@ -155,11 +186,14 @@ public class CommonCommentControllerUnitTest {
                         ),
                         pathParameters(
                                 parameterWithName("commentId").description("댓글 ID")
-                        ))).andReturn();
+                        )
+                )).andReturn();
     }
 
     private static Stream<Arguments> commentProvider() {
         return Stream.of(
-                Arguments.of("BoardComment", mock(BoardComment.class)));
+                Arguments.of("BoardComment", mock(BoardComment.class)),
+                Arguments.of("ConversationComment", mock(ConversationComment.class))
+        );
     }
 }

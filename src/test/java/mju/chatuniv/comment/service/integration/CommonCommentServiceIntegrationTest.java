@@ -1,7 +1,10 @@
 package mju.chatuniv.comment.service.integration;
 
+import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentReadServiceType;
+import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentWriteServiceType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +17,11 @@ import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
-import mju.chatuniv.comment.controller.intergration.BeanUtils;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import mju.chatuniv.comment.service.BoardCommentQueryService;
 import mju.chatuniv.comment.service.BoardCommentService;
 import mju.chatuniv.comment.service.CommentReadService;
-import mju.chatuniv.comment.service.CommentService;
 import mju.chatuniv.comment.service.CommentWriteService;
 import mju.chatuniv.comment.service.CommonCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
@@ -78,72 +79,64 @@ class CommonCommentServiceIntegrationTest extends IntegrationTest {
     @DisplayName("댓글을 작성한다.")
     @TestFactory
     List<DynamicTest> create_comment() {
-        List<CommentWriteService> commentServices = BeanUtils.getBeansOfCommentWriteServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, commentServices.size()).forEach(index -> {
-            CommentWriteService commentService = commentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
+        for (CommentWriteService commentWriteService : getBeansOfCommentWriteServiceType()) {
+            dynamicTestList.add(dynamicTest(getClassName(commentWriteService), () -> {
                 //given
                 Long id = 1L;
                 CommentRequest commentRequest = new CommentRequest("initContent");
 
                 //when
-                Comment comment = commentService.create(id, member, commentRequest);
+                Comment comment = commentWriteService.create(id, member, commentRequest);
 
                 //then
                 assertAll(
                         () -> assertThat(comment.getId()).isEqualTo(1L),
                         () -> assertThat(comment.getContent()).isEqualTo(commentRequest.getContent())
                 );
-                truncateAllTables();
+                truncateCommentTables();
             }));
-        });
+        }
         return dynamicTestList;
     }
 
     @DisplayName("댓글을 조회한다")
     @TestFactory
     List<DynamicTest> find_board() {
-        List<CommentReadService> commentServices = BeanUtils.getBeansOfCommentReadServiceType();
-        List<CommentWriteService> commentServices2 = BeanUtils.getBeansOfCommentWriteServiceType();
+        createComment();
+        List<CommentReadService> commentReadServices = getBeansOfCommentReadServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, commentServices.size()).forEach(index -> {
-            CommentReadService commentService = commentServices.get(index);
-            CommentWriteService commentService2 = commentServices2.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
-                //given
-                Integer pageSize = 10;
-                Long id = 1L;
-                Long commentId = 7L;
-                setAllCommentResponse(commentService2, id);
+        IntStream.range(0, commentReadServices.size())
+                .forEach(index -> {
+                    CommentReadService commentReadService = commentReadServices.get(index);
+                    dynamicTestList.add(dynamicTest(getClassName(commentReadService), () -> {
+                        //given
+                        Long id = 1L;
+                        Integer pageSize = 10;
+                        Long commentId = 10L;
 
-                //when
-                List<CommentPagingResponse> comments = commentService.findComments(pageSize, id, commentId);
+                        //when
+                        List<CommentPagingResponse> comments = commentReadService.findComments(id, pageSize, commentId);
 
-                //then
-                assertAll(
-                        () -> assertThat(comments.size()).isEqualTo(6),
-                        () -> assertThat(comments.get(0).getCommentId()).isEqualTo(6L),
-                        () -> assertThat(comments.get(0).getContent()).isEqualTo("content6"));
-                truncateAllTables();
-            }));
-        });
+                        //then
+                        assertAll(
+                                () -> assertThat(comments).hasSize(1),
+                                () -> assertThat(comments.get(0).getCommentId()).isEqualTo(index + 1),
+                                () -> assertThat(comments.get(0).getContent()).isEqualTo("content"));
+                    }));
+                });
         return dynamicTestList;
     }
 
     @DisplayName("댓글을 수정한다.")
     @TestFactory
     List<DynamicTest> update_comment() {
-        List<CommentWriteService> commentServices = BeanUtils.getBeansOfCommentWriteServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, commentServices.size()).forEach(index -> {
-            CommentWriteService commentService = commentServices.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
+        createComment();
+        for (CommentWriteService commentWriteService : getBeansOfCommentWriteServiceType()) {
+            dynamicTestList.add(dynamicTest(getClassName(commentWriteService), () -> {
                 //given
-                Long id = 1L;
                 Long commentId = 1L;
-                CommentRequest commentRequest = new CommentRequest("initContent");
-                commentService.create(id, member, commentRequest);
                 CommentRequest commentUpdateRequest = new CommentRequest("updateContent");
 
                 //when
@@ -152,37 +145,32 @@ class CommonCommentServiceIntegrationTest extends IntegrationTest {
                 //then
                 assertThat(comment.getContent()).isEqualTo(commentUpdateRequest.getContent());
             }));
-        });
+        }
         return dynamicTestList;
     }
 
     @DisplayName("댓글을 삭제한다.")
     @TestFactory
     List<DynamicTest> delete_comment() {
-        List<CommentReadService> commentServices = BeanUtils.getBeansOfCommentReadServiceType();
-        List<CommentWriteService> commentServices2 = BeanUtils.getBeansOfCommentWriteServiceType();
         List<DynamicTest> dynamicTestList = new ArrayList<>();
-        IntStream.range(0, commentServices.size()).forEach(index -> {
-            CommentReadService commentService = commentServices.get(index);
-            CommentWriteService commentService2 = commentServices2.get(index);
-            dynamicTestList.add(DynamicTest.dynamicTest(getClassName(commentService), () -> {
+        createComment();
+        for (CommentReadService commentReadService : getBeansOfCommentReadServiceType()) {
+            dynamicTestList.add(dynamicTest(getClassName(commentReadService), () -> {
                 //given
-                Integer pageSize = 10;
                 Long id = 1L;
-                Long commentId = 7L;
-                Long deleteCommentId = 6L;
-                setAllCommentResponse(commentService2, id);
-                List<CommentPagingResponse> beforeDeleteComments = commentService.findComments(pageSize, id, commentId);
-
+                Integer pageSize = 10;
+                Long commentId = 10L;
+                List<CommentPagingResponse> beforeDeleteComments = commentReadService.findComments(id, pageSize,
+                        commentId);
                 //when
-                commonCommentService.delete(deleteCommentId, member);
+                commonCommentService.delete(beforeDeleteComments.get(0).getCommentId(), member);
 
                 //then
-                List<CommentPagingResponse> afterDeleteComments = boardCommentQueryService.findComments(pageSize, id, commentId);
+                List<CommentPagingResponse> afterDeleteComments = boardCommentQueryService.findComments(id, pageSize,
+                        commentId);
                 assertThat(beforeDeleteComments.size() - 1).isEqualTo(afterDeleteComments.size());
-                truncateAllTables();
             }));
-        });
+        }
         return dynamicTestList;
     }
 
@@ -198,17 +186,18 @@ class CommonCommentServiceIntegrationTest extends IntegrationTest {
         });
     }
 
-    private String getClassName(final CommentService commentService) {
+    private void createComment() {
+        for (CommentWriteService commentWriteService : getBeansOfCommentWriteServiceType()) {
+            commentWriteService.create(1L, member, new CommentRequest("content"));
+        }
+    }
+
+    private String getClassName(final Object commentService) {
         return commentService.getClass().getSimpleName().split("\\$\\$")[0];
     }
 
-    private void setAllCommentResponse(final CommentWriteService commentService, final Long id) {
-        LongStream.range(1, 16).forEach(index -> {
-            commentService.create(id, member, new CommentRequest("content" + index));
-        });
-    }
 
-    private void truncateAllTables() {
+    private void truncateCommentTables() {
         String truncateQuery = "TRUNCATE TABLE Comment";
         jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
         jdbcTemplate.execute(truncateQuery);

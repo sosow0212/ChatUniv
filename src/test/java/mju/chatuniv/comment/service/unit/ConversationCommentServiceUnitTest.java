@@ -5,13 +5,14 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.chat.exception.exceptions.ConversationNotFoundException;
 import mju.chatuniv.comment.exception.exceptions.CommentContentBlankException;
 import mju.chatuniv.comment.service.ConversationCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
+import mju.chatuniv.fixture.chat.ConversationFixture;
+import mju.chatuniv.fixture.member.MemberFixture;
 import mju.chatuniv.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +39,8 @@ class ConversationCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.of("a@a.com", "password");
-        conversation = Conversation.of("hi", "hello", Chat.createDefault(member));
+        member = MemberFixture.createMember();
+        conversation = ConversationFixture.createConversation(member);
     }
 
     @DisplayName("댓글 생성시 채팅방 질문 아이디가 존재하지 않는다면 예외를 발생한다.")

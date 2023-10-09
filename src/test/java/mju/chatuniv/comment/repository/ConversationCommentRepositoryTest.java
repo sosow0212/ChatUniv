@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
@@ -16,7 +17,6 @@ import mju.chatuniv.chat.domain.chat.ConversationRepository;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.domain.ConversationComment;
-import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
 import mju.chatuniv.comment.infrastructure.repository.ConversationCommentQueryRepository;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import mju.chatuniv.helper.RepositoryTestHelper;
@@ -72,13 +72,8 @@ class ConversationCommentRepositoryTest extends RepositoryTestHelper {
         //when
         ConversationComment saveComment = commentRepository.save(conversationComment);
 
-        //then
-        assertAll(
-                () -> assertThat(saveComment.getId()).isEqualTo(1L),
-                () -> assertThat(saveComment.getMember()).isEqualTo(member),
-                () -> assertThat(saveComment.getContent()).isEqualTo("content"),
-                () -> assertThat(saveComment.getConversation()).isEqualTo(conversation)
-        );
+        // then
+        assertThat(saveComment).usingRecursiveComparison().isEqualTo(conversationComment);
     }
 
     @DisplayName("채팅방 질문의 댓글이 제대로 조회되는지 확인한다.")
@@ -89,14 +84,14 @@ class ConversationCommentRepositoryTest extends RepositoryTestHelper {
         commentRepository.save(conversationComment);
 
         //when
-        Comment comment = commentRepository.findById(1L)
-                .orElseThrow(() -> new CommentNotFoundException(conversationComment.getId()));
+        Optional<Comment> comment = commentRepository.findById(1L);
 
         //then
         assertAll(
-                () -> assertThat(comment.getId()).isEqualTo(1L),
-                () -> assertThat(comment.getMember()).isEqualTo(member),
-                () -> assertThat(comment.getContent()).isEqualTo("content")
+                () -> assertThat(comment).isPresent(),
+                () -> assertThat(comment.get().getId()).isEqualTo(1L),
+                () -> assertThat(comment.get().getMember()).isEqualTo(member),
+                () -> assertThat(comment.get().getContent()).isEqualTo("content")
         );
     }
 
@@ -106,8 +101,7 @@ class ConversationCommentRepositoryTest extends RepositoryTestHelper {
         //given
         IntStream.rangeClosed(1, 10)
                 .forEach(index -> {
-                    ConversationComment save = commentRepository.save(
-                            createConversationComment("content" + index, member, conversation));
+                    commentRepository.save(createConversationComment("content" + index, member, conversation));
                 });
 
         //when

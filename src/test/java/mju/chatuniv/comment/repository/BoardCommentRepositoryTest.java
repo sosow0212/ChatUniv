@@ -7,13 +7,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
-import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
 import mju.chatuniv.comment.infrastructure.repository.BoardCommentQueryRepository;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import mju.chatuniv.helper.RepositoryTestHelper;
@@ -63,15 +63,14 @@ class BoardCommentRepositoryTest extends RepositoryTestHelper {
         commentRepository.save(boardComment);
 
         //when
-        Comment comment = commentRepository.findById(1L)
-                .orElseThrow(() -> new CommentNotFoundException(boardComment.getId()));
+        Optional<Comment> comment = commentRepository.findById(1L);
 
         //then
         assertAll(
-                () -> assertThat(comment.getId()).isEqualTo(1L),
-                () -> assertThat(comment.getMember()).isEqualTo(member),
-                () -> assertThat(comment.getContent()).isEqualTo("content")
-        );
+                () -> assertThat(comment).isPresent(),
+                () -> assertThat(comment.get().getId()).isEqualTo(1L),
+                () -> assertThat(comment.get().getMember()).isEqualTo(member),
+                () -> assertThat(comment.get().getContent()).isEqualTo("content"));
     }
 
     @DisplayName("게시글의 댓글이 제대로 조회되는지 확인한다.")
@@ -86,12 +85,7 @@ class BoardCommentRepositoryTest extends RepositoryTestHelper {
         BoardComment saveComment = commentRepository.save(boardComment);
 
         //then
-        assertAll(
-                () -> assertThat(saveComment.getId()).isEqualTo(1L),
-                () -> assertThat(saveComment.getMember()).isEqualTo(member),
-                () -> assertThat(saveComment.getContent()).isEqualTo("content"),
-                () -> assertThat(saveComment.getBoard()).isEqualTo(board)
-        );
+        assertThat(saveComment).usingRecursiveComparison().isEqualTo(boardComment);
     }
 
     @DisplayName("게시글의 id로 댓글이 제대로 조회되는지 확인한다.")
@@ -100,8 +94,7 @@ class BoardCommentRepositoryTest extends RepositoryTestHelper {
         //given
         IntStream.rangeClosed(1, 10)
                 .forEach(index -> {
-                    BoardComment save = commentRepository.save(createBoardComment("content" + index, member, board));
-                    System.out.println(save.getBoard().getId());
+                    commentRepository.save(createBoardComment("content" + index, member, board));
                 });
 
         //when

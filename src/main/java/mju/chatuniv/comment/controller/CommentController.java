@@ -1,10 +1,11 @@
 package mju.chatuniv.comment.controller;
 
+import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
-import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.controller.dto.CommentResponse;
+import mju.chatuniv.comment.domain.Comment;
+import mju.chatuniv.comment.service.CommonCommentService;
+import mju.chatuniv.comment.service.dto.CommentRequest;
 import mju.chatuniv.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/comments")

@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.domain.dto;
+package mju.chatuniv.comment.infrastructure.repository.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 

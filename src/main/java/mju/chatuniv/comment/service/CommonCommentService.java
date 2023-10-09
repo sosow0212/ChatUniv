@@ -1,4 +1,4 @@
-package mju.chatuniv.comment.service.service;
+package mju.chatuniv.comment.service;
 
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;

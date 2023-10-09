@@ -1,5 +1,6 @@
 package mju.chatuniv.comment.service.unit;
 
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -7,14 +8,14 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
+import mju.chatuniv.chat.exception.exceptions.ConversationNotFoundException;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.Comment;
 import mju.chatuniv.comment.domain.CommentRepository;
 import mju.chatuniv.comment.exception.exceptions.CommentNotFoundException;
+import mju.chatuniv.comment.service.CommonCommentService;
 import mju.chatuniv.comment.service.dto.CommentRequest;
-import mju.chatuniv.comment.service.service.CommonCommentService;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.exception.exceptions.MemberNotEqualsException;
 import org.assertj.core.api.Assertions;
@@ -30,11 +31,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CommonCommentServiceUnitTest {
+class CommonCommentServiceUnitTest {
 
     private Member member;
-    private Board board;
-    private Comment comment;
 
     @InjectMocks
     private CommonCommentService commonCommentService;
@@ -44,9 +43,7 @@ public class CommonCommentServiceUnitTest {
 
     @BeforeEach
     void init() {
-        member = Member.of("a@a.com", "password");
-        board = Board.of("title", "content", member);
-        comment = BoardComment.of("content", member, board);
+        member = createMember();
     }
 
     @DisplayName("댓글 수정시 댓글 기능을 가지는 도메인의 id가 존재하지 않는다면 예외를 발생한다.")
@@ -135,7 +132,8 @@ public class CommonCommentServiceUnitTest {
 
     private static Stream<Arguments> exceptionProvider() {
         return Stream.of(
-                Arguments.of("BoardComment", BoardNotFoundException.class)
+                Arguments.of("BoardComment", BoardNotFoundException.class),
+                Arguments.of("ConversationComment", ConversationNotFoundException.class)
         );
     }
 }

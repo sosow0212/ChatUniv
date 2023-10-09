@@ -1,4 +1,4 @@
-package mju.chatuniv.board.service.boardService;
+package mju.chatuniv.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -12,8 +12,6 @@ import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
-import mju.chatuniv.board.service.BoardQueryService;
-import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
 import mju.chatuniv.helper.integration.IntegrationTest;

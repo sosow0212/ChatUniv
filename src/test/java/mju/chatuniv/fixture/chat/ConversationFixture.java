@@ -22,4 +22,12 @@ public class ConversationFixture {
                 Chat.createDefault(member)
         );
     }
+
+    public static Conversation createConversation(final Chat chat) {
+        return Conversation.of(
+                "명지대학교 총장은 누구니?",
+                "유병진 총장님입니다.",
+                chat
+        );
+    }
 }

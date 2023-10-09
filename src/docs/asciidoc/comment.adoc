@@ -105,3 +105,71 @@ include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comm
 
 include::{snippets}/board-comment-controller-unit-test/fail_to_create_board_comment_with_not_exist_board/http-response.adoc[]
 
+=== 게시글 질문의 댓글을 조회할때 url파라미터에 boardId 없으면 예외
+
+==== 요청
+
+include::{snippets}/board-comment-controller-unit-test/fail_to_find_comments_with_not_board_id/http-request.adoc[]
+include::{snippets}/board-comment-controller-unit-test/fail_to_find_comments_with_not_board_id/request-parameters.adoc[]
+include::{snippets}/board-comment-controller-unit-test/fail_to_find_comments_with_not_board_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/board-comment-controller-unit-test/fail_to_find_comments_with_not_board_id/http-response.adoc[]
+
+
+
+
+== Conversation
+
+=== 채티방 질문의 댓글을 생성한다.
+
+==== 요청
+
+include::{snippets}/conversation-comment-controller-unit-test/create_conversation/http-request.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/create_conversation/request-headers.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/create_conversation/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/conversation-comment-controller-unit-test/create_conversation/http-response.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/create_conversation/response-fields.adoc[]
+
+=== 채팅방 질문의 id로 페이징 처리된 댓글을 조회한다.
+
+==== 요청
+
+include::{snippets}/conversation-comment-controller-unit-test/find_comments_by_conversation_id/http-request.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/find_comments_by_conversation_id/request-parameters.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/find_comments_by_conversation_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/conversation-comment-controller-unit-test/find_comments_by_conversation_id/http-response.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/find_comments_by_conversation_id/response-fields.adoc[]
+
+
+=== 채팅방 질문의 댓글을 작성할 때 채팅방의 질문이 존재하지 않으면 예외가 발생한다.
+
+==== 요청
+
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_create_conversation_comment_with_not_exist_conversation/http-request.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_create_conversation_comment_with_not_exist_conversation/request-headers.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_create_conversation_comment_with_not_exist_conversation/path-parameters.adoc[]
+
+==== 응답
+
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_create_conversation_comment_with_not_exist_conversation/http-response.adoc[]
+
+=== 채팅방 질문의 댓글을 조회할때 url파라미터에 conversationId가 없으면 예외
+
+==== 요청
+
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_find_comments_with_not_conversation_id/http-request.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_find_comments_with_not_conversation_id/request-parameters.adoc[]
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_find_comments_with_not_conversation_id/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/conversation-comment-controller-unit-test/fail_to_find_comments_with_not_conversation_id/http-response.adoc[]
+

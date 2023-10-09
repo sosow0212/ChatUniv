@@ -8,7 +8,7 @@ import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
@@ -98,7 +98,7 @@ class BoardServiceIntegrationTest extends IntegrationTest {
                 });
 
         //when
-        List<BoardResponse> boards = boardQueryService.findAllBoards(10, 50L);
+        List<BoardReadResponse> boards = boardQueryService.findAllBoards(10, 50L);
 
         //then
         assertAll(
@@ -119,7 +119,7 @@ class BoardServiceIntegrationTest extends IntegrationTest {
                 });
 
         //when
-        List<BoardResponse> boards = boardQueryService.findBoardsBySearchType(SearchType.TITLE, "제목", 10, 25L);
+        List<BoardReadResponse> boards = boardQueryService.findBoardsBySearchType(SearchType.TITLE, "제목", 10, 25L);
 
         //then
         assertAll(

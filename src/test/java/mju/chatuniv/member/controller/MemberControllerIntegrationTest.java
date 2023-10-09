@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import mju.chatuniv.auth.service.AuthService;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.service.BoardService;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
@@ -111,7 +111,7 @@ class MemberControllerIntegrationTest extends IntegrationTest {
         Assertions.assertAll(() -> {
             response.then()
                     .statusCode(HttpStatus.OK.value());
-            List<BoardResponse> responses = new ArrayList<>(response.body().jsonPath().get("boardResponses"));
+            List<BoardReadResponse> responses = new ArrayList<>(response.body().jsonPath().get("boardResponses"));
             Assertions.assertEquals(ArrayList.class, response.body().jsonPath().get("boardResponses").getClass());
             Assertions.assertEquals(10, responses.size());
         });

@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.stream.IntStream;
 import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.comment.domain.BoardComment;
 import mju.chatuniv.comment.domain.CommentRepository;
-import mju.chatuniv.comment.domain.dto.CommentPagingResponse;
+import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import mju.chatuniv.helper.RepositoryTestHelper;
 import mju.chatuniv.member.domain.Member;
 import mju.chatuniv.member.domain.MemberRepository;
@@ -76,7 +76,7 @@ class BoardQueryRepositoryTest extends RepositoryTestHelper {
         Long boardId = 9L;
 
         // when
-        List<BoardResponse> boards = boardQueryRepository.findAllBoards(pageSize, boardId);
+        List<BoardReadResponse> boards = boardQueryRepository.findAllBoards(pageSize, boardId);
 
         // then
         assertAll(
@@ -94,7 +94,7 @@ class BoardQueryRepositoryTest extends RepositoryTestHelper {
         String text = "7";
 
         // when
-        List<BoardResponse> boards = boardQueryRepository.findBoardsBySearchType(pageSize, boardId, searchType, text);
+        List<BoardReadResponse> boards = boardQueryRepository.findBoardsBySearchType(pageSize, boardId, searchType, text);
 
         // then
         assertAll(

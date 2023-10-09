@@ -19,13 +19,13 @@ public class BoardCommentQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<CommentPagingResponse> findComments(final Integer pageSize, final Long boardId, final Long commentId) {
+    public List<CommentPagingResponse> findComments(final Long boardId, final Integer pageSize, final Long commentId) {
         List<CommentPagingResponse> comments = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,
                         boardComment.id.as("commentId"),
                         boardComment.content))
                 .from(boardComment)
-                .where(eqBoardId(boardId), (ltCommentId(commentId)))
+                .where(eqBoardId(boardId), ltCommentId(commentId))
                 .orderBy(boardComment.id.desc())
                 .limit(pageSize)
                 .fetch();

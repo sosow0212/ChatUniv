@@ -45,11 +45,11 @@ public class ConversationCommentController {
                 .body(CommentResponse.from(comment));
     }
 
-    @GetMapping("/comments")
-    public ResponseEntity<CommentAllResponse> findCommentsByConversation(@RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
-                                                                         @RequestParam final Long conversationId,
+    @GetMapping("/{conversationId}/comments")
+    public ResponseEntity<CommentAllResponse> findCommentsByConversation(@PathVariable("conversationId") final Long conversationId,
+                                                                         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                          @RequestParam(required = false) final Long commentId) {
-        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(pageSize, conversationId, commentId);
+        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(conversationId, pageSize, commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }
 }

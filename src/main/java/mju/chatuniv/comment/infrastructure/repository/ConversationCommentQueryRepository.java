@@ -19,7 +19,7 @@ public class ConversationCommentQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<CommentPagingResponse> findComments(final Integer pageSize, final Long conversationId,
+    public List<CommentPagingResponse> findComments(final Long conversationId, final Integer pageSize,
                                                     final Long commentId) {
         List<CommentPagingResponse> comments = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,

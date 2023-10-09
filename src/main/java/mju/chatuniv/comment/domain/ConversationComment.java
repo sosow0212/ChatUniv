@@ -30,4 +30,8 @@ public class ConversationComment extends Comment {
     public static ConversationComment of(final String content, final Member member, final Conversation conversation) {
         return new ConversationComment(null, content, member, conversation);
     }
+
+    public Conversation getConversation() {
+        return conversation;
+    }
 }

@@ -1,10 +1,10 @@
-package mju.chatuniv.board.infrasuructure.dto;
+package mju.chatuniv.board.controller.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import java.time.LocalDateTime;
 import mju.chatuniv.board.domain.Board;
 
-public class BoardResponse {
+public class BoardWriteResponse {
 
     private Long boardId;
     private String title;
@@ -12,18 +12,21 @@ public class BoardResponse {
     private LocalDateTime createAt;
 
     @QueryProjection
-    public BoardResponse(final Long boardId, final String title, final String content, final LocalDateTime createAt) {
+    public BoardWriteResponse(final Long boardId,
+                              final String title,
+                              final String content,
+                              final LocalDateTime createAt) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.createAt = createAt;
     }
 
-    private BoardResponse() {
+    private BoardWriteResponse() {
     }
 
-    public static BoardResponse from(final Board board) {
-        return new BoardResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedAt());
+    public static BoardWriteResponse from(final Board board) {
+        return new BoardWriteResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedAt());
     }
 
     public Long getBoardId() {

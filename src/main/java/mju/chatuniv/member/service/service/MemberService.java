@@ -3,7 +3,7 @@ package mju.chatuniv.member.service.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
@@ -38,11 +38,11 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardResponse> findMembersBoard(final Member member) {
+    public List<BoardReadResponse> findMembersBoard(final Member member) {
         List<Board> boards = boardRepository.findAllByMemberOrderByIdDesc(member);
 
         return boards.stream()
-                .map(BoardResponse::from)
+                .map(BoardReadResponse::from)
                 .collect(Collectors.toList());
     }
 

@@ -30,8 +30,4 @@ public class BoardComment extends Comment {
     public static BoardComment of(final String content, final Member member, final Board board) {
         return new BoardComment(null, content, member, board);
     }
-
-    public Board getBoard() {
-        return board;
-    }
 }

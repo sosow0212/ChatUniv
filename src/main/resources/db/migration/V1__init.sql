@@ -10,10 +10,13 @@ create table if not exists MEMBER
 
 create table if not exists BOARD
 (
-    id        bigint auto_increment primary key,
-    content   longtext    not null,
-    title     varchar(50) not null,
-    member_id bigint      null,
+    id         bigint auto_increment
+        primary key,
+    createdAt  datetime    not null,
+    modifiedAt datetime    not null,
+    content    longtext    not null,
+    title      varchar(50) not null,
+    member_id  bigint      null,
     constraint FKe8tvf1ogratr7q9gmxigybn7g
         foreign key (member_id) references MEMBER (id)
             on delete cascade
@@ -68,6 +71,18 @@ create table if not exists CONVERSATION
     chat_chat_id    bigint   null,
     constraint FKhhyg9dvnfenl5b4pbapgx6h3l
         foreign key (chat_chat_id) references CHAT (chat_id)
+            on delete cascade
+);
+
+create table if not exists CONVERSATION_COMMENT
+(
+    id              bigint not null
+        primary key,
+    conversation_id bigint null,
+    constraint FKae267lp57dsw01flbr57brdd1
+        foreign key (id) references COMMENT (id),
+    constraint FKfn2j7pftqjpqgy52yqys0hvw3
+        foreign key (conversation_id) references CONVERSATION (conversation_id)
             on delete cascade
 );
 

@@ -132,12 +132,12 @@ class BoardControllerUnitTest {
         List<CommentPagingResponse> commentPagingResponses = new ArrayList<>();
         LongStream.range(1, 5)
                 .forEach(i -> {
-                    commentPagingResponses.add(new CommentPagingResponse(i, "content" + i, "email",
+                    commentPagingResponses.add(new CommentPagingResponse(i, "content" + i, "em...",
                             LocalDateTime.parse("2023-10-09T12:43:47")));
                 });
         CommentAllResponse commentAllResponse = CommentAllResponse.from(commentPagingResponses);
 
-        BoardSearchResponse boardSearchResponse = new BoardSearchResponse(1L, "title", "content", "email",
+        BoardSearchResponse boardSearchResponse = new BoardSearchResponse(1L, "title", "content", "em...",
                 LocalDateTime.parse("2023-10-09T12:43:47"), commentAllResponse);
 
         given(boardQueryService.findBoard(any(Long.class))).willReturn(boardSearchResponse);

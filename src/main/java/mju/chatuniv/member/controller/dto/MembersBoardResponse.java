@@ -1,24 +1,24 @@
 package mju.chatuniv.member.controller.dto;
 
 import java.util.List;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 
 public class MembersBoardResponse {
 
-    private List<BoardResponse> boardResponses;
+    private List<BoardReadResponse> boardReadRespons;
 
     private MembersBoardResponse() {
     }
 
-    private MembersBoardResponse(final List<BoardResponse> boardResponses) {
-        this.boardResponses = boardResponses;
+    private MembersBoardResponse(final List<BoardReadResponse> boardReadRespons) {
+        this.boardReadRespons = boardReadRespons;
     }
 
-    public static MembersBoardResponse from(final List<BoardResponse> boardResponses) {
-        return new MembersBoardResponse(boardResponses);
+    public static MembersBoardResponse from(final List<BoardReadResponse> boardReadRespons) {
+        return new MembersBoardResponse(boardReadRespons);
     }
 
-    public List<BoardResponse> getBoardResponses() {
-        return boardResponses;
+    public List<BoardReadResponse> getBoardResponses() {
+        return boardReadRespons;
     }
 }

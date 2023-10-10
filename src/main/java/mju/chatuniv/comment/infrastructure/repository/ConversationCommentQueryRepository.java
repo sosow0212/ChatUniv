@@ -2,6 +2,7 @@ package mju.chatuniv.comment.infrastructure.repository;
 
 import static com.querydsl.core.types.Projections.constructor;
 import static mju.chatuniv.comment.domain.QConversationComment.conversationComment;
+import static mju.chatuniv.member.domain.QMember.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,13 +20,15 @@ public class ConversationCommentQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<CommentPagingResponse> findComments(final Long conversationId, final Integer pageSize,
-                                                    final Long commentId) {
+    public List<CommentPagingResponse> findComments(final Long conversationId, final Integer pageSize, final Long commentId) {
         List<CommentPagingResponse> comments = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,
                         conversationComment.id.as("commentId"),
-                        conversationComment.content))
+                        conversationComment.content,
+                        member.email,
+                        conversationComment.createdAt))
                 .from(conversationComment)
+                .leftJoin(conversationComment.member, member)
                 .where(eqConversationId(conversationId), ltCommentId(commentId))
                 .orderBy(conversationComment.id.desc())
                 .limit(pageSize)

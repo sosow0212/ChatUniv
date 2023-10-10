@@ -3,7 +3,7 @@ package mju.chatuniv.board.service;
 import java.util.List;
 import mju.chatuniv.board.controller.dto.SearchType;
 import mju.chatuniv.board.exception.exceptions.BoardNotFoundException;
-import mju.chatuniv.board.infrasuructure.dto.BoardPagingResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.infrasuructure.repository.BoardQueryRepository;
 import org.springframework.stereotype.Service;
@@ -31,14 +31,14 @@ public class BoardQueryService {
         }
     }
 
-    public List<BoardPagingResponse> findAllBoards(final Long pageSize, final Long boardId) {
+    public List<BoardReadResponse> findAllBoards(final Integer pageSize, final Long boardId) {
         return boardQueryRepository.findAllBoards(pageSize, boardId);
     }
 
-    public List<BoardPagingResponse> findBoardsBySearchType(final SearchType searchType,
-                                                            final String text,
-                                                            final Long pageSize,
-                                                            final Long boardId) {
+    public List<BoardReadResponse> findBoardsBySearchType(final SearchType searchType,
+                                                          final String text,
+                                                          final Integer pageSize,
+                                                          final Long boardId) {
         return boardQueryRepository.findBoardsBySearchType(pageSize, boardId, searchType, text);
     }
 }

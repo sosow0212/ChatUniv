@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -114,16 +115,16 @@ class ConversationCommentControllerUnitTest {
         // given
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(
-                commentAllResponse);
+        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(commentAllResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
-                        get("/api/conversations/{conversationId}/comments?pageSize=2&commentId=3"
-                                , 1L))
+                        get("/api/conversations/{conversationId}/comments?pageSize=2&commentId=3", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.commentResponse[0].commentId").value(2))
                 .andExpect(jsonPath("$.commentResponse[0].content").value("content2"))
+                .andExpect(jsonPath("$.commentResponse[0].email").value("em..."))
+                .andExpect(jsonPath("$.commentResponse[0].createAt").value("2023-10-09T12:43:47"))
                 .andExpect(jsonPath("$.commentResponse.length()").value(2))
                 .andDo(print())
                 .andDo(customDocument("find_comments_by_conversation_id",
@@ -139,8 +140,9 @@ class ConversationCommentControllerUnitTest {
                         ),
                         responseFields(
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
-                                fieldWithPath("commentResponse[0].content").description(
-                                        "채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용")
+                                fieldWithPath("commentResponse[0].content").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용"),
+                                fieldWithPath("commentResponse[0].email").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 작석자 이메일"),
+                                fieldWithPath("commentResponse[0].createAt").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글 생성일자")
                         )
                 )).andReturn();
     }
@@ -202,7 +204,7 @@ class ConversationCommentControllerUnitTest {
         List<CommentPagingResponse> comments = new ArrayList<>();
         LongStream.range(1, 3)
                 .forEach(i -> {
-                    comments.add(new CommentPagingResponse(i, "content" + i));
+                    comments.add(new CommentPagingResponse(i, "content" + i, "em...", LocalDateTime.parse("2023-10-09T12:43:47")));
                 });
         comments.sort(Comparator.comparingLong(CommentPagingResponse::getCommentId).reversed());
         return comments;

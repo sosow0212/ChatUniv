@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.board.infrasuructure.repository.BoardRepository;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
@@ -101,12 +101,12 @@ class MemberServiceIntegrationTest extends IntegrationTest {
         //then
         assertAll(
                 () -> assertEquals(memberService.findMembersBoard(member).stream()
-                                .map(BoardResponse::getTitle).collect(Collectors.toList()),
+                                .map(BoardReadResponse::getTitle).collect(Collectors.toList()),
                         List.of("title9", "title8", "title7", "title6", "title5", "title4", "title3", "title2",
                                 "title1", "title0")),
 
                 () -> assertEquals(memberService.findMembersBoard(member).stream()
-                                .map(BoardResponse::getContent).collect(Collectors.toList()),
+                                .map(BoardReadResponse::getContent).collect(Collectors.toList()),
                         List.of("content9", "content8", "content7", "content6", "content5", "content4", "content3",
                                 "content2", "content1", "content0"))
         );

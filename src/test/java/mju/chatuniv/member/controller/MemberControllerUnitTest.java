@@ -14,11 +14,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import mju.chatuniv.board.domain.Board;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
@@ -286,6 +286,8 @@ class MemberControllerUnitTest {
                 .andExpect(jsonPath("$.boardResponses.length()").value(10))
                 .andExpect(jsonPath("$.boardResponses[0].title").value("title0"))
                 .andExpect(jsonPath("$.boardResponses[0].content").value("content0"))
+                .andExpect(jsonPath("$.boardResponses[0].email").value("em..."))
+                .andExpect(jsonPath("$.boardResponses[0].createAt").value("2023-10-09T12:43:47"))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_members_boards",
                         requestHeaders(
@@ -295,7 +297,9 @@ class MemberControllerUnitTest {
                                 fieldWithPath(".boardResponses").description("조회시 반환되는 데이터 배열"),
                                 fieldWithPath(".boardResponses[0].boardId").description("조회시 반환되는 board의 id"),
                                 fieldWithPath(".boardResponses[0].title").description("조회시 반환되는 board의 id"),
-                                fieldWithPath(".boardResponses[0].content").description("조회시 반환되는 board의 id")
+                                fieldWithPath(".boardResponses[0].content").description("조회시 반환되는 board의 id"),
+                                fieldWithPath(".boardResponses[0].email").description("조회시 반환되는 board의 작성자"),
+                                fieldWithPath(".boardResponses[0].createAt").description("조회시 반환되는 board의 생성시간")
                         )
                 ));
     }
@@ -359,10 +363,9 @@ class MemberControllerUnitTest {
                 .collect(Collectors.toList());
     }
 
-    private List<BoardResponse> makeDummyBoards() {
+    private List<BoardReadResponse> makeDummyBoards() {
         return IntStream.range(0, 10)
-                .mapToObj(each -> Board.of("title" + each, "content" + each, createMember()))
-                .map(BoardResponse::from)
+                .mapToObj(each -> new BoardReadResponse((long) each, "title" + each, "content" + each, "em...", LocalDateTime.parse("2023-10-09T12:43:47")))
                 .collect(Collectors.toList());
     }
 

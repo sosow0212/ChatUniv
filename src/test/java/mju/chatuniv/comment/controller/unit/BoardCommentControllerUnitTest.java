@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -121,6 +122,8 @@ class BoardCommentControllerUnitTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.commentResponse[0].commentId").value(2))
                 .andExpect(jsonPath("$.commentResponse[0].content").value("content2"))
+                .andExpect(jsonPath("$.commentResponse[0].email").value("em..."))
+                .andExpect(jsonPath("$.commentResponse[0].createAt").value("2023-10-09T12:43:47"))
                 .andExpect(jsonPath("$.commentResponse.length()").value(2))
                 .andDo(print())
                 .andDo(customDocument("find_comments_by_board_id",
@@ -136,8 +139,9 @@ class BoardCommentControllerUnitTest {
                         ),
                         responseFields(
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
-                                fieldWithPath("commentResponse[0].content").description(
-                                        "게시판의 id로 댓글 전체 조회 후 반환된 댓글의 내용")
+                                fieldWithPath("commentResponse[0].content").description("게시판의 id로 댓글 전체 조회 후 반환된 댓글의 내용"),
+                                fieldWithPath("commentResponse[0].email").description("게시판의 id로 댓글 전체 조회 후 반환된 댓글의 작성자"),
+                                fieldWithPath("commentResponse[0].createAt").description("게시판의 id로 댓글 전체 조회 후 반환된 댓글의 생성시간")
                         )
                 )).andReturn();
     }
@@ -197,7 +201,7 @@ class BoardCommentControllerUnitTest {
         List<CommentPagingResponse> comments = new ArrayList<>();
         LongStream.range(1, 3)
                 .forEach(index -> {
-                    comments.add(new CommentPagingResponse(index, "content" + index));
+                    comments.add(new CommentPagingResponse(index, "content" + index ,"em...", LocalDateTime.parse("2023-10-09T12:43:47")));
                 });
         comments.sort(Comparator.comparingLong(CommentPagingResponse::getCommentId).reversed());
         return comments;

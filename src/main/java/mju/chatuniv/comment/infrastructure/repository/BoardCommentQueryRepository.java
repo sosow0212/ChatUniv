@@ -2,6 +2,7 @@ package mju.chatuniv.comment.infrastructure.repository;
 
 import static com.querydsl.core.types.Projections.constructor;
 import static mju.chatuniv.comment.domain.QBoardComment.boardComment;
+import static mju.chatuniv.member.domain.QMember.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,8 +24,11 @@ public class BoardCommentQueryRepository {
         List<CommentPagingResponse> comments = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,
                         boardComment.id.as("commentId"),
-                        boardComment.content))
+                        boardComment.content,
+                        member.email,
+                        boardComment.createdAt))
                 .from(boardComment)
+                .leftJoin(boardComment.member, member)
                 .where(eqBoardId(boardId), ltCommentId(commentId))
                 .orderBy(boardComment.id.desc())
                 .limit(pageSize)

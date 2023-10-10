@@ -3,7 +3,7 @@ package mju.chatuniv.member.controller;
 import java.util.List;
 import javax.validation.Valid;
 import mju.chatuniv.auth.support.JwtLogin;
-import mju.chatuniv.board.infrasuructure.dto.BoardResponse;
+import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.comment.domain.dto.MembersCommentResponse;
 import mju.chatuniv.member.controller.dto.MemberResponse;
@@ -46,7 +46,7 @@ public class MemberController {
 
     @GetMapping("/me/boards")
     public ResponseEntity<MembersBoardResponse> findMembersBoards(@JwtLogin final Member member) {
-        List<BoardResponse> membersBoards = memberService.findMembersBoard(member);
+        List<BoardReadResponse> membersBoards = memberService.findMembersBoard(member);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(MembersBoardResponse.from(membersBoards));
     }

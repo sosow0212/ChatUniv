@@ -14,9 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import mju.chatuniv.auth.service.JwtAuthService;
-import mju.chatuniv.chat.domain.word.Word;
 import mju.chatuniv.global.config.ArgumentResolverConfig;
 import mju.chatuniv.helper.MockTestHelper;
+import mju.chatuniv.statistic.domain.dto.StatisticResponse;
 import mju.chatuniv.statistic.exception.exceptions.StatisticNotFoundException;
 import mju.chatuniv.statistic.service.StatisticService;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,10 +60,10 @@ class StatisticControllerUnitTest {
     @Test
     void find_statistics() throws Exception {
         // given
-        List<Word> list = new ArrayList<>();
-        list.add(Word.createDefaultPureWord("chat"));
-        list.add(Word.createDefaultPureWord("word"));
-        list.add(Word.createDefaultPureWord("test"));
+        List<StatisticResponse> list = new ArrayList<>();
+        list.add(StatisticResponse.of("word",1));
+        list.add(StatisticResponse.of("hello",4));
+        list.add(StatisticResponse.of("chat",3));
 
         given(statisticService.findStatistics()).willReturn(list);
 
@@ -71,7 +71,7 @@ class StatisticControllerUnitTest {
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/statistics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.statistics.length()").value(3))
-                .andExpect(jsonPath("$.statistics[0].word").value("chat"))
+                .andExpect(jsonPath("$.statistics[0].word").value("word"))
                 .andExpect(jsonPath("$.statistics[0].frequency").value(1))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_all_statistics",

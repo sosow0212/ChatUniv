@@ -13,7 +13,7 @@ public class StatisticService {
         return Statistic.getWords();
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void updateStatistics() {
         Statistic.reset();
     }

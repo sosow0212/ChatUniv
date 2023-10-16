@@ -1,9 +1,7 @@
 package mju.chatuniv.statistic.controller.dto;
 
-import mju.chatuniv.chat.domain.word.Word;
-
 import java.util.List;
-import java.util.stream.Collectors;
+import mju.chatuniv.statistic.domain.dto.StatisticResponse;
 
 public class StatisticsResponse {
 
@@ -13,12 +11,8 @@ public class StatisticsResponse {
         this.statistics = statistics;
     }
 
-    public static StatisticsResponse from(final List<Word> words) {
-        List<StatisticResponse> response = words.stream()
-                .map(StatisticResponse::from)
-                .collect(Collectors.toList());
-
-        return new StatisticsResponse(response);
+    public static StatisticsResponse from(final List<StatisticResponse> words) {
+        return new StatisticsResponse(words);
     }
 
     public List<StatisticResponse> getStatistics() {

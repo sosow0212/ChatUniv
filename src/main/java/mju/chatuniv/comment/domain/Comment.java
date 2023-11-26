@@ -23,7 +23,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "COMMENT")
 @DiscriminatorColumn
-
 public abstract class Comment extends BaseEntity {
 
     @Id

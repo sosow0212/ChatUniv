@@ -38,6 +38,9 @@ public class Board extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @Column(nullable = false)
+    private long likeCount;
+
     protected Board() {
     }
 
@@ -46,6 +49,7 @@ public class Board extends BaseEntity {
         this.title = title;
         this.content = content;
         this.member = member;
+        this.likeCount = 0;
     }
 
     public static Board of(final String title, final String content, final Member member) {
@@ -77,6 +81,14 @@ public class Board extends BaseEntity {
         validateBoard(title, content);
         this.title = title;
         this.content = content;
+    }
+
+    public void like() {
+        likeCount++;
+    }
+
+    public void likeCancel() {
+        likeCount--;
     }
 
     public Long getId() {

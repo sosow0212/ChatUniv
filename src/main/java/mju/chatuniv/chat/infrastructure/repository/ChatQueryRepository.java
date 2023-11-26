@@ -1,21 +1,20 @@
 package mju.chatuniv.chat.infrastructure.repository;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.Projections.constructor;
+import static mju.chatuniv.chat.domain.chat.QChat.chat;
+import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
+
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
 import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.types.Projections.constructor;
-import static mju.chatuniv.chat.domain.chat.QChat.chat;
-import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
 
 @Repository
 public class ChatQueryRepository {
@@ -85,8 +84,14 @@ public class ChatQueryRepository {
         return jpaQueryFactory
                 .select(constructor(ConversationSimpleResponse.class,
                         conversation.id.as("conversationId"),
-                        conversation.ask,
-                        conversation.answer))
+                        conversation.ask
+                                .substring(0, SHORTCUT_LIMIT_OF_ASK)
+                                .append(SHORTCUT_JOINER)
+                                .as("ask"),
+                        conversation.answer
+                                .substring(0, SHORTCUT_LIMIT_OF_ANSWER)
+                                .append(SHORTCUT_JOINER)
+                                .as("answer")))
                 .from(conversation)
                 .where(likeAskOrAnswer(keyword), ltConversationId(conversationId))
                 .orderBy(conversation.id.desc())

@@ -28,7 +28,7 @@ include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-requ
 
 ==== 응답
 
-include::{snippets}/chat-controller-unit-test/create_new_chatting_room/http-response.adoc[]
+include::{snippets}/chat-controller-unit-test/create_new_chatting_room/response-fields.adoc[]
 
 === 기존 채팅방 입장
 

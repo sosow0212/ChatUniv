@@ -60,7 +60,7 @@ class ChatControllerIntegrationTest extends IntegrationTest {
         // then
         assertAll(
                 () -> assertThat(result.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(result.header("Location")).isEqualTo("/chats/1")
+                () -> assertThat(result.body().jsonPath().getLong("chatId")).isEqualTo(1L)
         );
     }
 

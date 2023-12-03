@@ -50,8 +50,8 @@ public class ConversationCommentController {
                                                                          @JwtLogin final Member member,
                                                                          @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                          @RequestParam(required = false) final Long commentId) {
-        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(member.getId(),
-                conversationId, pageSize, commentId);
+        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(member, conversationId,
+                pageSize, commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }
 }

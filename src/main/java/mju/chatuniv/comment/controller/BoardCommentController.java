@@ -50,7 +50,7 @@ public class BoardCommentController {
                                                                   @JwtLogin final Member member,
                                                                   @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                   @RequestParam(required = false) final Long commentId) {
-        List<CommentPagingResponse> comments = boardCommentQueryService.findComments(member.getId(), boardId, pageSize,
+        List<CommentPagingResponse> comments = boardCommentQueryService.findComments(member, boardId, pageSize,
                 commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }

@@ -55,25 +55,25 @@ public class BoardController {
     public ResponseEntity<BoardSearchResponse> findBoard(@JwtLogin final Member member,
                                                          @PathVariable("boardId") final Long boardId) {
         return ResponseEntity.ok()
-                .body(boardQueryService.findBoard(boardId, member.getId()));
+                .body(boardQueryService.findBoard(member, boardId));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<BoardAllResponse> findAllBoards(
-            @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
-            @RequestParam(required = false) final Long boardId) {
-        List<BoardReadResponse> allBoards = boardQueryService.findAllBoards(pageSize, boardId);
+    public ResponseEntity<BoardAllResponse> findAllBoards(@JwtLogin final Member member,
+                                                          @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
+                                                          @RequestParam(required = false) final Long boardId) {
+        List<BoardReadResponse> allBoards = boardQueryService.findAllBoards(member, pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(allBoards));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<BoardAllResponse> findBoardsBySearchType(
-            @RequestParam(required = false) final SearchType searchType,
-            @RequestParam(required = false) @NotBlank(message = "검색어를 다시 입력해주세요.") final String text,
-            @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
-            @RequestParam(required = false) final Long boardId) {
-        List<BoardReadResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(searchType, text,
+    public ResponseEntity<BoardAllResponse> findBoardsBySearchType(@JwtLogin final Member member,
+                                                                   @RequestParam(required = false) final SearchType searchType,
+                                                                   @RequestParam(required = false) @NotBlank(message = "검색어를 다시 입력해주세요.") final String text,
+                                                                   @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
+                                                                   @RequestParam(required = false) final Long boardId) {
+        List<BoardReadResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(member, searchType, text,
                 pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(boardsBySearchType));

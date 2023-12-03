@@ -56,7 +56,7 @@ public class BoardReadResponse {
         return createAt;
     }
 
-    public boolean isMine() {
+    public boolean getIsMine() {
         return isMine;
     }
 }

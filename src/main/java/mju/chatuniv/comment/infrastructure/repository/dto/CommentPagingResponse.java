@@ -43,7 +43,7 @@ public class CommentPagingResponse {
         return createAt;
     }
 
-    public boolean isMine() {
+    public boolean getIsMine() {
         return isMine;
     }
 }

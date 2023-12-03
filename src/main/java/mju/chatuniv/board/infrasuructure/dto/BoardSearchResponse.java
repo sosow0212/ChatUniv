@@ -59,7 +59,7 @@ public class BoardSearchResponse {
         return commentAllResponse;
     }
 
-    public boolean isMine() {
+    public boolean getIsMine() {
         return isMine;
     }
 }

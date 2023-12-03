@@ -28,7 +28,7 @@ public class BoardCommentQueryRepository {
                         boardComment.content,
                         member.email,
                         boardComment.createdAt,
-                        boardComment.member.id.eq(memberId)))
+                        boardComment.member.id.eq(memberId).as("isMine")))
                 .from(boardComment)
                 .leftJoin(boardComment.member, member)
                 .where(eqBoardId(boardId), ltCommentId(commentId))

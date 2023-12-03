@@ -28,7 +28,7 @@ public class ConversationCommentQueryRepository {
                         conversationComment.content,
                         member.email,
                         conversationComment.createdAt,
-                        conversationComment.member.id.eq(memberId)))
+                        conversationComment.member.id.eq(memberId).as("isMine")))
                 .from(conversationComment)
                 .leftJoin(conversationComment.member, member)
                 .where(eqConversationId(conversationId), ltCommentId(commentId))

@@ -32,7 +32,7 @@ public class BoardQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public BoardSearchResponse findBoard(final Long boardId, final Long memberId) {
+    public BoardSearchResponse findBoard(final Long memberId, final Long boardId) {
         BoardReadResponse boardReadResponse = getBoard(boardId, memberId);
 
         List<CommentPagingResponse> commentPagingResponses = jpaQueryFactory
@@ -44,7 +44,7 @@ public class BoardQueryRepository {
                                 .append(SHORTCUT_JOINER)
                                 .as("email"),
                         boardComment.createdAt,
-                        boardComment.member.id.eq(memberId)))
+                        boardComment.member.id.eq(memberId).as("isMine")))
                 .from(boardComment)
                 .leftJoin(boardComment.member, member)
                 .where(boardComment.board.id.eq(boardId))
@@ -53,7 +53,7 @@ public class BoardQueryRepository {
         return new BoardSearchResponse(boardReadResponse.getBoardId(), boardReadResponse.getTitle(),
                 boardReadResponse.getContent(),
                 boardReadResponse.getEmail(), boardReadResponse.getCreateAt(),
-                CommentAllResponse.from(commentPagingResponses), boardReadResponse.isMine());
+                CommentAllResponse.from(commentPagingResponses), boardReadResponse.getIsMine());
     }
 
     private BoardReadResponse getBoard(final Long boardId, final Long memberId) {
@@ -67,14 +67,14 @@ public class BoardQueryRepository {
                                 .append(SHORTCUT_JOINER)
                                 .as("email"),
                         board.createdAt,
-                        board.member.id.eq(memberId)))
+                        board.member.id.eq(memberId).as("isMine")))
                 .from(board)
                 .leftJoin(board.member, member)
                 .where(board.id.eq(boardId))
                 .fetchFirst();
     }
 
-    public List<BoardReadResponse> findAllBoards(final Integer pageSize, final Long boardId) {
+    public List<BoardReadResponse> findAllBoards(final Long memberId, final Integer pageSize, final Long boardId) {
         List<BoardReadResponse> boards = jpaQueryFactory.selectFrom(board)
                 .leftJoin(board.member, member)
                 .where(ltBoardId(boardId))
@@ -94,17 +94,19 @@ public class BoardQueryRepository {
                                                 .substring(0, SHORTCUT_LIMIT_OF_EMAIL)
                                                 .append(SHORTCUT_JOINER)
                                                 .as("email"),
-                                        board.createdAt
+                                        board.createdAt,
+                                        board.member.id.eq(memberId).as("isMine")
                                 ))
                 );
 
         return conditionalList(boards);
     }
 
-    public List<BoardReadResponse> findBoardsBySearchType(final Integer pageSize,
-                                                          final Long boardId,
+    public List<BoardReadResponse> findBoardsBySearchType(final Long memberId,
                                                           final SearchType searchType,
-                                                          final String text) {
+                                                          final String text,
+                                                          final Integer pageSize,
+                                                          final Long boardId) {
         List<BoardReadResponse> boards = jpaQueryFactory.selectFrom(board)
                 .leftJoin(board.member, member)
                 .where(ltBoardId(boardId), checkSearchCondition(searchType, text))
@@ -124,7 +126,8 @@ public class BoardQueryRepository {
                                                 .substring(0, SHORTCUT_LIMIT_OF_EMAIL)
                                                 .append(SHORTCUT_JOINER)
                                                 .as("email"),
-                                        board.createdAt
+                                        board.createdAt,
+                                        board.member.id.eq(memberId).as("isMine")
                                 ))
                 );
 

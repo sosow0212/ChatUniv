@@ -1,15 +1,15 @@
 package mju.chatuniv.comment.infrastructure.repository;
 
-import static com.querydsl.core.types.Projections.constructor;
-import static mju.chatuniv.comment.domain.QBoardComment.boardComment;
-import static mju.chatuniv.member.domain.QMember.member;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import java.util.List;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import org.springframework.stereotype.Repository;
+
+import static com.querydsl.core.types.Projections.constructor;
+import static mju.chatuniv.comment.domain.QBoardComment.boardComment;
+import static mju.chatuniv.member.domain.QMember.member;
 
 @Repository
 public class BoardCommentQueryRepository {
@@ -20,13 +20,15 @@ public class BoardCommentQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public List<CommentPagingResponse> findComments(final Long boardId, final Integer pageSize, final Long commentId) {
+    public List<CommentPagingResponse> findComments(final Long memberId, final Long boardId, final Integer pageSize,
+                                                    final Long commentId) {
         List<CommentPagingResponse> comments = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,
                         boardComment.id.as("commentId"),
                         boardComment.content,
                         member.email,
-                        boardComment.createdAt))
+                        boardComment.createdAt,
+                        boardComment.member.id.eq(memberId)))
                 .from(boardComment)
                 .leftJoin(boardComment.member, member)
                 .where(eqBoardId(boardId), ltCommentId(commentId))

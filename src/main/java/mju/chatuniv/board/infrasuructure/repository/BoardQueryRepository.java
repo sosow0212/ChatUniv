@@ -1,12 +1,5 @@
 package mju.chatuniv.board.infrasuructure.repository;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.types.Projections.constructor;
-import static com.querydsl.core.types.dsl.Expressions.asNumber;
-import static mju.chatuniv.board.domain.QBoard.board;
-import static mju.chatuniv.comment.domain.QBoardComment.boardComment;
-import static mju.chatuniv.member.domain.QMember.member;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
@@ -17,6 +10,13 @@ import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.comment.controller.dto.CommentAllResponse;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 import org.springframework.stereotype.Repository;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.Projections.constructor;
+import static com.querydsl.core.types.dsl.Expressions.asNumber;
+import static mju.chatuniv.board.domain.QBoard.board;
+import static mju.chatuniv.comment.domain.QBoardComment.boardComment;
+import static mju.chatuniv.member.domain.QMember.member;
 
 @Repository
 public class BoardQueryRepository {
@@ -32,8 +32,8 @@ public class BoardQueryRepository {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public BoardSearchResponse findBoard(final Long boardId) {
-        BoardReadResponse boardReadResponse = getBoard(boardId);
+    public BoardSearchResponse findBoard(final Long boardId, final Long memberId) {
+        BoardReadResponse boardReadResponse = getBoard(boardId, memberId);
 
         List<CommentPagingResponse> commentPagingResponses = jpaQueryFactory
                 .select(constructor(CommentPagingResponse.class,
@@ -43,17 +43,20 @@ public class BoardQueryRepository {
                                 .substring(0, SHORTCUT_LIMIT_OF_EMAIL)
                                 .append(SHORTCUT_JOINER)
                                 .as("email"),
-                        boardComment.createdAt))
+                        boardComment.createdAt,
+                        boardComment.member.id.eq(memberId)))
                 .from(boardComment)
                 .leftJoin(boardComment.member, member)
                 .where(boardComment.board.id.eq(boardId))
                 .fetch();
 
-        return new BoardSearchResponse(boardReadResponse.getBoardId(), boardReadResponse.getTitle(), boardReadResponse.getContent(),
-                boardReadResponse.getEmail(), boardReadResponse.getCreateAt(), CommentAllResponse.from(commentPagingResponses));
+        return new BoardSearchResponse(boardReadResponse.getBoardId(), boardReadResponse.getTitle(),
+                boardReadResponse.getContent(),
+                boardReadResponse.getEmail(), boardReadResponse.getCreateAt(),
+                CommentAllResponse.from(commentPagingResponses), boardReadResponse.isMine());
     }
 
-    private BoardReadResponse getBoard(Long boardId) {
+    private BoardReadResponse getBoard(final Long boardId, final Long memberId) {
         return jpaQueryFactory
                 .select(constructor(BoardReadResponse.class,
                         asNumber(boardId).as("boardId"),
@@ -63,7 +66,8 @@ public class BoardQueryRepository {
                                 .substring(0, SHORTCUT_LIMIT_OF_EMAIL)
                                 .append(SHORTCUT_JOINER)
                                 .as("email"),
-                        board.createdAt))
+                        board.createdAt,
+                        board.member.id.eq(memberId)))
                 .from(board)
                 .leftJoin(board.member, member)
                 .where(board.id.eq(boardId))

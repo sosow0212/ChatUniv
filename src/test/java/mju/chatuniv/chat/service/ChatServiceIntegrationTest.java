@@ -1,5 +1,6 @@
 package mju.chatuniv.chat.service;
 
+import java.util.List;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.ChatRepository;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -14,8 +15,6 @@ import mju.chatuniv.member.domain.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static mju.chatuniv.fixture.chat.ChatFixture.createChat;
 import static mju.chatuniv.fixture.member.MemberFixture.createMember;
@@ -103,7 +102,8 @@ class ChatServiceIntegrationTest extends IntegrationTest {
         Long conversationId = 3L;
 
         // when
-        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword, pageSize, conversationId);
+        List<ConversationSimpleResponse> result = chatQueryService.searchChattingRoom(keyword, pageSize,
+                conversationId);
 
         // then
         assertThat(result.size()).isEqualTo(1);

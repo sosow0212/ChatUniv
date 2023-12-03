@@ -1,6 +1,10 @@
 package mju.chatuniv.chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.JwtAuthService;
 import mju.chatuniv.chat.domain.chat.Chat;
 import mju.chatuniv.chat.domain.chat.Conversation;
@@ -24,11 +28,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.LongStream;
 
 import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
 import static mju.chatuniv.helper.RestDocsHelper.customDocument;
@@ -170,7 +169,8 @@ class ChatControllerUnitTest {
         Long conversationId = 4L;
         List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
 
-        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(
+                conversationSimpleResponses);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
@@ -360,10 +360,12 @@ class ChatControllerUnitTest {
         Long conversationId = 4L;
         List<ConversationSimpleResponse> conversationSimpleResponses = getConversationAllResponse();
 
-        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(conversationSimpleResponses);
+        when(chatQueryService.searchChattingRoom(keyword, pageSize, conversationId)).thenReturn(
+                conversationSimpleResponses);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/chats/search?pageSize=10&conversationId=4"))
+        mockTestHelper.createMockRequestWithTokenAndWithoutContent(
+                        get("/api/chats/search?pageSize=10&conversationId=4"))
                 .andExpect(status().isBadRequest())
                 .andDo(customDocument("fail_search_chatting_room_empty_condition",
                         requestHeaders(

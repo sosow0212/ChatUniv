@@ -23,7 +23,7 @@ import static mju.chatuniv.fixture.member.MemberFixture.createMember;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@Import( BoardQueryRepository.class)
+@Import(BoardQueryRepository.class)
 class BoardQueryRepositoryTest extends RepositoryTestHelper {
 
     @Autowired

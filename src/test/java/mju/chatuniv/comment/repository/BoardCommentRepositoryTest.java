@@ -99,7 +99,7 @@ class BoardCommentRepositoryTest extends RepositoryTestHelper {
                 });
 
         //when
-        List<CommentPagingResponse> comments = boardCommentQueryRepository.findComments(1L,1L, 10, 6L);
+        List<CommentPagingResponse> comments = boardCommentQueryRepository.findComments(1L, 1L, 10, 6L);
 
         //then
         assertAll(

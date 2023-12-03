@@ -98,7 +98,8 @@ class MemberControllerIntegrationTest extends IntegrationTest {
         Member member = authService.register(new MemberCreateRequest("a@a.com", "1234"));
 
         String token = authService.login(new MemberLoginReqeust("a@a.com", "1234"));
-        IntStream.range(0, 10).forEach(index -> boardService.create(member, new BoardCreateRequest("title"+index, "content"+index)));
+        IntStream.range(0, 10).forEach(
+                index -> boardService.create(member, new BoardCreateRequest("title" + index, "content" + index)));
 
         // when
         Response response = RestAssured.given()
@@ -127,7 +128,7 @@ class MemberControllerIntegrationTest extends IntegrationTest {
         Board board = boardService.create(member, new BoardCreateRequest("title", "content"));
 
         IntStream.range(0, 10).forEach(index -> boardCommentService
-                .create(board.getId(), member, new CommentRequest("comment"+index)));
+                .create(board.getId(), member, new CommentRequest("comment" + index)));
 
         // when
         Response response = RestAssured.given()
@@ -141,8 +142,10 @@ class MemberControllerIntegrationTest extends IntegrationTest {
         Assertions.assertAll(() -> {
             response.then()
                     .statusCode(HttpStatus.OK.value());
-            List<MembersCommentResponse> responses = new ArrayList<>(response.body().jsonPath().get("membersCommentResponses"));
-            Assertions.assertEquals(ArrayList.class, response.body().jsonPath().get("membersCommentResponses").getClass());
+            List<MembersCommentResponse> responses = new ArrayList<>(
+                    response.body().jsonPath().get("membersCommentResponses"));
+            Assertions.assertEquals(ArrayList.class,
+                    response.body().jsonPath().get("membersCommentResponses").getClass());
             Assertions.assertEquals(10, responses.size());
         });
     }

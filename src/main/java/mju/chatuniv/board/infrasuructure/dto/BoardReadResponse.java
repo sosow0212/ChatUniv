@@ -11,25 +11,29 @@ public class BoardReadResponse {
     private String content;
     private String email;
     private LocalDateTime createAt;
+    private boolean isMine;
 
     @QueryProjection
     public BoardReadResponse(final Long boardId,
                              final String title,
                              final String content,
                              final String email,
-                             final LocalDateTime createAt) {
+                             final LocalDateTime createAt,
+                             final boolean isMine) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.email = email;
         this.createAt = createAt;
+        this.isMine = isMine;
     }
 
     private BoardReadResponse() {
     }
 
     public static BoardReadResponse from(final Board board) {
-        return new BoardReadResponse(board.getId(), board.getTitle(), board.getContent(), board.getMember().getEmail(), board.getCreatedAt());
+        return new BoardReadResponse(board.getId(), board.getTitle(), board.getContent(), board.getMember().getEmail(),
+                board.getCreatedAt(), true);
     }
 
     public Long getBoardId() {
@@ -50,5 +54,9 @@ public class BoardReadResponse {
 
     public LocalDateTime getCreateAt() {
         return createAt;
+    }
+
+    public boolean isMine() {
+        return isMine;
     }
 }

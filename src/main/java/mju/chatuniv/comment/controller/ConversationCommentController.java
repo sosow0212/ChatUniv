@@ -47,9 +47,11 @@ public class ConversationCommentController {
 
     @GetMapping("/{conversationId}/comments")
     public ResponseEntity<CommentAllResponse> findCommentsByConversation(@PathVariable("conversationId") final Long conversationId,
+                                                                         @JwtLogin final Member member,
                                                                          @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                          @RequestParam(required = false) final Long commentId) {
-        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(conversationId, pageSize, commentId);
+        List<CommentPagingResponse> comments = conversationCommentQueryService.findComments(member.getId(),
+                conversationId, pageSize, commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }
 }

@@ -1,8 +1,5 @@
 package mju.chatuniv.board.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import java.util.List;
 import java.util.stream.LongStream;
 import mju.chatuniv.auth.service.AuthService;
@@ -22,6 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class BoardServiceIntegrationTest extends IntegrationTest {
 
@@ -78,7 +78,7 @@ class BoardServiceIntegrationTest extends IntegrationTest {
         Long boardId = 1L;
 
         //when
-        BoardSearchResponse boardSearchResponse = boardQueryService.findBoard(boardId);
+        BoardSearchResponse boardSearchResponse = boardQueryService.findBoard(member, boardId);
 
         //then
         assertAll(
@@ -98,7 +98,7 @@ class BoardServiceIntegrationTest extends IntegrationTest {
                 });
 
         //when
-        List<BoardReadResponse> boards = boardQueryService.findAllBoards(10, 50L);
+        List<BoardReadResponse> boards = boardQueryService.findAllBoards(member, 10, 50L);
 
         //then
         assertAll(
@@ -119,7 +119,8 @@ class BoardServiceIntegrationTest extends IntegrationTest {
                 });
 
         //when
-        List<BoardReadResponse> boards = boardQueryService.findBoardsBySearchType(SearchType.TITLE, "제목", 10, 25L);
+        List<BoardReadResponse> boards = boardQueryService.findBoardsBySearchType(member, SearchType.TITLE,
+                "제목", 10, 25L);
 
         //then
         assertAll(

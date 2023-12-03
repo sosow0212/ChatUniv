@@ -2,7 +2,7 @@ package mju.chatuniv.acceptance;
 
 import java.util.stream.IntStream;
 import mju.chatuniv.board.controller.dto.BoardAllResponse;
-import mju.chatuniv.board.infrasuructure.dto.BoardReadResponse;
+import mju.chatuniv.board.controller.dto.BoardWriteResponse;
 import mju.chatuniv.board.infrasuructure.dto.BoardSearchResponse;
 import mju.chatuniv.board.service.dto.BoardCreateRequest;
 import mju.chatuniv.board.service.dto.BoardUpdateRequest;
@@ -23,7 +23,7 @@ class BoardAcceptanceTest extends AcceptanceTest {
 
         //when
         var 게시글_생성_응답 = 로그인_인증_후_생성요청("/api/boards", 게시글_생성_요청, 로그인_토큰);
-        var 게시글_생성_결과 = 게시글_생성_응답.body().as(BoardReadResponse.class);
+        var 게시글_생성_결과 = 게시글_생성_응답.body().as(BoardWriteResponse.class);
 
         //then
         단일_검증(게시글_생성_결과.getBoardId(), 1L);
@@ -83,7 +83,7 @@ class BoardAcceptanceTest extends AcceptanceTest {
 
         //when
         var 게시글_수정_응답 = 로그인_인증_후_수정요청("/api/boards/1", new BoardUpdateRequest("updateTitle", "updateContent"), 로그인_토큰);
-        var 게시글_수정_결과 = 게시글_수정_응답.body().as(BoardReadResponse.class);
+        var 게시글_수정_결과 = 게시글_수정_응답.body().as(BoardWriteResponse.class);
 
         //then
         단일_검증(게시글_수정_결과.getTitle(), "updateTitle");

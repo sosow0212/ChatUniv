@@ -1,11 +1,5 @@
 package mju.chatuniv.board.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
 import java.util.Optional;
 import mju.chatuniv.board.domain.Board;
 import mju.chatuniv.board.exception.exceptions.BoardContentBlankException;
@@ -24,6 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceUnitTest {
@@ -76,10 +76,10 @@ class BoardServiceUnitTest {
     void throws_exception_when_find_board_with_invalid_board_id() {
         //given
         Long boardId = 1L;
-        given(boardQueryRepository.findBoard(boardId)).willReturn(null);
+        given(boardQueryRepository.findBoard(member.getId(), boardId)).willReturn(null);
 
         //when & then
-        assertThatThrownBy(() -> boardQueryService.findBoard(boardId))
+        assertThatThrownBy(() -> boardQueryService.findBoard(member, boardId))
                 .isInstanceOf(BoardNotFoundException.class);
     }
 

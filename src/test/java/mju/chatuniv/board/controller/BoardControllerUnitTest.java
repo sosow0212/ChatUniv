@@ -1,28 +1,5 @@
 package mju.chatuniv.board.controller;
 
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,6 +37,29 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
 @AutoConfigureRestDocs
@@ -101,7 +101,7 @@ class BoardControllerUnitTest {
         given(boardService.create(any(Member.class), any(BoardCreateRequest.class))).willReturn(board);
 
         // when & then
-        mockTestHelper.createMockRequestWithTokenAndContent(post(("/api/boards")), boardCreateRequest)
+        mockTestHelper.createMockRequestWithTokenAndContent(post("/api/boards"), boardCreateRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.boardId").value(board.getId()))
                 .andExpect(jsonPath("$.title").value(board.getTitle()))
@@ -133,14 +133,14 @@ class BoardControllerUnitTest {
         LongStream.range(1, 5)
                 .forEach(i -> {
                     commentPagingResponses.add(new CommentPagingResponse(i, "content" + i, "em...",
-                            LocalDateTime.parse("2023-10-09T12:43:47")));
+                            LocalDateTime.parse("2023-10-09T12:43:47"), false));
                 });
         CommentAllResponse commentAllResponse = CommentAllResponse.from(commentPagingResponses);
 
         BoardSearchResponse boardSearchResponse = new BoardSearchResponse(1L, "title", "content", "em...",
-                LocalDateTime.parse("2023-10-09T12:43:47"), commentAllResponse);
+                LocalDateTime.parse("2023-10-09T12:43:47"), commentAllResponse, false);
 
-        given(boardQueryService.findBoard(any(Long.class))).willReturn(boardSearchResponse);
+        given(boardQueryService.findBoard(any(Member.class), anyLong())).willReturn(boardSearchResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/{boardId}", 1L))
@@ -151,6 +151,7 @@ class BoardControllerUnitTest {
                 .andExpect(jsonPath("$.email").value(boardSearchResponse.getEmail()))
                 .andExpect(jsonPath("$.createAt").value("2023-10-09T12:43:47"))
                 .andExpect(jsonPath("$.commentAllResponse.commentResponse", hasSize(4)))
+                .andExpect(jsonPath("$.isMine").value(false))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_board",
                         requestHeaders(
@@ -165,6 +166,7 @@ class BoardControllerUnitTest {
                                 fieldWithPath("content").description("게시판 조회 후 반환된 board의 내용"),
                                 fieldWithPath("email").description("게시판 전체 조회 후 반환된 board의 작성자"),
                                 fieldWithPath("createAt").description("게시판 조회 후 반환된 board의 생성시간"),
+                                fieldWithPath("isMine").description("작성한 사람과 조회한 사람의 일치 여부"),
                                 fieldWithPath("commentAllResponse.commentResponse").description("조회된 게시판의 댓글들"),
                                 fieldWithPath("commentAllResponse.commentResponse[].commentId").type(
                                         JsonFieldType.NUMBER).description("조회된 게시판의 댓글의 id"),
@@ -173,7 +175,9 @@ class BoardControllerUnitTest {
                                 fieldWithPath("commentAllResponse.commentResponse[].email").type(JsonFieldType.STRING)
                                         .description("조회된 게시판의 댓글의 작성자"),
                                 fieldWithPath("commentAllResponse.commentResponse[].createAt").type(
-                                        JsonFieldType.STRING).description("조회된 게시판의 댓글의 생성일자")
+                                        JsonFieldType.STRING).description("조회된 게시판의 댓글의 생성일자"),
+                                fieldWithPath("commentAllResponse.commentResponse[].isMine").type(
+                                        JsonFieldType.BOOLEAN).description("조회한 사람과 작성한 사람의 일치 여부")
                         )
                 )).andReturn();
     }
@@ -184,7 +188,7 @@ class BoardControllerUnitTest {
         // given
         List<BoardReadResponse> boardReadResponse = getBoardAllResponse();
 
-        given(boardQueryService.findAllBoards(any(Integer.class), any(Long.class))).willReturn(boardReadResponse);
+        given(boardQueryService.findAllBoards(any(Member.class), anyInt(), anyLong())).willReturn(boardReadResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(get("/api/boards/all?boardId=3&pageSize=4"))
@@ -196,16 +200,19 @@ class BoardControllerUnitTest {
                 .andExpect(jsonPath("$.boards[0].content").value("content1"))
                 .andExpect(jsonPath("$.boards[0].email").value("em..."))
                 .andExpect(jsonPath("$.boards[0].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[0].isMine").value(false))
                 .andExpect(jsonPath("$.boards[1].boardId").value(2L))
                 .andExpect(jsonPath("$.boards[1].title").value("test2"))
                 .andExpect(jsonPath("$.boards[1].content").value("content2"))
                 .andExpect(jsonPath("$.boards[1].email").value("em..."))
                 .andExpect(jsonPath("$.boards[1].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[1].isMine").value(false))
                 .andExpect(jsonPath("$.boards[2].boardId").value(3L))
                 .andExpect(jsonPath("$.boards[2].title").value("test3"))
                 .andExpect(jsonPath("$.boards[2].content").value("content3"))
                 .andExpect(jsonPath("$.boards[2].email").value("em..."))
                 .andExpect(jsonPath("$.boards[2].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[2].isMine").value(false))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_all_boards",
                         requestHeaders(
@@ -216,11 +223,18 @@ class BoardControllerUnitTest {
                                 parameterWithName("boardId").description("해당 id를 기준으로 조회 대상으로 설정")
                         ),
                         responseFields(
-                                fieldWithPath("boards[0].boardId").description("게시판 검색 조회 후 반환된 board의 ID"),
-                                fieldWithPath("boards[0].title").description("게시판 검색 조회 후 반환된 board의 제목"),
-                                fieldWithPath("boards[0].content").description("게시판 검색 조회 후 반환된 board의 내용"),
-                                fieldWithPath("boards[0].email").description("게시판 검색 조회 후 반환된 board의 작성자"),
-                                fieldWithPath("boards[0].createAt").description("게시판 검 조회 후 반환된 board의 생성시간")
+                                fieldWithPath("boards[0].boardId").type(JsonFieldType.NUMBER)
+                                        .description("게시판 검색 조회 후 반환된 board의 ID"),
+                                fieldWithPath("boards[0].title").type(JsonFieldType.STRING)
+                                        .description("게시판 검색 조회 후 반환된 board의 제목"),
+                                fieldWithPath("boards[0].content").type(JsonFieldType.STRING)
+                                        .description("게시판 검색 조회 후 반환된 board의 내용"),
+                                fieldWithPath("boards[0].email").type(JsonFieldType.STRING)
+                                        .description("게시판 검색 조회 후 반환된 board의 작성자"),
+                                fieldWithPath("boards[0].createAt").type(JsonFieldType.STRING)
+                                        .description("게시판 검 조회 후 반환된 board의 생성시간"),
+                                fieldWithPath("boards[0].isMine").type(JsonFieldType.BOOLEAN)
+                                        .description("조회한 사람과 작성한 사람의 일치 여부")
 
                         )
                 )).andReturn();
@@ -232,7 +246,7 @@ class BoardControllerUnitTest {
         // given
         List<BoardReadResponse> boardReadResponse = getBoardAllResponse();
 
-        given(boardQueryService.findBoardsBySearchType(any(SearchType.class), anyString(), anyInt(),
+        given(boardQueryService.findBoardsBySearchType(any(Member.class), any(SearchType.class), anyString(), anyInt(),
                 anyLong())).willReturn(boardReadResponse);
 
         // when & then
@@ -246,16 +260,19 @@ class BoardControllerUnitTest {
                 .andExpect(jsonPath("$.boards[0].content").value("content1"))
                 .andExpect(jsonPath("$.boards[0].email").value("em..."))
                 .andExpect(jsonPath("$.boards[0].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[0].isMine").value(false))
                 .andExpect(jsonPath("$.boards[1].boardId").value(2L))
                 .andExpect(jsonPath("$.boards[1].title").value("test2"))
                 .andExpect(jsonPath("$.boards[1].content").value("content2"))
                 .andExpect(jsonPath("$.boards[1].email").value("em..."))
                 .andExpect(jsonPath("$.boards[1].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[1].isMine").value(false))
                 .andExpect(jsonPath("$.boards[2].boardId").value(3L))
                 .andExpect(jsonPath("$.boards[2].title").value("test3"))
                 .andExpect(jsonPath("$.boards[2].content").value("content3"))
                 .andExpect(jsonPath("$.boards[2].email").value("em..."))
                 .andExpect(jsonPath("$.boards[2].createAt").value("2023-10-09T12:43:47"))
+                .andExpect(jsonPath("$.boards[2].isMine").value(false))
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_boards_by_search_type",
                         requestHeaders(
@@ -268,11 +285,18 @@ class BoardControllerUnitTest {
                                 parameterWithName("boardId").description("해당 id를 기준으로 조회 대상으로 설정")
                         ),
                         responseFields(
-                                fieldWithPath("boards[0].boardId").description("게시판 전체 조회 후 반환된 board의 ID"),
-                                fieldWithPath("boards[0].title").description("게시판 전체 조회 후 반환된 board의 제목"),
-                                fieldWithPath("boards[0].content").description("게시판 전체 조회 후 반환된 board의 내용"),
-                                fieldWithPath("boards[0].email").description("게시판 전체 조회 후 반환된 board의 작성자"),
-                                fieldWithPath("boards[0].createAt").description("게시판 전체 조회 후 반환된 board의 생성시간")
+                                fieldWithPath("boards[0].boardId").type(JsonFieldType.NUMBER)
+                                        .description("게시판 전체 조회 후 반환된 board의 ID"),
+                                fieldWithPath("boards[0].title").type(JsonFieldType.STRING)
+                                        .description("게시판 전체 조회 후 반환된 board의 제목"),
+                                fieldWithPath("boards[0].content").type(JsonFieldType.STRING)
+                                        .description("게시판 전체 조회 후 반환된 board의 내용"),
+                                fieldWithPath("boards[0].email").type(JsonFieldType.STRING)
+                                        .description("게시판 전체 조회 후 반환된 board의 작성자"),
+                                fieldWithPath("boards[0].createAt").type(JsonFieldType.STRING)
+                                        .description("게시판 전체 조회 후 반환된 board의 생성시간"),
+                                fieldWithPath("boards[0].isMine").type(JsonFieldType.BOOLEAN)
+                                        .description("조회한 사람과 작성한 사람의 일치 여부")
 
                         )
                 )).andReturn();
@@ -414,9 +438,9 @@ class BoardControllerUnitTest {
     void fail_to_find_board_with_wrong_board_id() throws Exception {
         // given
         BoardReadResponse boardReadResponse = new BoardReadResponse(1L, "title", "content", "email",
-                LocalDateTime.now());
+                LocalDateTime.now(), false);
 
-        given(boardQueryService.findBoard(any(Long.class))).willThrow(
+        given(boardQueryService.findBoard(any(Member.class), anyLong())).willThrow(
                 new BoardNotFoundException(boardReadResponse.getBoardId()));
 
         // when & then
@@ -466,7 +490,7 @@ class BoardControllerUnitTest {
         LongStream.rangeClosed(1, 3)
                 .forEach(index -> {
                     boards.add(new BoardReadResponse(index, "test" + index, "content" + index,
-                            "em...", LocalDateTime.parse("2023-10-09T12:43:47")));
+                            "em...", LocalDateTime.parse("2023-10-09T12:43:47"), false));
                 });
         return boards;
     }

@@ -5,5 +5,5 @@ import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
 
 public interface CommentReadService {
 
-    List<CommentPagingResponse> findComments(Long id, Integer pageSize, Long commentId);
+    List<CommentPagingResponse> findComments(Long memberId, Long id, Integer pageSize, Long commentId);
 }

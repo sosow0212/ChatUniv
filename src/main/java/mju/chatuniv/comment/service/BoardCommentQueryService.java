@@ -17,7 +17,8 @@ public class BoardCommentQueryService implements CommentReadService {
     }
 
     @Override
-    public List<CommentPagingResponse> findComments(final Long conversationId, final Integer pageSize, final Long commentId) {
-        return boardCommentQueryRepository.findComments(conversationId, pageSize, commentId);
+    public List<CommentPagingResponse> findComments(final Long memberId, final Long conversationId,
+                                                    final Integer pageSize, final Long commentId) {
+        return boardCommentQueryRepository.findComments(memberId, conversationId, pageSize, commentId);
     }
 }

@@ -19,8 +19,8 @@ public class BoardQueryService {
         this.boardQueryRepository = boardQueryRepository;
     }
 
-    public BoardSearchResponse findBoard(final Long boardId) {
-        BoardSearchResponse boardSearchResponse = boardQueryRepository.findBoard(boardId);
+    public BoardSearchResponse findBoard(final Long boardId, final Long memberId) {
+        BoardSearchResponse boardSearchResponse = boardQueryRepository.findBoard(boardId, memberId);
         checkNull(boardSearchResponse, boardId);
         return boardSearchResponse;
     }

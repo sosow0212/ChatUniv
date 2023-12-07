@@ -1,12 +1,5 @@
 package mju.chatuniv.comment.repository;
 
-import static mju.chatuniv.fixture.chat.ChatFixture.createChat;
-import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
-import static mju.chatuniv.fixture.comment.ConversationCommentFixture.createConversationComment;
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -28,6 +21,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import static mju.chatuniv.fixture.chat.ChatFixture.createChat;
+import static mju.chatuniv.fixture.chat.ConversationFixture.createConversation;
+import static mju.chatuniv.fixture.comment.ConversationCommentFixture.createConversationComment;
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Import(ConversationCommentQueryRepository.class)
 class ConversationCommentRepositoryTest extends RepositoryTestHelper {
@@ -105,7 +105,7 @@ class ConversationCommentRepositoryTest extends RepositoryTestHelper {
                 });
 
         //when
-        List<CommentPagingResponse> comments = conversationCommentQueryRepository.findComments(1L, 10, 6L);
+        List<CommentPagingResponse> comments = conversationCommentQueryRepository.findComments(1L, 1L, 10, 6L);
 
         //then
         assertAll(

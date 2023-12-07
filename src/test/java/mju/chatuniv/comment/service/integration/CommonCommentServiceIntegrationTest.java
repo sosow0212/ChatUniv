@@ -1,11 +1,5 @@
 package mju.chatuniv.comment.service.integration;
 
-import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentReadServiceType;
-import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentWriteServiceType;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -35,6 +29,12 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentReadServiceType;
+import static mju.chatuniv.comment.controller.intergration.BeanUtils.getBeansOfCommentWriteServiceType;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class CommonCommentServiceIntegrationTest extends IntegrationTest {
 
@@ -111,12 +111,14 @@ class CommonCommentServiceIntegrationTest extends IntegrationTest {
                     CommentReadService commentReadService = commentReadServices.get(index);
                     dynamicTestList.add(dynamicTest(getClassName(commentReadService), () -> {
                         //given
+                        Long memberId = 1L;
                         Long id = 1L;
                         Integer pageSize = 10;
                         Long commentId = 10L;
 
                         //when
-                        List<CommentPagingResponse> comments = commentReadService.findComments(id, pageSize, commentId);
+                        List<CommentPagingResponse> comments = commentReadService.findComments(member, id, pageSize,
+                                commentId);
 
                         //then
                         assertAll(
@@ -157,16 +159,17 @@ class CommonCommentServiceIntegrationTest extends IntegrationTest {
         for (CommentReadService commentReadService : getBeansOfCommentReadServiceType()) {
             dynamicTestList.add(dynamicTest(getClassName(commentReadService), () -> {
                 //given
+                Long memberId = 1L;
                 Long id = 1L;
                 Integer pageSize = 10;
                 Long commentId = 10L;
-                List<CommentPagingResponse> beforeDeleteComments = commentReadService.findComments(id, pageSize,
-                        commentId);
+                List<CommentPagingResponse> beforeDeleteComments = commentReadService.findComments(member, id,
+                        pageSize, commentId);
                 //when
                 commonCommentService.delete(beforeDeleteComments.get(0).getCommentId(), member);
 
                 //then
-                List<CommentPagingResponse> afterDeleteComments = boardCommentQueryService.findComments(id, pageSize,
+                List<CommentPagingResponse> afterDeleteComments = commentReadService.findComments(member, id, pageSize,
                         commentId);
                 assertThat(beforeDeleteComments.size() - 1).isEqualTo(afterDeleteComments.size());
             }));

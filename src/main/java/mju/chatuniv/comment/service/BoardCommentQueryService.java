@@ -3,6 +3,7 @@ package mju.chatuniv.comment.service;
 import java.util.List;
 import mju.chatuniv.comment.infrastructure.repository.BoardCommentQueryRepository;
 import mju.chatuniv.comment.infrastructure.repository.dto.CommentPagingResponse;
+import mju.chatuniv.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,8 @@ public class BoardCommentQueryService implements CommentReadService {
     }
 
     @Override
-    public List<CommentPagingResponse> findComments(final Long conversationId, final Integer pageSize, final Long commentId) {
-        return boardCommentQueryRepository.findComments(conversationId, pageSize, commentId);
+    public List<CommentPagingResponse> findComments(final Member member, final Long conversationId,
+                                                    final Integer pageSize, final Long commentId) {
+        return boardCommentQueryRepository.findComments(member.getId(), conversationId, pageSize, commentId);
     }
 }

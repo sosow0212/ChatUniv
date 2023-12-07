@@ -47,9 +47,11 @@ public class BoardCommentController {
 
     @GetMapping("/{boardId}/comments")
     public ResponseEntity<CommentAllResponse> findCommentsByBoard(@PathVariable("boardId") final Long boardId,
+                                                                  @JwtLogin final Member member,
                                                                   @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                   @RequestParam(required = false) final Long commentId) {
-        List<CommentPagingResponse> comments = boardCommentQueryService.findComments(boardId, pageSize, commentId);
+        List<CommentPagingResponse> comments = boardCommentQueryService.findComments(member, boardId, pageSize,
+                commentId);
         return ResponseEntity.ok(CommentAllResponse.from(comments));
     }
 }

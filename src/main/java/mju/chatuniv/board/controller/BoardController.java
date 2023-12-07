@@ -52,33 +52,37 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardSearchResponse> findBoard(@PathVariable("boardId") final Long boardId) {
+    public ResponseEntity<BoardSearchResponse> findBoard(@JwtLogin final Member member,
+                                                         @PathVariable("boardId") final Long boardId) {
         return ResponseEntity.ok()
-                .body(boardQueryService.findBoard(boardId));
+                .body(boardQueryService.findBoard(member, boardId));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<BoardAllResponse> findAllBoards(@RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
+    public ResponseEntity<BoardAllResponse> findAllBoards(@JwtLogin final Member member,
+                                                          @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                           @RequestParam(required = false) final Long boardId) {
-        List<BoardReadResponse> allBoards = boardQueryService.findAllBoards(pageSize, boardId);
+        List<BoardReadResponse> allBoards = boardQueryService.findAllBoards(member, pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(allBoards));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<BoardAllResponse> findBoardsBySearchType(@RequestParam(required = false) final SearchType searchType,
+    public ResponseEntity<BoardAllResponse> findBoardsBySearchType(@JwtLogin final Member member,
+                                                                   @RequestParam(required = false) final SearchType searchType,
                                                                    @RequestParam(required = false) @NotBlank(message = "검색어를 다시 입력해주세요.") final String text,
                                                                    @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final Integer pageSize,
                                                                    @RequestParam(required = false) final Long boardId) {
-        List<BoardReadResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(searchType, text, pageSize, boardId);
+        List<BoardReadResponse> boardsBySearchType = boardQueryService.findBoardsBySearchType(member, searchType, text,
+                pageSize, boardId);
         return ResponseEntity.ok()
                 .body(BoardAllResponse.from(boardsBySearchType));
     }
 
     @PatchMapping("/{boardId}")
     public ResponseEntity<BoardWriteResponse> update(@PathVariable("boardId") final Long boardId,
-                                                    @JwtLogin final Member member,
-                                                    @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
+                                                     @JwtLogin final Member member,
+                                                     @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
         Board board = boardService.update(boardId, member, boardUpdateRequest);
         return ResponseEntity.ok()
                 .body(BoardWriteResponse.from(board));

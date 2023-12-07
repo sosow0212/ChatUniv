@@ -9,16 +9,19 @@ public class CommentPagingResponse {
     private String content;
     private String email;
     private LocalDateTime createAt;
+    private boolean isMine;
 
     @QueryProjection
     public CommentPagingResponse(final Long commentId,
                                  final String content,
                                  final String email,
-                                 final LocalDateTime createAt) {
+                                 final LocalDateTime createAt,
+                                 final boolean isMine) {
         this.commentId = commentId;
         this.content = content;
         this.email = email;
         this.createAt = createAt;
+        this.isMine = isMine;
     }
 
     private CommentPagingResponse() {
@@ -38,5 +41,9 @@ public class CommentPagingResponse {
 
     public LocalDateTime getCreateAt() {
         return createAt;
+    }
+
+    public boolean getIsMine() {
+        return isMine;
     }
 }

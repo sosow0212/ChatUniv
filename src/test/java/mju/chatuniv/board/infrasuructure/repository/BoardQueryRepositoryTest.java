@@ -1,11 +1,6 @@
 package mju.chatuniv.board.infrasuructure.repository;
 
 
-import static mju.chatuniv.fixture.board.BoardFixture.createBoard;
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 import java.util.List;
 import java.util.stream.IntStream;
 import mju.chatuniv.board.controller.dto.SearchType;
@@ -23,7 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-@Import( BoardQueryRepository.class)
+import static mju.chatuniv.fixture.board.BoardFixture.createBoard;
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+@Import(BoardQueryRepository.class)
 class BoardQueryRepositoryTest extends RepositoryTestHelper {
 
     @Autowired
@@ -58,7 +58,7 @@ class BoardQueryRepositoryTest extends RepositoryTestHelper {
                 .forEach(index -> commentRepository.save(BoardComment.of("content" + index, member, board)));
 
         // when
-        BoardSearchResponse result = boardQueryRepository.findBoard(1L);
+        BoardSearchResponse result = boardQueryRepository.findBoard(1L, 1L);
         List<CommentPagingResponse> resultComments = result.getCommentAllResponse().getCommentResponse();
 
         // then
@@ -76,7 +76,7 @@ class BoardQueryRepositoryTest extends RepositoryTestHelper {
         Long boardId = 9L;
 
         // when
-        List<BoardReadResponse> boards = boardQueryRepository.findAllBoards(pageSize, boardId);
+        List<BoardReadResponse> boards = boardQueryRepository.findAllBoards(member.getId(), pageSize, boardId);
 
         // then
         assertAll(
@@ -94,7 +94,8 @@ class BoardQueryRepositoryTest extends RepositoryTestHelper {
         String text = "7";
 
         // when
-        List<BoardReadResponse> boards = boardQueryRepository.findBoardsBySearchType(pageSize, boardId, searchType, text);
+        List<BoardReadResponse> boards = boardQueryRepository.findBoardsBySearchType(member.getId(), searchType, text,
+                pageSize, boardId);
 
         // then
         assertAll(

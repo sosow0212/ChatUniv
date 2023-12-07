@@ -1,19 +1,5 @@
 package mju.chatuniv.member.controller;
 
-import static mju.chatuniv.fixture.member.MemberFixture.createMember;
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +24,20 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import static mju.chatuniv.fixture.member.MemberFixture.createMember;
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 @AutoConfigureRestDocs
@@ -261,7 +261,7 @@ class MemberControllerUnitTest {
 
     @DisplayName("회원의 채팅방 내역들을 조회하면 현재 회원이 사용한 채팅방이 리스트로 반환된다.")
     @Test
-    public void find_current_members_chat_rooms() throws Exception {
+    void find_current_members_chat_rooms() throws Exception {
         //given
         given(memberService.findMembersChat(any(Member.class)))
                 .willReturn(makeDummyChats());
@@ -275,7 +275,7 @@ class MemberControllerUnitTest {
 
     @DisplayName("회원의 게시물을 조회하면 게시물의 id, 제목, 내용이 반환된다. ")
     @Test
-    public void find_current_members_boards() throws Exception {
+    void find_current_members_boards() throws Exception {
         //given
         given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
 
@@ -299,14 +299,15 @@ class MemberControllerUnitTest {
                                 fieldWithPath(".boardResponses[0].title").description("조회시 반환되는 board의 id"),
                                 fieldWithPath(".boardResponses[0].content").description("조회시 반환되는 board의 id"),
                                 fieldWithPath(".boardResponses[0].email").description("조회시 반환되는 board의 작성자"),
-                                fieldWithPath(".boardResponses[0].createAt").description("조회시 반환되는 board의 생성시간")
+                                fieldWithPath(".boardResponses[0].createAt").description("조회시 반환되는 board의 생성시간"),
+                                fieldWithPath(".boardResponses[0].isMine").description("조회한 사람과 작성한 사람의 일치 여부")
                         )
                 ));
     }
 
     @DisplayName("토큰이 없을 때 게시물을 조회하면 401에러와 토큰이 없음이 반환된다. ")
     @Test
-    public void fail_to_find_current_members_boards_Unauthorized() throws Exception {
+    void fail_to_find_current_members_boards_Unauthorized() throws Exception {
         //given
         given(memberService.findMembersBoard(any(Member.class))).willReturn(makeDummyBoards());
 
@@ -318,7 +319,7 @@ class MemberControllerUnitTest {
 
     @DisplayName("회원의 댓글을 조회하면 댓글의 내용, 게시물id, 회원의 이메일이 반환된다. ")
     @Test
-    public void find_current_members_comments() throws Exception {
+    void find_current_members_comments() throws Exception {
         //given
         given(memberService.findMembersComment(any(Member.class))).willReturn(makeDummyComments());
 
@@ -330,24 +331,25 @@ class MemberControllerUnitTest {
                 .andExpect(jsonPath("$.membersCommentResponses[0].boardId").value(1))
                 .andExpect(jsonPath("$.membersCommentResponses[0].content").value("content0"))
                 .andExpect(jsonPath("$.membersCommentResponses[0].email").value("a@a.com"))
+
                 .andDo(MockMvcResultHandlers.print())
                 .andDo(customDocument("find_members_comments",
                         requestHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("로그인 후 제공되는 Bearer 토큰")
                         ),
                         responseFields(
-                                fieldWithPath(".membersCommentResponses").description("조회시 반환되는 데이터 배열"),
-                                fieldWithPath(".membersCommentResponses[0].email").description("조회시 반환되는 회원의 이메일"),
-                                fieldWithPath(".membersCommentResponses[0].boardId").description(
+                                fieldWithPath("membersCommentResponses").description("조회시 반환되는 데이터 배열"),
+                                fieldWithPath("membersCommentResponses[0].email").description("조회시 반환되는 회원의 이메일"),
+                                fieldWithPath("membersCommentResponses[0].boardId").description(
                                         "조회시 반환되는 게시물의 id(onclick이벤트를 위해 반환)"),
-                                fieldWithPath(".membersCommentResponses[0].content").description("조회시 반환되는 댓글 내용")
+                                fieldWithPath("membersCommentResponses[0].content").description("조회시 반환되는 댓글 내용")
                         )
                 ));
     }
 
     @DisplayName("토큰이 없을 때 댓글을 조회하면 401에러와 토큰이 없음이 반환된다. ")
     @Test
-    public void fail_to_find_current_members_comments_Unauthorized() throws Exception {
+    void fail_to_find_current_members_comments_Unauthorized() throws Exception {
         //given
         given(memberService.findMembersComment(any(Member.class))).willReturn(makeDummyComments());
 
@@ -365,7 +367,8 @@ class MemberControllerUnitTest {
 
     private List<BoardReadResponse> makeDummyBoards() {
         return IntStream.range(0, 10)
-                .mapToObj(each -> new BoardReadResponse((long) each, "title" + each, "content" + each, "em...", LocalDateTime.parse("2023-10-09T12:43:47")))
+                .mapToObj(each -> new BoardReadResponse((long) each, "title" + each, "content" + each, "em...",
+                        LocalDateTime.parse("2023-10-09T12:43:47"), true))
                 .collect(Collectors.toList());
     }
 

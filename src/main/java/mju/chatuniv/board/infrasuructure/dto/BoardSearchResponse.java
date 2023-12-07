@@ -12,6 +12,7 @@ public class BoardSearchResponse {
     private String email;
     private LocalDateTime createAt;
     private CommentAllResponse commentAllResponse;
+    private boolean isMine;
 
     @QueryProjection
     public BoardSearchResponse(final Long boardId,
@@ -19,13 +20,15 @@ public class BoardSearchResponse {
                                final String content,
                                final String email,
                                final LocalDateTime createAt,
-                               final CommentAllResponse commentAllResponse) {
+                               final CommentAllResponse commentAllResponse,
+                               final boolean isMine) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
         this.email = email;
         this.createAt = createAt;
         this.commentAllResponse = commentAllResponse;
+        this.isMine = isMine;
     }
 
     private BoardSearchResponse() {
@@ -53,5 +56,9 @@ public class BoardSearchResponse {
 
     public CommentAllResponse getCommentAllResponse() {
         return commentAllResponse;
+    }
+
+    public boolean getIsMine() {
+        return isMine;
     }
 }

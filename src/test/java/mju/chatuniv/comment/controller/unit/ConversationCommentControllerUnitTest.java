@@ -1,25 +1,5 @@
 package mju.chatuniv.comment.controller.unit;
 
-import static mju.chatuniv.helper.RestDocsHelper.customDocument;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -46,6 +26,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static mju.chatuniv.helper.RestDocsHelper.customDocument;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ConversationCommentController.class)
 @AutoConfigureRestDocs
@@ -115,17 +115,20 @@ class ConversationCommentControllerUnitTest {
         // given
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(commentAllResponse);
+        given(conversationCommentQueryService.findComments(any(Member.class), anyLong(), anyInt(),
+                anyLong())).willReturn(
+                commentAllResponse);
 
         // when & then
         mockTestHelper.createMockRequestWithTokenAndWithoutContent(
                         get("/api/conversations/{conversationId}/comments?pageSize=2&commentId=3", 1L))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.commentResponse.length()").value(2))
                 .andExpect(jsonPath("$.commentResponse[0].commentId").value(2))
                 .andExpect(jsonPath("$.commentResponse[0].content").value("content2"))
                 .andExpect(jsonPath("$.commentResponse[0].email").value("em..."))
                 .andExpect(jsonPath("$.commentResponse[0].createAt").value("2023-10-09T12:43:47"))
-                .andExpect(jsonPath("$.commentResponse.length()").value(2))
+                .andExpect(jsonPath("$.commentResponse[0].isMine").value(false))
                 .andDo(print())
                 .andDo(customDocument("find_comments_by_conversation_id",
                         requestHeaders(
@@ -140,9 +143,13 @@ class ConversationCommentControllerUnitTest {
                         ),
                         responseFields(
                                 fieldWithPath("commentResponse[0].commentId").description("댓글 전체 조회 후 반환된 comment의 ID"),
-                                fieldWithPath("commentResponse[0].content").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용"),
-                                fieldWithPath("commentResponse[0].email").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 작석자 이메일"),
-                                fieldWithPath("commentResponse[0].createAt").description("채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글 생성일자")
+                                fieldWithPath("commentResponse[0].content").description(
+                                        "채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글의 내용"),
+                                fieldWithPath("commentResponse[0].email").description(
+                                        "채팅방의 질문id로 댓글 전체 조회 후 반환된 작석자 이메일"),
+                                fieldWithPath("commentResponse[0].createAt").description(
+                                        "채팅방의 질문id로 댓글 전체 조회 후 반환된 댓글 생성일자"),
+                                fieldWithPath("commentResponse[0].isMine").description("조회한 사람과 작성한 사람의 일치 여부")
                         )
                 )).andReturn();
     }
@@ -154,7 +161,8 @@ class ConversationCommentControllerUnitTest {
         Long conversationId = null;
         List<CommentPagingResponse> commentAllResponse = getCommentAllResponse();
 
-        given(conversationCommentQueryService.findComments(anyLong(), anyInt(), anyLong())).willReturn(
+        given(conversationCommentQueryService.findComments(any(Member.class), anyLong(), anyInt(),
+                anyLong())).willReturn(
                 commentAllResponse);
 
         // when & then
@@ -204,7 +212,8 @@ class ConversationCommentControllerUnitTest {
         List<CommentPagingResponse> comments = new ArrayList<>();
         LongStream.range(1, 3)
                 .forEach(i -> {
-                    comments.add(new CommentPagingResponse(i, "content" + i, "em...", LocalDateTime.parse("2023-10-09T12:43:47")));
+                    comments.add(new CommentPagingResponse(i, "content" + i, "em...",
+                            LocalDateTime.parse("2023-10-09T12:43:47"), false));
                 });
         comments.sort(Comparator.comparingLong(CommentPagingResponse::getCommentId).reversed());
         return comments;

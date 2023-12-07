@@ -14,7 +14,6 @@ public class BoardSearchResponse {
     private CommentAllResponse commentAllResponse;
     private boolean isMine;
 
-
     @QueryProjection
     public BoardSearchResponse(final Long boardId,
                                final String title,

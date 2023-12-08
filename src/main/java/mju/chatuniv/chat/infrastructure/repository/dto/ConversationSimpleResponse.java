@@ -4,18 +4,25 @@ import com.querydsl.core.annotations.QueryProjection;
 
 public class ConversationSimpleResponse {
 
+    private Long chatId;
     private Long conversationId;
     private String ask;
     private String answer;
 
-    private ConversationSimpleResponse(){
+    private ConversationSimpleResponse() {
     }
 
     @QueryProjection
-    public ConversationSimpleResponse(Long conversationId, String ask, String answer) {
+    public ConversationSimpleResponse(final Long chatId, final Long conversationId, final String ask,
+                                      final String answer) {
+        this.chatId = chatId;
         this.conversationId = conversationId;
         this.ask = ask;
         this.answer = answer;
+    }
+
+    public Long getChatId() {
+        return chatId;
     }
 
     public Long getConversationId() {

@@ -1,10 +1,5 @@
 package mju.chatuniv.chat.infrastructure.repository;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.types.Projections.constructor;
-import static mju.chatuniv.chat.domain.chat.QChat.chat;
-import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
@@ -15,6 +10,11 @@ import mju.chatuniv.chat.domain.chat.Conversation;
 import mju.chatuniv.chat.infrastructure.repository.dto.ChatRoomSimpleResponse;
 import mju.chatuniv.chat.infrastructure.repository.dto.ConversationSimpleResponse;
 import org.springframework.stereotype.Repository;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.types.Projections.constructor;
+import static mju.chatuniv.chat.domain.chat.QChat.chat;
+import static mju.chatuniv.chat.domain.chat.QConversation.conversation;
 
 @Repository
 public class ChatQueryRepository {
@@ -83,6 +83,7 @@ public class ChatQueryRepository {
 
         return jpaQueryFactory
                 .select(constructor(ConversationSimpleResponse.class,
+                        conversation.chat.id.as("chatId"),
                         conversation.id.as("conversationId"),
                         conversation.ask
                                 .substring(0, SHORTCUT_LIMIT_OF_ASK)

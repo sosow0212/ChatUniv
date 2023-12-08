@@ -186,6 +186,7 @@ class ChatControllerUnitTest {
                                 parameterWithName("conversationId").description("대화 Id")
                         ),
                         responseFields(
+                                fieldWithPath("conversations[0].chatId").description("채팅방 Id"),
                                 fieldWithPath("conversations[0].conversationId").description("대화 Id"),
                                 fieldWithPath("conversations[0].ask").description("사용자 질문 내용"),
                                 fieldWithPath("conversations[0].answer").description("챗봇 답변 내용"),
@@ -382,7 +383,7 @@ class ChatControllerUnitTest {
         List<ConversationSimpleResponse> conversations = new ArrayList<>();
         LongStream.rangeClosed(1, 2)
                 .forEach(index -> {
-                    conversations.add(new ConversationSimpleResponse(index, "ask" + index, "answer" + index));
+                    conversations.add(new ConversationSimpleResponse(index, index, "ask" + index, "answer" + index));
                 });
         return conversations;
     }
